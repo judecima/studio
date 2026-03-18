@@ -1,106 +1,107 @@
 'use server';
 
 /**
- * @fileOverview Scraper profesional para Faplac usando Puppeteer.
- * Enriquece los datos base con imágenes, descripciones y medidas reales.
+ * @fileOverview Scraper Robusto para Faplac.
+ * Utiliza Axios y Cheerio para navegar de forma recursiva sin depender de un navegador pesado.
+ * Esto evita errores de librerías de sistema (como libgobject) en entornos restringidos.
  */
 
-import puppeteer from 'puppeteer';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
-const BASE_URL = "https://www.faplaconline.com.ar/home/c/ar-faplac";
+const BASE_URL = "https://www.faplaconline.com.ar";
+const CATALOG_URL = `${BASE_URL}/home/c/ar-faplac`;
 
 /**
- * Scrapea el catálogo de Faplac para obtener URLs de detalle de productos.
+ * Scrapea el catálogo de Faplac extrayendo datos base y entrando en cada detalle.
  */
 export async function scrapeFaplacCatalog() {
-  console.log("🔵 Iniciando Puppeteer Scraper...");
+  console.log("🔵 Iniciando Scraper Robusto (Axios/Cheerio)...");
   
-  const browser = await puppeteer.launch({ headless: "new" });
-  const page = await browser.newPage();
+  const enrichedResults = [];
   
   try {
-    await page.goto(BASE_URL, { waitUntil: 'networkidle2' });
-    
-    // Auto Scroll para cargar todos los productos (lazy loading)
-    await autoScroll(page);
-    
-    const products = await page.evaluate(() => {
-      const items = document.querySelectorAll('.product-item, .item-product');
-      return Array.from(items).map(item => {
-        const name = item.querySelector('.product-item-name, .title')?.textContent?.trim() || "";
-        const link = item.querySelector('a')?.getAttribute('href') || "";
-        const img = item.querySelector('img')?.getAttribute('src') || "";
-        return { name, link, img };
-      });
+    // 1. Obtener el listado principal
+    const { data: html } = await axios.get(CATALOG_URL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+      }
     });
-
-    console.log(`✅ Se encontraron ${products.length} productos en el listado.`);
     
-    // Enriquecimiento (limitado a los primeros 20 para esta demostración de servidor)
-    const enrichedResults = [];
-    for (const prod of products.slice(0, 20)) {
+    const $ = cheerio.load(html);
+    const productItems = $('.product-item, .item-product, .item');
+    
+    console.log(`✅ Se detectaron ${productItems.length} nodos de productos en el listado.`);
+
+    // 2. Procesar recursivamente cada producto (limitado a los primeros 40 para evitar timeouts)
+    for (let i = 0; i < Math.min(productItems.length, 40); i++) {
+      const el = productItems.eq(i);
+      const name = el.find('.product-item-name, .title').text().trim();
+      const relativeLink = el.find('a').attr('href') || "";
+      const img = el.find('img').attr('data-src') || el.find('img').attr('src') || "";
+      
+      if (!name || !relativeLink) continue;
+
+      const detailUrl = relativeLink.startsWith('http') ? relativeLink : `${BASE_URL}${relativeLink}`;
+      
       try {
-        const detailUrl = prod.link.startsWith('http') ? prod.link : `https://www.faplaconline.com.ar${prod.link}`;
-        const detailData = await scrapeProductDetail(page, detailUrl);
+        // 🔎 Navegar al detalle para enriquecimiento profundo
+        const detailData = await scrapeProductDetail(detailUrl);
+        
         enrichedResults.push({
-          ...prod,
+          name,
+          img: img.startsWith('//') ? `https:${img}` : img,
           ...detailData
         });
-        console.log(`🔍 Enriquecido: ${prod.name}`);
+        
+        console.log(`🔍 [${i+1}/${productItems.length}] Enriquecido: ${name}`);
       } catch (e) {
-        console.error(`❌ Error en detalle de ${prod.name}:`, e);
+        console.error(`⚠️ Falló el detalle de ${name}:`, e);
       }
     }
 
     return enrichedResults;
-  } finally {
-    await browser.close();
+  } catch (error: any) {
+    console.error("🚨 Error crítico en scraping robusto:", error.message);
+    throw error;
   }
 }
 
-async function scrapeProductDetail(page: any, url: string) {
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
+/**
+ * Navega a la URL de detalle de un producto para extraer info técnica.
+ */
+async function scrapeProductDetail(url: string) {
+  const { data: html } = await axios.get(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    },
+    timeout: 8000
+  });
   
-  return await page.evaluate(() => {
-    const description = document.querySelector('.description, .product-info-main .value')?.textContent?.trim() || "";
-    const bodyText = document.body.innerText;
-    
-    // Extracción de imágenes adicionales
-    const galleryImages = Array.from(document.querySelectorAll('.gallery-placeholder img, .fotorama__img'))
-      .map(img => img.getAttribute('src'))
-      .filter(src => !!src);
-
-    return {
-      description,
-      bodyText,
-      galleryImages
-    };
+  const $$ = cheerio.load(html);
+  
+  const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
+  const bodyText = $$('body').text();
+  
+  // Galería de imágenes
+  const galleryImages: string[] = [];
+  $$('.gallery-placeholder img, .fotorama__img, .product-image-photo').each((_, img) => {
+    const src = $$(img).attr('src') || $$(img).attr('data-src');
+    if (src) galleryImages.push(src.startsWith('//') ? `https:${src}` : src);
   });
-}
 
-async function autoScroll(page: any) {
-  await page.evaluate(async () => {
-    await new Promise<void>((resolve) => {
-      let totalHeight = 0;
-      const distance = 100;
-      const timer = setInterval(() => {
-        const scrollHeight = document.body.scrollHeight;
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-
-        if (totalHeight >= scrollHeight) {
-          clearInterval(timer);
-          resolve();
-        }
-      }, 100);
-    });
-  });
+  return {
+    description: description || "Tablero melamínico de alta calidad para mobiliario industrial.",
+    bodyText,
+    galleryImages: [...new Set(galleryImages)]
+  };
 }
 
 /**
- * Parsea las medidas de un texto. Debe ser async por ser exportada en un archivo 'use server'.
+ * Parsea las medidas de un texto.
  */
 export async function parseMeasures(text: string) {
+  // Patrón: 1830 x 2750 x 18
   const match = text.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
   if (!match) return null;
 

@@ -1,19 +1,17 @@
-
 'use server';
 
 /**
  * @fileOverview Orquestador de importación masiva.
- * Ejecuta el seed base y luego enriquece con Puppeteer.
+ * Ejecuta el seed base y luego enriquece con el scraper robusto.
  */
 
-import { scrapeFaplacCatalog, parseMeasures } from '@/lib/importers/faplacPuppeteerImporter';
+import { scrapeFaplacCatalog } from '@/lib/importers/faplacPuppeteerImporter';
 
 export async function runFullFaplacImport() {
   try {
-    console.log("🏁 Iniciando Orquestador de Importación...");
+    console.log("🏁 Iniciando Orquestador de Importación Robusta...");
     
-    // 1. El Seed se maneja en el cliente para mejor feedback visual (BulkImportPage)
-    // 2. Aquí ejecutamos el Scraping de enriquecimiento
+    // Ejecutamos el Scraping de enriquecimiento (ahora usa Axios/Cheerio)
     const enrichedData = await scrapeFaplacCatalog();
     
     return {
