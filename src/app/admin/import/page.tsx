@@ -6,14 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Loader2, Database, Sparkles, Trash2, Globe, AlertTriangle, RefreshCw } from "lucide-react";
+import { Loader2, Database, Sparkles, Trash2, Globe, FileCheck } from "lucide-react";
 import { runFullFaplacImport } from "@/app/actions/import-actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore, useUser } from "@/firebase";
 import { doc, setDoc, serverTimestamp, collection, getDocs, writeBatch } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
-import { seedFaplac } from "@/lib/scripts/seedFaplacToFirestore";
+import { seedFaplac, normalizePanelId } from "@/lib/scripts/seedFaplacToFirestore";
 
 export default function BulkImportPage() {
   const { toast } = useToast();
@@ -23,21 +23,15 @@ export default function BulkImportPage() {
   const [progress, setProgress] = useState(0);
   const [log, setLog] = useState<string[]>([]);
   const [importStatus, setImportStatus] = useState<'idle' | 'clearing' | 'seeding' | 'scraping' | 'done'>('idle');
-  const [isFullLoad, setIsFullLoad] = useState(false);
+  const [isFullLoad, setIsFullLoad] = useState(true);
 
   const addLog = (msg: string) => setLog(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 100));
-
-  useEffect(() => {
-    if (!isUserLoading && user) {
-      addLog(`👤 Sesión activa: ${user.isAnonymous ? 'Usuario Anónimo' : user.email}`);
-    }
-  }, [user, isUserLoading]);
 
   const clearDatabaseLogic = async () => {
     if (!db) return;
     setImportStatus('clearing');
     setProgress(0);
-    addLog("⚠️ Iniciando limpieza de base de datos...");
+    addLog("⚠️ Iniciando limpieza profunda del catálogo...");
 
     try {
       const colRef = collection(db, 'panels');
@@ -45,9 +39,8 @@ export default function BulkImportPage() {
       const total = querySnapshot.size;
       
       if (total === 0) {
-        addLog("ℹ️ La base de datos ya está vacía.");
+        addLog("ℹ️ El catálogo ya está vacío.");
       } else {
-        addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado...`);
         const batchSize = 50;
         const docs = querySnapshot.docs;
         
@@ -59,40 +52,19 @@ export default function BulkImportPage() {
           
           const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
           setProgress(currentProgress);
-          addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
+          addLog(`🗑️ Borrados: ${i + chunk.length}/${total}`);
         }
-        addLog(`✅ Limpieza completada: ${total} documentos eliminados.`);
+        addLog(`✅ Catálogo vaciado exitosamente.`);
       }
     } catch (e: any) {
-      addLog(`❌ ERROR al limpiar: ${e.message}`);
+      addLog(`❌ Error en limpieza: ${e.message}`);
       throw e;
-    }
-  };
-
-  const handleClearDatabase = async () => {
-    if (!db || !user) {
-      addLog("❌ Error: Base de datos o sesión no lista.");
-      return;
-    }
-
-    if (!confirm("¿Estás seguro de que deseas ELIMINAR TODO el catálogo? Esta acción no se puede deshacer.")) return;
-    
-    setIsProcessing(true);
-    try {
-      await clearDatabaseLogic();
-      toast({ title: "Base de datos limpia", description: "Todos los paneles han sido eliminados con éxito." });
-    } catch (error: any) {
-      toast({ title: "Error al limpiar", description: error.message, variant: "destructive" });
-    } finally {
-      setIsProcessing(false);
-      setImportStatus('idle');
-      setProgress(0);
     }
   };
 
   const handleStartFullImport = async () => {
     if (!db || !user) {
-      addLog("❌ Error: Base de datos o sesión no lista.");
+      addLog("❌ Error: Firebase no está listo.");
       return;
     }
 
@@ -105,49 +77,45 @@ export default function BulkImportPage() {
         await clearDatabaseLogic();
       }
 
-      // 1. SEEDING (Base inicial)
+      // 1. ESTRUCTURA (Seed)
       setImportStatus('seeding');
-      addLog("🌱 Iniciando Seed base de productos...");
+      addLog("🌱 Creando estructura de paneles en Firestore...");
       setProgress(10);
       const seedResult = await seedFaplac(db);
-      addLog(`✅ Seed completado: ${seedResult.successCount} productos base insertados.`);
-      setProgress(30);
+      addLog(`✅ Estructura creada: ${seedResult.successCount} documentos base.`);
+      setProgress(25);
 
-      // 2. SCRAPING (Enriquecimiento con imágenes REALES de Faplac)
+      // 2. CAPTURA REAL (Scraping detallado)
       setImportStatus('scraping');
-      addLog("🕵️ Capturando imágenes industriales REALES de alta resolución...");
+      addLog("📸 Iniciando captura de fotos industriales REALES (Alta Resolución)...");
       const scrapeResult = await runFullFaplacImport();
       
-      if (!scrapeResult.success) {
-        addLog(`⚠️ El scraping falló o fue bloqueado: ${scrapeResult.error}. Se mantendrán los datos base.`);
+      if (!scrapeResult.success || !scrapeResult.data) {
+        addLog(`⚠️ Fallo en captura real: ${scrapeResult.error}.`);
         setImportStatus('done');
         setProgress(100);
         return;
       }
 
-      const data = scrapeResult.data || [];
-      addLog(`🔍 Se obtuvieron ${data.length} imágenes reales exitosamente.`);
+      const data = scrapeResult.data;
+      addLog(`🔍 Se capturaron ${data.length} imágenes reales listas para persistir.`);
       
-      // 3. PERSISTING (Actualizar Firestore con las imágenes BASE64 reales)
+      // 3. PERSISTENCIA (Guardar Base64 en Firestore)
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
-        
-        // Normalización estricta del ID para coincidir con el Seed
-        const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+        const docId = normalizePanelId(item.name);
         const docRef = doc(db, 'panels', docId);
 
-        // Si tenemos imagen real capturada por el scraper, la usamos.
         const updatePayload: any = {
           updatedAt: serverTimestamp(),
           description: item.description,
-          width: item.width || 1830,
-          height: item.height || 2750,
-          thickness: item.thickness || 18,
-          visible: true,
-          hasGrain: item.bodyText?.toLowerCase().includes('veta') || false,
+          width: item.width,
+          height: item.height,
+          thickness: item.thickness,
+          visible: true
         };
 
-        // Si el scraper devolvió un Data URI (Base64), lo asignamos como imagen principal
+        // Si tenemos la imagen real en Base64, la guardamos como dato permanente
         if (item.img && item.img.startsWith('data:image')) {
           updatePayload.mainImage = item.img;
         }
@@ -160,16 +128,16 @@ export default function BulkImportPage() {
           }));
         });
 
-        const currentProgress = 30 + Math.round(((i + 1) / data.length) * 70);
+        const currentProgress = 25 + Math.round(((i + 1) / data.length) * 75);
         setProgress(currentProgress);
-        if ((i + 1) % 3 === 0) addLog(`📦 Sincronizando imagen real: ${item.name}...`);
+        if ((i + 1) % 2 === 0) addLog(`📦 Persistiendo imagen real: ${item.name}...`);
       }
 
       setImportStatus('done');
-      addLog("🎉 PROCESO FINALIZADO. Las imágenes reales ahora residen en tu base de datos.");
-      toast({ title: "Importación Exitosa", description: "Imágenes reales capturadas y persistidas." });
+      addLog("🎉 CAPTURA FINALIZADA. El catálogo ahora contiene imágenes industriales reales.");
+      toast({ title: "Importación Exitosa", description: "Imágenes reales capturadas y persistidas en la base de datos." });
     } catch (error: any) {
-      addLog(`❌ ERROR CRÍTICO: ${error.message}`);
+      addLog(`❌ Error Crítico: ${error.message}`);
       toast({ title: "Error Crítico", description: error.message, variant: "destructive" });
     } finally {
       setIsProcessing(false);
@@ -180,52 +148,45 @@ export default function BulkImportPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-headline font-bold">Ingestión de Imágenes Industriales</h1>
-          <p className="text-muted-foreground">Captura y persistencia de fotos reales directamente en Firestore.</p>
+          <h1 className="text-3xl font-headline font-bold">Captura Industrial de Imágenes</h1>
+          <p className="text-muted-foreground">Convierte el catálogo web en datos locales permanentes en tu base de datos.</p>
         </div>
-        <div className="flex gap-2">
-           <Button 
-            variant="outline" 
-            className="text-red-500 border-red-200 hover:bg-red-50 gap-2"
-            onClick={handleClearDatabase}
-            disabled={isProcessing || isUserLoading}
-          >
-            {isProcessing && importStatus === 'clearing' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-            Limpiar Base de Datos
-          </Button>
-          <Sparkles className="h-10 w-10 text-primary animate-pulse hidden md:block" />
-        </div>
+        <Sparkles className="h-10 w-10 text-primary animate-pulse hidden md:block" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-1 border-primary shadow-xl bg-slate-900 text-white">
           <CardHeader>
-            <CardTitle>Control de Ingestión</CardTitle>
-            <CardDescription className="text-slate-400">Parámetros del motor de captura.</CardDescription>
+            <CardTitle>Motor de Ingestión</CardTitle>
+            <CardDescription className="text-slate-400">Configura la profundidad de la captura.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center space-x-3 p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setIsFullLoad(!isFullLoad)}>
+            <div 
+              className="flex items-center space-x-3 p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-primary/50 transition-colors cursor-pointer" 
+              onClick={() => setIsFullLoad(!isFullLoad)}
+            >
               <Checkbox 
                 id="full-load" 
                 checked={isFullLoad}
                 onCheckedChange={(checked) => setIsFullLoad(!!checked)}
-                className="border-slate-500 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                className="border-slate-500 data-[state=checked]:bg-primary"
               />
               <div className="grid gap-1.5 leading-none">
-                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Reemplazo Total (Full)</Label>
-                <p className="text-xs text-slate-400">Borra todo antes de capturar las imágenes reales.</p>
+                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Carga Completa (Recomendado)</Label>
+                <p className="text-xs text-slate-400">Limpia el catálogo antes de capturar las nuevas imágenes.</p>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'seeding' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
-                <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 1: Estructura</p>
-                <p className="text-sm">Prepara los documentos base en Firestore.</p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs text-slate-400 font-bold uppercase tracking-widest">
+                <FileCheck className="h-4 w-4" /> Proceso de Captura
               </div>
-              <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'scraping' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
-                <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 2: Captura Real</p>
-                <p className="text-sm">Extrae fotos reales de Faplac y las convierte a Base64.</p>
-              </div>
+              <ul className="text-xs space-y-2 text-slate-300">
+                <li className="flex gap-2">🔹 Creación de estructura industrial</li>
+                <li className="flex gap-2">🔹 Navegación recursiva a detalle</li>
+                <li className="flex gap-2">🔹 Conversión a Base64 permanente</li>
+                <li className="flex gap-2">🔹 Persistencia en Firestore</li>
+              </ul>
             </div>
           </CardContent>
           <CardFooter>
@@ -242,14 +203,14 @@ export default function BulkImportPage() {
 
         <Card className="lg:col-span-2 border-primary/10">
           <CardHeader>
-            <CardTitle>Log del Motor de Captura</CardTitle>
-            <CardDescription>Seguimiento de la descarga y persistencia de imágenes industriales.</CardDescription>
+            <CardTitle>Monitor de Proceso</CardTitle>
+            <CardDescription>Seguimiento de la captura y conversión de imágenes industriales.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {isProcessing && (
               <div className="space-y-2">
-                <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
-                  <span>{importStatus === 'scraping' ? 'Capturando Imágenes de Alta Resolución...' : 'Sincronizando Base de Datos...'}</span>
+                <div className="flex justify-between text-xs font-bold uppercase">
+                  <span>{importStatus === 'scraping' ? 'Capturando Imágenes Reales...' : 'Sincronizando Firestore...'}</span>
                   <span>{progress}%</span>
                 </div>
                 <Progress value={progress} className="h-3" />
@@ -260,7 +221,7 @@ export default function BulkImportPage() {
               {log.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-600 gap-4">
                   <Globe className="h-12 w-12 opacity-20" />
-                  <p>Listo para iniciar la captura de imágenes reales de Faplac...</p>
+                  <p>Listo para capturar imágenes industriales reales...</p>
                 </div>
               ) : (
                 log.map((entry, i) => (

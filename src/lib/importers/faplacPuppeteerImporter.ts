@@ -2,7 +2,7 @@
 
 /**
  * @fileOverview Scraper Robusto para Faplac con captura de imágenes reales.
- * Utiliza Axios y Cheerio para navegar de forma recursiva.
+ * Utiliza Axios y Cheerio para navegar de forma recursiva y capturar fotos industriales.
  */
 
 import axios from 'axios';
@@ -19,7 +19,7 @@ async function fetchImageAsBase64(url: string): Promise<string> {
   try {
     const response = await axios.get(url, { 
       responseType: 'arraybuffer',
-      timeout: 15000,
+      timeout: 20000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Referer': BASE_URL
@@ -50,15 +50,15 @@ export async function scrapeFaplacCatalog() {
     });
     
     const $ = cheerio.load(html);
-    // Selectores para los productos en la lista
     const productItems = $('.product-item-info, .product-item, .item');
     
-    console.log(`✅ Se detectaron ${productItems.length} productos en la lista del catálogo.`);
+    console.log(`✅ Se detectaron ${productItems.length} productos en el catálogo principal.`);
 
-    // Limitamos a los primeros 25 para evitar timeouts excesivos y problemas de memoria con Base64
-    for (let i = 0; i < Math.min(productItems.length, 25); i++) {
+    // Procesamos un número manejable para evitar timeouts y exceder límites de Firestore (1MB por doc)
+    const limit = 20; 
+    for (let i = 0; i < Math.min(productItems.length, limit); i++) {
       const el = productItems.eq(i);
-      const name = el.find('.product-item-name, .title, h2').text().trim();
+      const name = el.find('.product-item-name, .title, h2, .name').text().trim();
       const relativeLink = el.find('a').attr('href') || "";
       
       if (!name || !relativeLink) continue;
@@ -66,25 +66,19 @@ export async function scrapeFaplacCatalog() {
       const detailUrl = relativeLink.startsWith('http') ? relativeLink : `${BASE_URL}${relativeLink}`;
       
       try {
-        console.log(`🔎 [${i+1}/${Math.min(productItems.length, 25)}] Navegando al detalle: ${name}`);
+        console.log(`🔎 [${i+1}/${limit}] Capturando detalle real: ${name}`);
         const detailData = await scrapeProductDetail(detailUrl);
         
-        // Priorizar la imagen encontrada en el detalle (suele ser de mayor calidad)
+        // El og:image es la fuente más fiable para la foto real del tablero
         let imgUrlToDownload = detailData.detailImgUrl;
         
-        // Si no hay imagen en detalle, intentar la de la lista (catalog)
-        if (!imgUrlToDownload) {
-          imgUrlToDownload = el.find('img').attr('data-src') || el.find('img').attr('src') || "";
-        }
-
-        // Normalizar URL
         if (imgUrlToDownload && imgUrlToDownload.startsWith('//')) {
           imgUrlToDownload = `https:${imgUrlToDownload}`;
         } else if (imgUrlToDownload && !imgUrlToDownload.startsWith('http')) {
           imgUrlToDownload = `${BASE_URL}${imgUrlToDownload}`;
         }
         
-        // Descargar la imagen real y convertirla a Base64
+        // Descargar la imagen real y convertirla a Base64 para guardarla en la BD
         const base64Image = imgUrlToDownload ? await fetchImageAsBase64(imgUrlToDownload) : "";
         
         enrichedResults.push({
@@ -95,18 +89,16 @@ export async function scrapeFaplacCatalog() {
         });
         
         if (base64Image) {
-          console.log(`✅ Imagen real (Base64) capturada con éxito para: ${name}`);
-        } else {
-          console.log(`⚠️ No se pudo capturar imagen real para: ${name}`);
+          console.log(`✅ Foto industrial (Base64) capturada para: ${name}`);
         }
       } catch (e) {
-        console.error(`⚠️ Falló la extracción del detalle de ${name}:`, e);
+        console.error(`⚠️ Falló el detalle de ${name}:`, e);
       }
     }
 
     return enrichedResults;
   } catch (error: any) {
-    console.error("🚨 Error crítico en scraping de Faplac:", error.message);
+    console.error("🚨 Error crítico en scraping:", error.message);
     throw error;
   }
 }
@@ -120,23 +112,19 @@ async function scrapeProductDetail(url: string) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
       },
-      timeout: 10000
+      timeout: 15000
     });
     
     const $$ = cheerio.load(html);
     
-    // 1. Extraer Imagen de alta resolución del detalle
-    // Faplac suele usar un esquema de galería que inyecta la imagen en un placeholder o meta tag
-    let detailImgUrl = $$('meta[property="og:image"]').attr('content') || 
-                       $$('.gallery-placeholder__image').attr('src') ||
-                       $$('.product.media img').attr('src') || 
-                       $$('.fotorama__img').attr('src') || "";
+    // Captura de la imagen real desde el metatag de Facebook/OpenGraph (lo más preciso)
+    const detailImgUrl = $$('meta[property="og:image"]').attr('content') || 
+                         $$('.gallery-placeholder__image').attr('src') ||
+                         $$('.product.media img').attr('src') || "";
 
-    // 2. Extraer Descripción
     const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
     const bodyText = $$('body').text();
 
-    // 3. Extraer Medidas (regex robusta para encontrar patrones como 1830 x 2750 x 18)
     const measuresMatch = bodyText.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
     let width = 1830;
     let height = 2750;
@@ -149,7 +137,7 @@ async function scrapeProductDetail(url: string) {
     }
     
     return {
-      description: description || "Tablero melamínico de alta calidad para mobiliario industrial.",
+      description: description || "Tablero melamínico profesional para mobiliario industrial.",
       width,
       height,
       thickness,
@@ -157,9 +145,8 @@ async function scrapeProductDetail(url: string) {
       detailImgUrl
     };
   } catch (err) {
-    console.error(`Error scrapeando detalle en ${url}:`, err);
     return {
-      description: "Información no disponible.",
+      description: "Información técnica en proceso.",
       width: 1830,
       height: 2750,
       thickness: 18,
