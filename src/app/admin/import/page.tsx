@@ -1,16 +1,15 @@
 
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, FileUp, Globe, Database, Sparkles, Trash2, AlertTriangle } from "lucide-react";
+import { Loader2, Database, Sparkles, Trash2, Globe, AlertTriangle } from "lucide-react";
 import { runFullFaplacImport } from "@/app/actions/import-actions";
 import { useToast } from "@/hooks/use-toast";
-import { useFirestore } from "@/firebase";
-import { doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc, writeBatch } from "firebase/firestore";
+import { useFirestore, useUser } from "@/firebase";
+import { doc, setDoc, serverTimestamp, collection, getDocs, writeBatch } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { seedFaplac } from "@/lib/scripts/seedFaplacToFirestore";
@@ -19,6 +18,7 @@ import { parseMeasures } from "@/lib/importers/faplacPuppeteerImporter";
 export default function BulkImportPage() {
   const { toast } = useToast();
   const db = useFirestore();
+  const { user, isUserLoading } = useUser();
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [log, setLog] = useState<string[]>([]);
@@ -26,43 +26,56 @@ export default function BulkImportPage() {
 
   const addLog = (msg: string) => setLog(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 100));
 
-  const isValidUrl = (url: string) => {
-    if (!url || typeof url !== 'string') return false;
-    try {
-      const u = new URL(url);
-      return u.protocol === 'http:' || u.protocol === 'https:';
-    } catch (e) {
-      return false;
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      addLog(`👤 Sesión activa: ${user.isAnonymous ? 'Usuario Anónimo' : user.email}`);
     }
-  };
+  }, [user, isUserLoading]);
 
   const handleClearDatabase = async () => {
-    if (!db || !confirm("¿Estás seguro de que deseas ELIMINAR TODO el catálogo de paneles? Esta acción no se puede deshacer.")) return;
+    if (!db) {
+      addLog("❌ Error: Firestore no está inicializado.");
+      return;
+    }
+    
+    if (!user) {
+      addLog("❌ Error: No tienes una sesión activa para realizar cambios.");
+      toast({ title: "Sin sesión", description: "Espera a que se inicie la sesión anónima.", variant: "destructive" });
+      return;
+    }
+
+    if (!confirm("¿Estás seguro de que deseas ELIMINAR TODO el catálogo de paneles? Esta acción no se puede deshacer.")) return;
     
     setIsProcessing(true);
     setImportStatus('clearing');
-    setLog([]);
-    addLog("⚠️ Iniciando limpieza de base de datos...");
     setProgress(0);
+    addLog("⚠️ Iniciando limpieza de base de datos...");
 
     try {
-      const querySnapshot = await getDocs(collection(db, 'panels'));
+      const colRef = collection(db, 'panels');
+      addLog("🔍 Consultando documentos existentes...");
+      const querySnapshot = await getDocs(colRef);
       const total = querySnapshot.size;
       
       if (total === 0) {
         addLog("ℹ️ La base de datos ya está vacía.");
       } else {
-        addLog(`🗑️ Eliminando ${total} documentos...`);
+        addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado por lotes...`);
         const batchSize = 50;
         const docs = querySnapshot.docs;
         
         for (let i = 0; i < docs.length; i += batchSize) {
           const batch = writeBatch(db);
           const chunk = docs.slice(i, i + batchSize);
-          chunk.forEach(d => batch.delete(d.ref));
+          
+          chunk.forEach(d => {
+            batch.delete(d.ref);
+          });
+          
           await batch.commit();
           const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
           setProgress(currentProgress);
+          addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
         }
         addLog(`✅ Limpieza completada: ${total} documentos eliminados.`);
       }
@@ -70,6 +83,7 @@ export default function BulkImportPage() {
       toast({ title: "Base de datos limpia", description: "Todos los paneles han sido eliminados con éxito." });
     } catch (error: any) {
       addLog(`❌ ERROR al limpiar: ${error.message}`);
+      console.error(error);
       toast({ title: "Error al limpiar", description: error.message, variant: "destructive" });
     } finally {
       setIsProcessing(false);
@@ -79,7 +93,11 @@ export default function BulkImportPage() {
   };
 
   const handleStartFullImport = async () => {
-    if (!db) return;
+    if (!db || !user) {
+      addLog("❌ Error: Base de datos o sesión no lista.");
+      return;
+    }
+
     setIsProcessing(true);
     setLog([]);
     setProgress(0);
@@ -98,7 +116,12 @@ export default function BulkImportPage() {
       addLog("🕵️ Iniciando enriquecimiento mediante Scraping recursivo...");
       const scrapeResult = await runFullFaplacImport();
       
-      if (!scrapeResult.success) throw new Error(scrapeResult.error);
+      if (!scrapeResult.success) {
+        addLog(`⚠️ El scraping falló: ${scrapeResult.error}. Se mantendrán los datos del seed.`);
+        setImportStatus('done');
+        setProgress(100);
+        return;
+      }
 
       addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos enriquecidos con imágenes.`);
       
@@ -117,11 +140,12 @@ export default function BulkImportPage() {
           brand: "Faplac",
           description: item.description,
           images: [],
-          mainImage: item.img || "https://picsum.photos/seed/" + docId + "/800/600",
+          mainImage: item.img || `https://picsum.photos/seed/${docId}/800/600`,
           width: measures?.width || 1830,
           height: measures?.height || 2750,
           thickness: measures?.thickness || 18,
           visible: true,
+          hasGrain: item.bodyText?.toLowerCase().includes('veta') || false,
           stock: Math.floor(Math.random() * 100),
           updatedAt: serverTimestamp(),
           source: "scraping_enriched",
@@ -131,7 +155,8 @@ export default function BulkImportPage() {
           useCases: ['cocina']
         };
 
-        await setDoc(docRef, enrichedData, { merge: true }).catch(err => {
+        // No await here for better performance (non-blocking)
+        setDoc(docRef, enrichedData, { merge: true }).catch(err => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: docRef.path,
             operation: 'write',
@@ -157,7 +182,7 @@ export default function BulkImportPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-headline font-bold">Ingestión de Catálogo Pro</h1>
           <p className="text-muted-foreground">Centro de mando para la sincronización industrial.</p>
@@ -167,13 +192,21 @@ export default function BulkImportPage() {
             variant="outline" 
             className="text-red-500 border-red-200 hover:bg-red-50 gap-2"
             onClick={handleClearDatabase}
-            disabled={isProcessing}
+            disabled={isProcessing || isUserLoading}
           >
-            <Trash2 className="h-4 w-4" /> Limpiar Base de Datos
+            {isProcessing && importStatus === 'clearing' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            Limpiar Base de Datos
           </Button>
           <Sparkles className="h-10 w-10 text-primary animate-pulse hidden md:block" />
         </div>
       </div>
+
+      {isUserLoading && (
+        <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg flex items-center gap-3 text-amber-700 text-sm">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Iniciando sesión segura...
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-1 border-primary shadow-xl bg-slate-900 text-white">
@@ -199,7 +232,7 @@ export default function BulkImportPage() {
             <Button 
               className="w-full h-16 text-lg font-bold gap-3 shadow-2xl bg-primary hover:bg-primary/90" 
               onClick={handleStartFullImport}
-              disabled={isProcessing}
+              disabled={isProcessing || isUserLoading}
             >
               {isProcessing && importStatus !== 'clearing' ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
               {isProcessing && importStatus !== 'clearing' ? 'PROCESANDO...' : 'INICIAR INGESTIÓN FULL'}
