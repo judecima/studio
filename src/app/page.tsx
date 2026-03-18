@@ -8,7 +8,7 @@ import { PanelFiltersSidebar } from "@/components/PanelFilters";
 import { PanelFilters, Panel } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Loader2 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 
@@ -57,6 +57,10 @@ export default function Home() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Filtros de Catálogo</SheetTitle>
+                  <SheetDescription>Ajusta los filtros para encontrar el panel perfecto.</SheetDescription>
+                </SheetHeader>
                 <PanelFiltersSidebar filters={filters} onChange={setFilters} onReset={resetFilters} />
               </SheetContent>
             </Sheet>
