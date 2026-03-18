@@ -28,6 +28,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.faplaconline.com.ar',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'www.faplaconline.com.ar',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
