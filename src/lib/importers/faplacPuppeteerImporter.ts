@@ -1,9 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Scraper Robusto para Faplac.
- * Utiliza Axios y Cheerio para navegar de forma recursiva.
- * Ahora incluye una función para convertir imágenes a Base64 para persistencia en base de datos.
+ * @fileOverview Scraper Robusto para Faplac con captura de imágenes reales.
  */
 
 import axios from 'axios';
@@ -20,7 +18,7 @@ async function fetchImageAsBase64(url: string): Promise<string> {
   try {
     const response = await axios.get(url, { 
       responseType: 'arraybuffer',
-      timeout: 5000 
+      timeout: 10000 
     });
     const contentType = response.headers['content-type'] || 'image/jpeg';
     const base64 = Buffer.from(response.data, 'binary').toString('base64');
@@ -32,10 +30,10 @@ async function fetchImageAsBase64(url: string): Promise<string> {
 }
 
 /**
- * Scrapea el catálogo de Faplac extrayendo datos base y entrando en cada detalle.
+ * Scrapea el catálogo de Faplac extrayendo imágenes reales y datos técnicos.
  */
 export async function scrapeFaplacCatalog() {
-  console.log("🔵 Iniciando Scraper Robusto con Ingestión de Imágenes (Base64)...");
+  console.log("🔵 Iniciando captura de imágenes reales del catálogo...");
   
   const enrichedResults = [];
   
@@ -47,16 +45,20 @@ export async function scrapeFaplacCatalog() {
     });
     
     const $ = cheerio.load(html);
-    const productItems = $('.product-item, .item-product, .item');
+    // Selectores más específicos para el sitio de Faplac
+    const productItems = $('.product-item-info, .product-item, .item');
     
-    console.log(`✅ Se detectaron ${productItems.length} nodos de productos en el listado.`);
+    console.log(`✅ Se detectaron ${productItems.length} productos en el catálogo.`);
 
-    // Procesar los primeros 30 para evitar saturar el tamaño de los documentos de Firestore
-    for (let i = 0; i < Math.min(productItems.length, 30); i++) {
+    for (let i = 0; i < Math.min(productItems.length, 40); i++) {
       const el = productItems.eq(i);
-      const name = el.find('.product-item-name, .title').text().trim();
+      const name = el.find('.product-item-name, .title, h2').text().trim();
       const relativeLink = el.find('a').attr('href') || "";
-      let imgUrl = el.find('img').attr('data-src') || el.find('img').attr('src') || "";
+      
+      // Intentar múltiples atributos de imagen comunes en sitios con lazy loading
+      let imgUrl = el.find('img').attr('data-src') || 
+                   el.find('img').attr('src') || 
+                   el.find('img').attr('data-original') || "";
       
       if (!name || !relativeLink) continue;
 
@@ -65,17 +67,24 @@ export async function scrapeFaplacCatalog() {
       try {
         const detailData = await scrapeProductDetail(detailUrl);
         
-        // Convertir imagen principal a Base64
-        const fullImgUrl = imgUrl.startsWith('//') ? `https:${imgUrl}` : imgUrl;
-        const base64Image = await fetchImageAsBase64(fullImgUrl);
+        // Formatear URL de imagen
+        let fullImgUrl = "";
+        if (imgUrl) {
+          fullImgUrl = imgUrl.startsWith('//') ? `https:${imgUrl}` : imgUrl;
+          if (!fullImgUrl.startsWith('http')) fullImgUrl = `${BASE_URL}${imgUrl}`;
+        }
+        
+        // Descargar la imagen real
+        const base64Image = fullImgUrl ? await fetchImageAsBase64(fullImgUrl) : "";
         
         enrichedResults.push({
           name,
-          img: base64Image || fullImgUrl, // Preferir base64, fallback a URL si falla
+          img: base64Image, // Solo enviamos si pudimos descargarla
+          originalUrl: fullImgUrl,
           ...detailData
         });
         
-        console.log(`🔍 [${i+1}/${productItems.length}] Descargado y Enriquecido: ${name}`);
+        console.log(`🔍 [${i+1}/${productItems.length}] Imagen real capturada para: ${name}`);
       } catch (e) {
         console.error(`⚠️ Falló el detalle de ${name}:`, e);
       }
@@ -83,7 +92,7 @@ export async function scrapeFaplacCatalog() {
 
     return enrichedResults;
   } catch (error: any) {
-    console.error("🚨 Error crítico en scraping robusto:", error.message);
+    console.error("🚨 Error crítico en scraping:", error.message);
     throw error;
   }
 }
@@ -100,20 +109,24 @@ async function scrapeProductDetail(url: string) {
   
   const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
   const bodyText = $$('body').text();
+
+  // Intentar extraer medidas del detalle
+  const measuresMatch = bodyText.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
+  let width = 1830;
+  let height = 2750;
+  let thickness = 18;
+
+  if (measuresMatch) {
+    width = Number(measuresMatch[1]);
+    height = Number(measuresMatch[2]);
+    thickness = Number(measuresMatch[3]);
+  }
   
   return {
     description: description || "Tablero melamínico de alta calidad para mobiliario industrial.",
+    width,
+    height,
+    thickness,
     bodyText,
-  };
-}
-
-export async function parseMeasures(text: string) {
-  const match = text.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
-  if (!match) return null;
-
-  return {
-    width: Number(match[1]),
-    height: Number(match[2]),
-    thickness: Number(match[3]),
   };
 }

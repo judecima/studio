@@ -97,76 +97,71 @@ export default function BulkImportPage() {
     setProgress(0);
     
     try {
-      // 0. OPCIONAL: CLEARING
       if (isFullLoad) {
         await clearDatabaseLogic();
       }
 
-      // 1. SEEDING
+      // 1. SEEDING (Base inicial con imágenes genéricas temporales)
       setImportStatus('seeding');
-      addLog("🌱 Iniciando Seed base de 127 productos...");
+      addLog("🌱 Iniciando Seed base de productos...");
       setProgress(10);
       const seedResult = await seedFaplac(db);
       addLog(`✅ Seed completado: ${seedResult.successCount} insertados.`);
       setProgress(40);
 
-      // 2. SCRAPING
+      // 2. SCRAPING (Enriquecimiento con imágenes REALES)
       setImportStatus('scraping');
-      addLog("🕵️ Iniciando enriquecimiento mediante Scraping recursivo...");
+      addLog("🕵️ Buscando imágenes REALES en el catálogo de Faplac...");
       const scrapeResult = await runFullFaplacImport();
       
       if (!scrapeResult.success) {
-        addLog(`⚠️ El scraping falló: ${scrapeResult.error}. Se mantendrán los datos del seed.`);
+        addLog(`⚠️ El scraping falló: ${scrapeResult.error}. Se mantendrán los datos base.`);
         setImportStatus('done');
         setProgress(100);
         return;
       }
 
-      addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos enriquecidos.`);
+      addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos con imágenes reales.`);
       
-      // 3. PERSISTING
+      // 3. PERSISTING (Actualizar Firestore con los datos REALES)
       const data = scrapeResult.data || [];
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
+        // Normalizar ID para coincidir con el del Seed
         const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
         const docRef = doc(db, 'panels', docId);
 
-        const enrichedData = {
-          id: docId,
-          name: item.name,
-          brand: "Faplac",
+        // Si tenemos imagen real (Base64), la usamos. Si no, no sobreescribimos con random seed aquí.
+        const updatePayload: any = {
+          updatedAt: serverTimestamp(),
           description: item.description,
-          images: [],
-          mainImage: item.img || `https://picsum.photos/seed/${docId}/800/600`,
           width: item.width || 1830,
           height: item.height || 2750,
           thickness: item.thickness || 18,
           visible: true,
           hasGrain: item.bodyText?.toLowerCase().includes('veta') || false,
-          stock: Math.floor(Math.random() * 100),
-          updatedAt: serverTimestamp(),
-          colorGroup: 'medio',
-          colorHue: 'otros',
-          styleTags: ['moderno'],
-          useCases: ['cocina']
         };
 
-        setDoc(docRef, enrichedData, { merge: true }).catch(err => {
+        if (item.img) {
+          updatePayload.mainImage = item.img;
+        }
+
+        setDoc(docRef, updatePayload, { merge: true }).catch(err => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: docRef.path,
-            operation: 'write',
-            requestResourceData: enrichedData
+            operation: 'update',
+            requestResourceData: updatePayload
           }));
         });
 
         const currentProgress = 40 + Math.round(((i + 1) / data.length) * 60);
         setProgress(currentProgress);
-        if ((i + 1) % 5 === 0) addLog(`📦 Sincronizando: ${item.name}...`);
+        if ((i + 1) % 5 === 0) addLog(`📦 Enriqueciendo: ${item.name}...`);
       }
 
       setImportStatus('done');
-      addLog("🎉 PROCESO FINALIZADO CON ÉXITO.");
-      toast({ title: "Proceso Completo", description: "Base Faplac cargada y enriquecida con éxito." });
+      addLog("🎉 PROCESO FINALIZADO. Catálogo enriquecido con imágenes reales.");
+      toast({ title: "Proceso Completo", description: "Imágenes reales cargadas con éxito." });
     } catch (error: any) {
       addLog(`❌ ERROR CRÍTICO: ${error.message}`);
       toast({ title: "Error Crítico", description: error.message, variant: "destructive" });
@@ -179,8 +174,8 @@ export default function BulkImportPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-headline font-bold">Ingestión de Catálogo Pro</h1>
-          <p className="text-muted-foreground">Centro de mando para la sincronización industrial.</p>
+          <h1 className="text-3xl font-headline font-bold">Ingestión de Catálogo Real</h1>
+          <p className="text-muted-foreground">Sincronización de imágenes industriales mediante captura directa.</p>
         </div>
         <div className="flex gap-2">
            <Button 
@@ -195,13 +190,6 @@ export default function BulkImportPage() {
           <Sparkles className="h-10 w-10 text-primary animate-pulse hidden md:block" />
         </div>
       </div>
-
-      {isUserLoading && (
-        <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg flex items-center gap-3 text-amber-700 text-sm">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Iniciando sesión segura...
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-1 border-primary shadow-xl bg-slate-900 text-white">
@@ -218,50 +206,46 @@ export default function BulkImportPage() {
                 className="border-slate-500 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
               />
               <div className="grid gap-1.5 leading-none">
-                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Carga Completa</Label>
-                <p className="text-xs text-slate-400">Borra todo antes de importar (Pisa la base).</p>
+                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Carga Limpia</Label>
+                <p className="text-xs text-slate-400">Elimina todo antes de capturar nuevas imágenes.</p>
               </div>
             </div>
 
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'clearing' ? 'bg-red-900/20 border-red-500' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 0: Limpieza {isFullLoad ? '(Activo)' : '(Manual)'}</p>
-              <p className="text-sm">Elimina registros antiguos para una carga limpia.</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 0: Limpieza</p>
+              <p className="text-sm">Prepara el catálogo para datos nuevos.</p>
             </div>
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'seeding' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 1: Seed</p>
-              <p className="text-sm">Carga 127 registros base industriales.</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 1: Seed</p>
+              <p className="text-sm">Estructura base del catálogo.</p>
             </div>
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'scraping' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 2: Enriquecimiento</p>
-              <p className="text-sm">Scraping recursivo para imágenes y medidas.</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 2: Captura Real</p>
+              <p className="text-sm">Descarga imágenes directas de Faplac.</p>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-3">
+          <CardFooter>
             <Button 
               className="w-full h-16 text-lg font-bold gap-3 shadow-2xl bg-primary hover:bg-primary/90" 
               onClick={handleStartFullImport}
               disabled={isProcessing || isUserLoading}
             >
-              {isProcessing && importStatus !== 'clearing' ? <Loader2 className="h-6 w-6 animate-spin" /> : (isFullLoad ? <RefreshCw className="h-6 w-6" /> : <Database className="h-6 w-6" />)}
-              {isProcessing && importStatus !== 'clearing' ? 'PROCESANDO...' : (isFullLoad ? 'REINICIAR E IMPORTAR' : 'INICIAR INGESTIÓN')}
+              {isProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
+              {isProcessing ? 'PROCESANDO...' : 'INICIAR CAPTURA REAL'}
             </Button>
           </CardFooter>
         </Card>
 
         <Card className="lg:col-span-2 border-primary/10">
           <CardHeader>
-            <CardTitle>Log de Operaciones</CardTitle>
-            <CardDescription>Seguimiento detallado en tiempo real.</CardDescription>
+            <CardTitle>Log de Ingestión</CardTitle>
+            <CardDescription>Seguimiento de la descarga de imágenes.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {isProcessing && (
               <div className="space-y-2">
                 <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
-                  <span>
-                    {importStatus === 'clearing' ? 'Eliminando...' : 
-                     importStatus === 'seeding' ? 'Insertando Seed...' : 
-                     importStatus === 'scraping' ? 'Scrapeando Catálogo...' : 'Sincronizando...'}
-                  </span>
+                  <span>{importStatus === 'scraping' ? 'Capturando Imágenes...' : 'Sincronizando...'}</span>
                   <span>{progress}%</span>
                 </div>
                 <Progress value={progress} className="h-3" />
@@ -272,12 +256,12 @@ export default function BulkImportPage() {
               {log.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-600 gap-4">
                   <Globe className="h-12 w-12 opacity-20" />
-                  <p>Esperando señal de inicio...</p>
+                  <p>Listo para capturar imágenes reales...</p>
                 </div>
               ) : (
                 log.map((entry, i) => (
                   <div key={i} className="mb-1">
-                    <span className={entry.includes('✅') ? 'text-green-400' : entry.includes('❌') || entry.includes('⚠️') ? 'text-red-400' : entry.includes('📦') ? 'text-amber-400' : 'text-slate-300'}>
+                    <span className={entry.includes('✅') ? 'text-green-400' : entry.includes('❌') ? 'text-red-400' : 'text-slate-300'}>
                       {entry}
                     </span>
                   </div>
