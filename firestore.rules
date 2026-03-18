@@ -13,9 +13,9 @@ service cloud.firestore {
       return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
-    // Permitir acceso temporal para prototipado si el usuario está autenticado
+    // Permitir acceso total si el usuario está autenticado (incluyendo anónimos) para prototipado rápido
     function isAuthorized() {
-      return isSignedIn(); // Simplificado para MVP, permite a cualquier usuario autenticado (incluyendo anónimos)
+      return isSignedIn();
     }
 
     function isPanelVisible(data) {
@@ -29,24 +29,16 @@ service cloud.firestore {
     // --- Collection Rules ---
 
     match /panels/{panelId} {
-      allow get, list: if isPanelVisible(resource.data) || isAuthorized();
+      // Permitir lectura si es visible públicamente O si el usuario está autorizado
+      allow get, list: if isAuthorized() || isPanelVisible(resource.data);
       
-      // Asegurar que el ID del documento coincida con el campo 'id' del objeto
-      allow create: if isAuthorized() && request.resource.data.id == panelId;
-      
-      allow update: if isAuthorized() && request.resource.data.id == resource.data.id;
-      
-      allow delete: if isAuthorized();
+      // Permitir escritura si el usuario está autorizado
+      allow create, update, delete: if isAuthorized();
     }
 
     match /combinations/{combinationId} {
-      allow get, list: if isCombinationApproved(resource.data) || isAuthorized();
-      
-      allow create: if isAuthorized() && request.resource.data.id == combinationId;
-      
-      allow update: if isAuthorized() && request.resource.data.id == resource.data.id;
-      
-      allow delete: if isAuthorized();
+      allow get, list: if isAuthorized() || isCombinationApproved(resource.data);
+      allow create, update, delete: if isAuthorized();
     }
 
     match /roles_admin/{adminUid} {

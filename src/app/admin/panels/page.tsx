@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2, PackageOpen, AlertTriangle } from "lucide-react";
+import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2, PackageOpen } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -29,6 +29,8 @@ import { collection, query, doc, deleteDoc, updateDoc, orderBy, getDocs, writeBa
 import { Panel } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 export default function AdminPanelsPage() {
   const db = useFirestore();
@@ -74,15 +76,23 @@ export default function AdminPanelsPage() {
   };
 
   const handleDeleteAll = async () => {
-    if (!db || !panels || panels.length === 0) return;
-    if (!confirm(`¿Estás TOTALMENTE SEGURO de eliminar los ${panels.length} paneles del catálogo? Esta acción es irreversible.`)) return;
+    if (!db) return;
+    
+    // Si no hay paneles cargados en el estado, intentamos buscarlos directamente
+    const colRef = collection(db, 'panels');
+    const snapshot = await getDocs(colRef);
+    
+    if (snapshot.empty) {
+      toast({ title: "Catálogo vacío", description: "No hay paneles para eliminar." });
+      return;
+    }
+
+    if (!confirm(`¿Estás TOTALMENTE SEGURO de eliminar los ${snapshot.size} paneles del catálogo? Esta acción es irreversible.`)) return;
 
     setIsDeletingAll(true);
     try {
-      const colRef = collection(db, 'panels');
-      const snapshot = await getDocs(colRef);
-      const batchSize = 50;
       const docs = snapshot.docs;
+      const batchSize = 50;
 
       for (let i = 0; i < docs.length; i += batchSize) {
         const batch = writeBatch(db);
@@ -93,6 +103,11 @@ export default function AdminPanelsPage() {
 
       toast({ title: "Catálogo vaciado", description: `Se han eliminado ${docs.length} paneles.` });
     } catch (error: any) {
+      console.error("Error al vaciar base de datos:", error);
+      errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: 'panels',
+        operation: 'delete'
+      }));
       toast({ title: "Error al vaciar", description: error.message, variant: "destructive" });
     } finally {
       setIsDeletingAll(false);
@@ -107,17 +122,15 @@ export default function AdminPanelsPage() {
           <p className="text-muted-foreground">Administra el inventario real sincronizado con Firestore.</p>
         </div>
         <div className="flex gap-2">
-          {panels && panels.length > 0 && (
-            <Button 
-              variant="outline" 
-              className="text-red-500 border-red-200 hover:bg-red-50 gap-2 h-11"
-              onClick={handleDeleteAll}
-              disabled={isDeletingAll || isLoading}
-            >
-              {isDeletingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-              Borrar Todo
-            </Button>
-          )}
+          <Button 
+            variant="outline" 
+            className="text-red-500 border-red-200 hover:bg-red-50 gap-2 h-11"
+            onClick={handleDeleteAll}
+            disabled={isDeletingAll || isLoading}
+          >
+            {isDeletingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            Borrar Todo el Catálogo
+          </Button>
           <Link href="/admin/panels/new">
             <Button className="gap-2 h-11 px-6 shadow-lg shadow-primary/20">
               <Plus className="h-5 w-5" /> Nuevo Panel
