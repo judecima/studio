@@ -1,0 +1,116 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * CORE PHILOSOPHY
+     * This ruleset implements a robust, admin-governed industrial catalog for the Faplac/Egger ecosystem. 
+     * It prioritizes high availability for public catalog browsing while restricting all 
+     * modification, curation, and administrative actions to verified accounts.
+     *
+     * DATA STRUCTURE
+     * - /panels: Top-level collection of industrial boards and products.
+     * - /combinations: Top-level collection for the intelligent design engine suggestions.
+     * - /roles_admin: A specialized collection used for Role-Based Access Control (RBAC).
+     *
+     * KEY SECURITY DECISIONS
+     * 1. Existence over Content: Admin privileges are granted by the presence of a user's 
+     *    UID as a document ID in the 'roles_admin' collection.
+     * 2. Visibility Toggles: Public access is governed by 'visible' (panels) or 'isApproved' 
+     *    (combinations) flags denormalized onto the documents.
+     * 3. Prototyping Flexibility: Data types and optional fields are not strictly enforced 
+     *    to allow rapid schema iteration, focusing security on identity and relational integrity.
+     * 4. Denormalization for Performance: Authorization flags are kept on the resources 
+     *    themselves to avoid costly cross-document lookups during list queries.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the user is authenticated with Firebase. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the user's UID exists in the admin roles collection. */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    /** @description Checks if a panel is marked for public display. */
+    function isPanelVisible(data) {
+      return data != null && data.visible == true;
+    }
+
+    /** @description Checks if a combination is approved for public display. */
+    function isCombinationApproved(data) {
+      return data != null && data.isApproved == true;
+    }
+
+    /** @description Verifies document existence and admin status for write operations. */
+    function isAdminAndExists() {
+      return isAdmin() && resource != null;
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for the Panel catalog. Public users can browse visible panels.
+     * @path /panels/{panelId}
+     * @allow (get) { auth: null } if panel is visible.
+     * @deny (update) { auth: { uid: "user123" } } if user is not in roles_admin.
+     * @principle Public Read with Admin-Only Writes.
+     */
+    match /panels/{panelId} {
+      allow get, list: if isPanelVisible(resource.data) || isAdmin();
+      
+      allow create: if isAdmin() 
+                    && request.resource.data.id == panelId;
+      
+      allow update: if isAdminAndExists() 
+                    && request.resource.data.id == resource.data.id;
+      
+      allow delete: if isAdminAndExists();
+    }
+
+    /**
+     * @description Rules for the Design Combinations engine. Public users can view approved suggestions.
+     * @path /combinations/{combinationId}
+     * @allow (list) { auth: null } if combinations are approved.
+     * @deny (create) { auth: { uid: "user123" } } even if panelIds are valid, if not admin.
+     * @principle Public Read with Admin-Only Writes.
+     */
+    match /combinations/{combinationId} {
+      allow get, list: if isCombinationApproved(resource.data) || isAdmin();
+      
+      allow create: if isAdmin() 
+                    && request.resource.data.id == combinationId;
+      
+      allow update: if isAdminAndExists() 
+                    && request.resource.data.id == resource.data.id;
+      
+      allow delete: if isAdminAndExists();
+    }
+
+    /**
+     * @description Rules for Admin Role Management. This is a restricted collection.
+     * @path /roles_admin/{adminUid}
+     * @allow (get) { auth: { uid: "admin1" } } to verify their own role.
+     * @deny (create) { auth: { uid: "any" } } Roles should be managed via CLI or Admin Console for security.
+     * @principle Existence-based RBAC.
+     */
+    match /roles_admin/{adminUid} {
+      // Admins can see who else is an admin; users can check their own status.
+      allow get: if isSignedIn() && (request.auth.uid == adminUid || isAdmin());
+      allow list: if isAdmin();
+      
+      // Strict write protection for the roles collection to prevent privilege escalation.
+      // Prototyping note: In production, use a specific "SuperAdmin" or cloud function.
+      allow create, update, delete: if false; 
+    }
+
+    // Default deny for any unmatched paths.
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

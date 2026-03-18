@@ -1,0 +1,246 @@
+{
+  "entities": {
+    "Panel": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Panel",
+      "type": "object",
+      "description": "Represents a type of panel board available for sale and display, including its physical characteristics, stock, and visual properties.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Panel entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The commercial name or designation of the panel."
+        },
+        "brand": {
+          "type": "string",
+          "description": "The manufacturer or brand of the panel."
+        },
+        "width": {
+          "type": "number",
+          "description": "The width of the panel in a standard unit (e.g., mm)."
+        },
+        "height": {
+          "type": "number",
+          "description": "The height of the panel in a standard unit (e.g., mm)."
+        },
+        "thickness": {
+          "type": "number",
+          "description": "The thickness of the panel in a standard unit (e.g., mm)."
+        },
+        "hasGrain": {
+          "type": "boolean",
+          "description": "Indicates if the panel has a visible wood grain pattern."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the panel, including its material and specific properties."
+        },
+        "stock": {
+          "type": "number",
+          "description": "The current quantity of this panel available in stock."
+        },
+        "images": {
+          "type": "array",
+          "description": "An array of URLs pointing to various images of the panel.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mainImage": {
+          "type": "string",
+          "description": "The URL of the primary image representing the panel.",
+          "format": "uri"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Indicates whether the panel is visible to customers on the public website."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the panel record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the panel record was last updated.",
+          "format": "date-time"
+        },
+        "colorGroup": {
+          "type": "string",
+          "description": "Categorizes the general lightness or darkness of the panel's color, used for combination logic.",
+          "format": "enum"
+        },
+        "colorHue": {
+          "type": "string",
+          "description": "Describes the specific color tone or family of the panel (e.g., blanco, gris, madera clara, negro), used for combination logic."
+        },
+        "styleTags": {
+          "type": "array",
+          "description": "An array of stylistic keywords describing the panel's aesthetic (e.g., moderno, clasico, industrial), used for combination logic.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "useCases": {
+          "type": "array",
+          "description": "An array of suggested primary use cases or environments for the panel (e.g., cocina, placard, oficina), used for combination logic.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "width",
+        "height",
+        "thickness",
+        "hasGrain",
+        "description",
+        "stock",
+        "images",
+        "mainImage",
+        "visible",
+        "createdAt",
+        "updatedAt",
+        "colorGroup",
+        "colorHue",
+        "styleTags",
+        "useCases"
+      ]
+    },
+    "Combination": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Combination",
+      "type": "object",
+      "description": "Represents a curated or automatically generated combination of panel boards, suggesting complementary or contrasting designs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Combination entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "A descriptive name for the panel combination."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed explanation of why these panels combine well."
+        },
+        "panelIds": {
+          "type": "array",
+          "description": "References to Panel entities included in this combination. (Relationship: Panel N:N Combination)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "description": "The categorization of the combination's design principle (e.g., contraste, armonia, funcional).",
+          "format": "enum"
+        },
+        "useCase": {
+          "type": "string",
+          "description": "The primary use case or environment this combination is designed for (e.g., cocina, placard, oficina). This categorizes the functional context of the combination."
+        },
+        "previewImage": {
+          "type": "string",
+          "description": "An optional URL to an image previewing the combination.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the combination record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the combination record was last updated.",
+          "format": "date-time"
+        },
+        "isApproved": {
+          "type": "boolean",
+          "description": "Indicates if this combination has been reviewed and approved by an administrator for public display."
+        },
+        "isGeneratedAutomatically": {
+          "type": "boolean",
+          "description": "Indicates if this combination was generated automatically by the intelligent engine or created manually by an administrator."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "panelIds",
+        "type",
+        "useCase",
+        "createdAt",
+        "updatedAt",
+        "isApproved",
+        "isGeneratedAutomatically"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/panels/{panelId}",
+        "definition": {
+          "entityName": "Panel",
+          "schema": {
+            "$ref": "#/backend/entities/Panel"
+          },
+          "description": "Stores all panel board products. Publicly readable if 'visible' is true; only administrators can create, update, or delete. Includes denormalized 'visible' boolean for authorization independence.",
+          "params": [
+            {
+              "name": "panelId",
+              "description": "Unique identifier for a specific panel board."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/combinations/{combinationId}",
+        "definition": {
+          "entityName": "Combination",
+          "schema": {
+            "$ref": "#/backend/entities/Combination"
+          },
+          "description": "Stores curated or automatically generated combinations of panels. Publicly readable if 'isApproved' is true; only administrators can create, update, or delete. Includes denormalized 'isApproved' boolean for authorization independence.",
+          "params": [
+            {
+              "name": "combinationId",
+              "description": "Unique identifier for a specific panel combination."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{adminUid}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "A collection to store UIDs of users who have administrator roles. Used for Database Access Control (DBAC) where the existence of a document with the user's UID grants admin privileges. This is an 'Existence over Content' model for global roles.",
+          "params": [
+            {
+              "name": "adminUid",
+              "description": "The Firebase Authentication UID of an administrator."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed with a strong emphasis on Authorization Independence, Structural Segregation, and clear Access Modeling to ensure security, scalability, and debuggability. \n\n1.  **Authorization Independence & QAPs:**\n    *   For `/panels/{panelId}`, read access is public but restricted to documents where `resource.data.visible == true`. The `visible` field is stored directly within each panel document. This eliminates the need for `get()` calls to parent or external documents for authorization checks, adhering to Authorization Independence. It also supports Query-Able Paths (QAPs) by allowing `list` operations with a filter on `visible`, ensuring that security rules are not used as filters after data retrieval, but rather to pre-filter accessible data.\n    *   Similarly, for `/combinations/{combinationId}`, read access is public but restricted to documents where `resource.data.isApproved == true`. The `isApproved` field is part of the `Combination` document itself, again avoiding `get()` calls for authorization and supporting QAPs for `list` operations.\n\n2.  **Structural Segregation:**\n    *   The `/panels` collection exclusively stores `Panel` entities, which have a consistent security posture (public read if visible, admin write). \n    *   The `/combinations` collection exclusively stores `Combination` entities, also maintaining a homogeneous security posture (public read if approved, admin write). \n    *   A dedicated `/roles_admin/{uid}` collection is used to identify administrators. This structural segregation ensures that security rules for each collection are straightforward and do not need complex conditional logic based on the content of other documents.\n\n3.  **Access Modeling & DBAC:**\n    *   Global roles are managed using the 'Existence over Content' pattern. An administrator's UID is stored as a document ID in the `/roles_admin` collection (`/roles_admin/{uid}`). Firebase Security Rules can check for the existence of `request.auth.uid` in this collection to grant admin privileges without relying on custom claims or complex document traversals. This adheres to the DBAC principle.\n\n4.  **Denormalization:**\n    *   Key authorization attributes (`visible` for panels, `isApproved` for combinations) are denormalized directly into the respective documents. This is crucial for Authorization Independence, allowing each document to be self-sufficient for authorization decisions. The `isGeneratedAutomatically` field in `Combination` also provides important context within the document, aiding in dashboard logic without external lookups. \n\nThis structure prioritizes flat collections for core entities, relying on intrinsic document fields for public access control and a dedicated flat collection for role management. This design significantly simplifies security rules, enhances performance by minimizing cross-document lookups in rules, and improves debuggability due to clear, explicit authorization intent."
+  }
+}
