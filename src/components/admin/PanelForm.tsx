@@ -75,6 +75,15 @@ export function PanelForm({ mode, initialData }: Props) {
   const [isAutocompleting, setIsAutocompleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   const form = useForm<FormValues>({
     resolver: zodResolver(panelSchema),
     defaultValues: initialData ? {
@@ -96,9 +105,9 @@ export function PanelForm({ mode, initialData }: Props) {
     } : {
       name: "",
       brand: "",
-      width: 0,
-      height: 0,
-      thickness: 0,
+      width: 1830,
+      height: 2750,
+      thickness: 18,
       hasGrain: false,
       description: "",
       stock: 0,
@@ -130,7 +139,11 @@ export function PanelForm({ mode, initialData }: Props) {
         if (result.thickness) form.setValue("thickness", result.thickness);
         if (result.hasGrain !== undefined) form.setValue("hasGrain", result.hasGrain);
         if (result.description) form.setValue("description", result.description);
-        if (result.mainImage) form.setValue("mainImage", result.mainImage);
+        
+        if (result.mainImage && isValidUrl(result.mainImage)) {
+          form.setValue("mainImage", result.mainImage);
+        }
+        
         if (result.colorGroup) form.setValue("colorGroup", result.colorGroup as ColorGroup);
         if (result.colorHue) form.setValue("colorHue", result.colorHue);
         if (result.styleTags) form.setValue("styleTags", result.styleTags);
@@ -148,12 +161,12 @@ export function PanelForm({ mode, initialData }: Props) {
   const onSubmit = async (data: FormValues) => {
     setIsSaving(true);
     try {
-      const docId = initialData?.id || data.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const docId = initialData?.id || data.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
       const docRef = doc(db, 'panels', docId);
 
       const panelToSave = {
         ...data,
-        id: docId, // Obligatorio para reglas de seguridad
+        id: docId,
         updatedAt: serverTimestamp(),
         createdAt: initialData?.createdAt || serverTimestamp(),
       };
@@ -293,6 +306,20 @@ export function PanelForm({ mode, initialData }: Props) {
                   <FormItem className="flex items-center gap-2 space-y-0 border rounded-lg p-3">
                     <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                     <FormLabel>Público</FormLabel>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="mainImage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL Imagen Principal</FormLabel>
+                    <FormControl><Input {...field} /></FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

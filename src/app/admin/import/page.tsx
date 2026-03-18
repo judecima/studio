@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react";
@@ -25,6 +26,16 @@ export default function BulkImportPage() {
 
   const addLog = (msg: string) => setLog(prev => [msg, ...prev].slice(0, 50));
 
+  const isValidUrl = (url: string) => {
+    if (!url || typeof url !== 'string') return false;
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) {
+      return false;
+    }
+  };
+
   const handleStartFullImport = async () => {
     if (!db) return;
     setIsProcessing(true);
@@ -39,9 +50,9 @@ export default function BulkImportPage() {
       addLog(`✅ Seed completado: ${seedResult.successCount} insertados.`);
       setProgress(40);
 
-      // 2. SCRAPING (PUPPETEER)
+      // 2. SCRAPING (PUPPETEER ALTERNATIVE)
       setImportStatus('scraping');
-      addLog("🕵️ Iniciando Puppeteer Scraper para enriquecer imágenes...");
+      addLog("🕵️ Iniciando Scraper Robusto para enriquecer imágenes...");
       const scrapeResult = await runFullFaplacImport();
       
       if (!scrapeResult.success) throw new Error(scrapeResult.error);
@@ -55,19 +66,22 @@ export default function BulkImportPage() {
         const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
         const docRef = doc(db, 'panels', docId);
 
-        // parseMeasures is now async because it's in a 'use server' file
         const measures = await parseMeasures(item.bodyText || "");
+        
+        // Validar imágenes
+        const validMainImage = isValidUrl(item.img) ? item.img : "https://placehold.co/800x600?text=Imagen+Invalida";
+        const validGallery = (item.galleryImages || []).filter(isValidUrl);
 
         const enrichedData = {
           id: docId,
           description: item.description,
-          images: item.galleryImages || [item.img],
-          mainImage: item.img,
+          images: validGallery.length > 0 ? validGallery : [validMainImage],
+          mainImage: validMainImage,
           width: measures?.width || 1830,
           height: measures?.height || 2750,
           thickness: measures?.thickness || 18,
           updatedAt: serverTimestamp(),
-          source: "puppeteer_enriched"
+          source: "scraping_enriched"
         };
 
         setDoc(docRef, enrichedData, { merge: true }).catch(err => {
@@ -96,7 +110,7 @@ export default function BulkImportPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-headline font-bold">Ingestión de Catálogo Pro</h1>
-          <p className="text-muted-foreground">Seed masivo + Enriquecimiento Puppeteer de Faplac.</p>
+          <p className="text-muted-foreground">Seed masivo + Enriquecimiento automático de Faplac.</p>
         </div>
         <Sparkles className="h-10 w-10 text-primary animate-pulse" />
       </div>
@@ -113,8 +127,8 @@ export default function BulkImportPage() {
               <p className="text-sm">Carga 127 registros base (Nombres, Líneas, Categorías).</p>
             </div>
             <div className="p-4 border border-slate-700 rounded-xl bg-slate-800">
-              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 2: Puppeteer</p>
-              <p className="text-sm">Navega faplaconline.com.ar para extraer imágenes y medidas reales.</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 2: Enriquecimiento</p>
+              <p className="text-sm">Navega faplaconline.com.ar para extraer imágenes válidas y medidas reales.</p>
             </div>
           </CardContent>
           <CardFooter>
