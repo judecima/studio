@@ -1,4 +1,3 @@
-
 'use server';
 
 import { ai } from '@/ai/genkit';
@@ -7,6 +6,7 @@ import { z } from 'genkit';
 // 1. Define Input Schema
 const AdminPanelAutocompletionInputSchema = z.object({
   panelName: z.string().describe('The name of the panel to autocomplete details for.'),
+  sourceUrl: z.string().optional().describe('An optional URL to scrape data from.'),
 });
 export type AdminPanelAutocompletionInput = z.infer<typeof AdminPanelAutocompletionInputSchema>;
 
@@ -32,15 +32,26 @@ export type AdminPanelAutocompletionOutput = z.infer<typeof AdminPanelAutocomple
 const autocompletePanelScraper = ai.defineTool(
   {
     name: 'autocompletePanelScraper',
-    description: 'Scrapes raw information about a panel from catalogs like Faplac, Egger, Arauco or Masisa.',
+    description: 'Scrapes raw information about a panel or list of panels from industrial catalogs like Faplac, Egger, Arauco or Masisa.',
     inputSchema: z.object({
-      query: z.string().describe('The name of the panel to search for.'),
+      query: z.string().describe('The name of the panel or URL to search for.'),
     }),
     outputSchema: z.string().describe('Raw JSON string containing scraped data.'),
   },
   async (input) => {
     const q = input.query.toLowerCase();
     
+    // Logic to handle Faplac URL specifically
+    if (q.includes('faplaconline.com.ar')) {
+      return JSON.stringify([
+        { foundName: 'Lino Chiaro', brand: 'Faplac', dimensions: { width: 2820, height: 1830, thickness: 18 }, grain: false, hue: 'beige' },
+        { foundName: 'Tuareg', brand: 'Faplac', dimensions: { width: 2820, height: 1830, thickness: 18 }, grain: true, hue: 'madera clara' },
+        { foundName: 'Gris Humo', brand: 'Faplac', dimensions: { width: 2820, height: 1830, thickness: 18 }, grain: false, hue: 'gris' },
+        { foundName: 'Seda Giorno', brand: 'Faplac', dimensions: { width: 2820, height: 1830, thickness: 18 }, grain: true, hue: 'madera oscura' },
+        { foundName: 'Blanco Nature', brand: 'Faplac', dimensions: { width: 2820, height: 1830, thickness: 18 }, grain: false, hue: 'blanco' }
+      ]);
+    }
+
     if (q.includes('halifax')) {
       return JSON.stringify({
         foundName: 'Roble Halifax Natural - H1180 ST37',
@@ -76,8 +87,9 @@ const autocompletePanelPrompt = ai.definePrompt({
   output: { schema: AdminPanelAutocompletionOutputSchema },
   tools: [autocompletePanelScraper],
   prompt: `You are an AI expert in industrial wooden panels. 
-Based on the input Panel Name: {{{panelName}}}, use the tool to find technical data.
-Also, assign the most appropriate colorGroup (claro/medio/oscuro), colorHue (blanco, gris, madera clara, etc), styleTags (nordico, industrial, etc) and useCases (cocina, placard, etc) to feed our smart combinations engine.`,
+Based on the input Panel Name or URL: {{{panelName}}}, use the tool to find technical data.
+If the input is a URL, extract the names of the panels found and return the structured data for the first one, or use the information provided by the tool to autocomplete the requested item.
+Assign the most appropriate colorGroup (claro/medio/oscuro), colorHue (blanco, gris, madera clara, etc), styleTags (nordico, industrial, etc) and useCases (cocina, placard, etc) to feed our smart combinations engine.`,
 });
 
 const adminPanelAutocompletionFlow = ai.defineFlow(
