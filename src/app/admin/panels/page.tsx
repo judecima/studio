@@ -78,7 +78,6 @@ export default function AdminPanelsPage() {
   const handleDeleteAll = async () => {
     if (!db) return;
     
-    // Si no hay paneles cargados en el estado, intentamos buscarlos directamente
     const colRef = collection(db, 'panels');
     const snapshot = await getDocs(colRef);
     
@@ -192,7 +191,7 @@ export default function AdminPanelsPage() {
                       <div className="w-12 h-12 rounded-lg bg-slate-100 relative overflow-hidden shrink-0 border border-slate-100 shadow-inner">
                         <Image 
                           src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
-                          alt="" 
+                          alt={panel.name || "Imagen de panel"} 
                           fill 
                           className="object-cover" 
                         />

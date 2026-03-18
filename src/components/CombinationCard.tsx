@@ -23,7 +23,7 @@ export function CombinationCard({ combination, panels }: Props) {
           <div key={p.id} className="relative flex-1 h-full overflow-hidden border-r last:border-0">
             <Image 
               src={p.mainImage} 
-              alt={p.name} 
+              alt={p.name || "Panel de combinación"} 
               fill 
               className="object-cover transition-transform duration-700 group-hover:scale-110" 
             />
@@ -56,7 +56,7 @@ export function CombinationCard({ combination, panels }: Props) {
           <div className="flex -space-x-3 overflow-hidden">
             {comboPanels.map(p => (
               <div key={p.id} className="inline-block h-8 w-8 rounded-full ring-2 ring-white overflow-hidden relative border border-slate-200">
-                <Image src={p.mainImage} alt={p.name} fill className="object-cover" />
+                <Image src={p.mainImage} alt={p.name || "Panel"} fill className="object-cover" />
               </div>
             ))}
           </div>

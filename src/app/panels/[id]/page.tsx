@@ -69,7 +69,7 @@ export default function PanelDetailPage() {
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border shadow-sm bg-slate-50">
               <Image 
                 src={activeImage || panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
-                alt={panel.name} 
+                alt={panel.name || "Vista detallada del panel"} 
                 fill 
                 className="object-cover" 
                 priority 
@@ -82,7 +82,7 @@ export default function PanelDetailPage() {
                   onClick={() => setActiveImage(img)}
                   className={`relative w-20 aspect-square rounded-xl overflow-hidden border-2 transition-all shrink-0 ${activeImage === img ? 'border-primary shadow-md' : 'border-transparent opacity-60'}`}
                 >
-                  <Image src={img} alt="" fill className="object-cover" />
+                  <Image src={img} alt={`Miniatura ${idx + 1}`} fill className="object-cover" />
                 </button>
               ))}
             </div>

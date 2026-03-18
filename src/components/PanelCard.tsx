@@ -11,7 +11,7 @@ export function PanelCard({ panel }: { panel: Panel }) {
       <Link href={`/panels/${panel.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0">
         <Image
           src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"}
-          alt={panel.name}
+          alt={panel.name || "Panel de madera"}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           data-ai-hint="wood panel"
