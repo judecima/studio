@@ -6,75 +6,85 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle2, FileUp, Globe, Database } from "lucide-react";
-import { runCatalogImportAction } from "@/app/actions/scraping-actions";
+import { Loader2, CheckCircle2, FileUp, Globe, Database, Sparkles } from "lucide-react";
+import { runFullFaplacImport } from "@/app/actions/import-actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { seedFaplac } from "@/lib/scripts/seedFaplacToFirestore";
 
 export default function BulkImportPage() {
   const { toast } = useToast();
   const db = useFirestore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [scrapedData, setScrapedData] = useState<any[]>([]);
-  const [importStatus, setImportStatus] = useState<'idle' | 'scraping' | 'saving' | 'done'>('idle');
+  const [log, setLog] = useState<string[]>([]);
+  const [importStatus, setImportStatus] = useState<'idle' | 'seeding' | 'scraping' | 'done'>('idle');
 
-  const handleStartImport = async () => {
+  const addLog = (msg: string) => setLog(prev => [msg, ...prev].slice(0, 50));
+
+  const handleStartFullImport = async () => {
+    if (!db) return;
     setIsProcessing(true);
-    setImportStatus('scraping');
-    setScrapedData([]);
-    setProgress(0);
-
+    setLog([]);
+    setProgress(10);
+    
     try {
-      const result = await runCatalogImportAction();
-      
-      if (!result.success) {
-        throw new Error(result.error);
-      }
+      // 1. SEEDING
+      setImportStatus('seeding');
+      addLog("🌱 Iniciando Seed base de 127 productos...");
+      const seedResult = await seedFaplac(db);
+      addLog(`✅ Seed completado: ${seedResult.successCount} insertados.`);
+      setProgress(40);
 
-      const data = result.data || [];
-      setScrapedData(data);
-      setImportStatus('saving');
+      // 2. SCRAPING (PUPPETEER)
+      setImportStatus('scraping');
+      addLog("🕵️ Iniciando Puppeteer Scraper para enriquecer imágenes...");
+      const scrapeResult = await runFullFaplacImport();
       
+      if (!scrapeResult.success) throw new Error(scrapeResult.error);
+
+      addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos con fotos reales.`);
+      
+      // 3. PERSISTING ENRICHED DATA
+      const data = scrapeResult.data || [];
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
-        const docId = item.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
         const docRef = doc(db, 'panels', docId);
 
-        const panelData = {
-          ...item,
+        const measures = parseMeasures(item.bodyText || "");
+
+        const enrichedData = {
           id: docId,
-          visible: false,
-          stock: Math.floor(Math.random() * 50) + 10,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          colorGroup: item.brand === 'Egger' ? 'medio' : 'claro',
-          colorHue: item.name.toLowerCase().includes('blanco') ? 'blanco' : 'otros',
-          styleTags: ['moderno'],
-          useCases: ['cocina'],
-          hasGrain: !item.name.toLowerCase().includes('liso') && !item.name.toLowerCase().includes('blanco')
+          description: item.description,
+          images: item.galleryImages || [item.img],
+          mainImage: item.img,
+          width: measures?.width || 1830,
+          height: measures?.height || 2750,
+          thickness: measures?.thickness || 18,
+          updatedAt: serverTimestamp(),
+          source: "puppeteer_enriched"
         };
 
-        // Guardado no bloqueante con manejo de errores centralizado
-        setDoc(docRef, panelData, { merge: true }).catch(err => {
+        setDoc(docRef, enrichedData, { merge: true }).catch(err => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: docRef.path,
             operation: 'write',
-            requestResourceData: panelData
+            requestResourceData: enrichedData
           }));
         });
 
-        setProgress(((i + 1) / data.length) * 100);
+        setProgress(40 + ((i + 1) / data.length) * 60);
       }
 
       setImportStatus('done');
-      toast({ title: "Importación Exitosa", description: `Se han procesado ${data.length} productos de Faplac y Egger.` });
+      toast({ title: "Proceso Completo", description: "Base Faplac cargada y enriquecida con éxito." });
     } catch (error: any) {
-      toast({ title: "Error de Importación", description: error.message, variant: "destructive" });
-      setImportStatus('idle');
+      addLog(`❌ ERROR: ${error.message}`);
+      toast({ title: "Error Crítico", description: error.message, variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
@@ -84,96 +94,69 @@ export default function BulkImportPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-headline font-bold">Importación Automática</h1>
-          <p className="text-muted-foreground">Extracción inteligente de catálogos Faplac y Egger.</p>
+          <h1 className="text-3xl font-headline font-bold">Ingestión de Catálogo Pro</h1>
+          <p className="text-muted-foreground">Seed masivo + Enriquecimiento Puppeteer de Faplac.</p>
         </div>
-        <Database className="h-10 w-10 text-primary opacity-20" />
+        <Sparkles className="h-10 w-10 text-primary animate-pulse" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-1 border-primary/20 shadow-lg">
+        <Card className="lg:col-span-1 border-primary shadow-xl bg-slate-900 text-white">
           <CardHeader>
-            <CardTitle>Configuración</CardTitle>
-            <CardDescription>Fuentes industriales conectadas.</CardDescription>
+            <CardTitle>Control de Ingestión</CardTitle>
+            <CardDescription className="text-slate-400">Automatización de nivel industrial.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 border rounded-xl bg-slate-50 flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="font-bold">Faplac Argentina</span>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Scraping \u0026 Hybrid Seed</span>
-              </div>
-              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">ONLINE</Badge>
+            <div className="p-4 border border-slate-700 rounded-xl bg-slate-800">
+              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 1: Seed</p>
+              <p className="text-sm">Carga 127 registros base (Nombres, Líneas, Categorías).</p>
             </div>
-            <div className="p-4 border rounded-xl bg-slate-50 flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="font-bold">Egger Global</span>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Industry Standard Seed</span>
-              </div>
-              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">ONLINE</Badge>
+            <div className="p-4 border border-slate-700 rounded-xl bg-slate-800">
+              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 2: Puppeteer</p>
+              <p className="text-sm">Navega faplaconline.com.ar para extraer imágenes y medidas reales.</p>
             </div>
           </CardContent>
           <CardFooter>
             <Button 
-              className="w-full h-14 text-lg font-bold gap-3 shadow-md" 
-              onClick={handleStartImport}
+              className="w-full h-16 text-lg font-bold gap-3 shadow-2xl bg-primary hover:bg-primary/90" 
+              onClick={handleStartFullImport}
               disabled={isProcessing}
             >
-              {isProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : <Globe className="h-6 w-6" />}
-              {isProcessing ? 'Procesando...' : 'Importar Catálogos'}
+              {isProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
+              {isProcessing ? 'PROCESANDO...' : 'INICIAR INGESTIÓN FULL'}
             </Button>
           </CardFooter>
         </Card>
 
         <Card className="lg:col-span-2 border-primary/10">
           <CardHeader>
-            <CardTitle>Registro de Actividad</CardTitle>
-            <CardDescription>Seguimiento de productos detectados.</CardDescription>
+            <CardTitle>Log de Operaciones</CardTitle>
+            <CardDescription>Seguimiento detallado de la automatización.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {importStatus !== 'idle' && (
-              <div className="space-y-4 p-4 bg-primary/5 rounded-xl border border-primary/10">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    {importStatus === 'scraping' && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
-                    {importStatus === 'saving' && <Database className="h-4 w-4 animate-bounce text-primary" />}
-                    {importStatus === 'done' && <CheckCircle2 className="h-4 w-4 text-green-500" />}
-                    <span className="font-bold">
-                      {importStatus === 'scraping' && 'Escaneando sitios industriales...'}
-                      {importStatus === 'saving' && 'Persistiendo en base de datos...'}
-                      {importStatus === 'done' && 'Importación finalizada con éxito'}
-                    </span>
-                  </div>
-                  <span className="font-mono font-bold text-primary">{Math.round(progress)}%</span>
+            {isProcessing && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
+                  <span>Progreso de Ingestión</span>
+                  <span>{Math.round(progress)}%</span>
                 </div>
-                <Progress value={progress} className="h-2" />
+                <Progress value={progress} className="h-3" />
               </div>
             )}
 
-            <div className="space-y-3 max-h-[450px] overflow-auto pr-2 custom-scrollbar">
-              {scrapedData.length === 0 ? (
-                <div className="text-center py-24 text-muted-foreground border-2 border-dashed rounded-2xl flex flex-col items-center gap-3 bg-slate-50/50">
-                  <FileUp className="h-12 w-12 opacity-10" />
-                  <p className="font-medium">Esperando inicio de proceso...</p>
+            <div className="bg-black rounded-xl p-4 font-mono text-[10px] h-[400px] overflow-auto custom-scrollbar border-2 border-slate-800">
+              {log.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-slate-600 gap-4">
+                  <Globe className="h-12 w-12 opacity-20" />
+                  <p>Esperando señal de inicio...</p>
                 </div>
               ) : (
-                scrapedData.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:border-primary/40 transition-all group">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-lg bg-slate-100 relative overflow-hidden shrink-0 border group-hover:shadow-md transition-shadow">
-                        <img src={item.mainImage} alt="" className="object-cover h-full w-full" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-slate-800">{item.name}</span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-[10px] h-4 py-0 font-bold border-primary/20">{item.brand}</Badge>
-                          <span className="text-[10px] text-muted-foreground font-medium">{item.width}x{item.height}mm</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">Detectado</span>
-                      <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    </div>
+                log.map((entry, i) => (
+                  <div key={i} className="mb-1">
+                    <span className="text-slate-500">[{new Date().toLocaleTimeString()}]</span>{" "}
+                    <span className={entry.includes('✅') ? 'text-green-400' : entry.includes('❌') ? 'text-red-400' : 'text-slate-300'}>
+                      {entry}
+                    </span>
                   </div>
                 ))
               )}
