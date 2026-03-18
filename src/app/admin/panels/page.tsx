@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2 } from "lucide-react";
+import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2, PackageOpen } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -25,7 +25,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, query, doc, deleteDoc, updateDoc, orderBy } from "firebase/firestore";
 import { Panel } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
@@ -36,7 +36,7 @@ export default function AdminPanelsPage() {
 
   const panelsQuery = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'panels'));
+    return query(collection(db, 'panels'), orderBy('name', 'asc'));
   }, [db]);
 
   const { data: panels, isLoading } = useCollection<Panel>(panelsQuery);
@@ -44,8 +44,8 @@ export default function AdminPanelsPage() {
   const filteredPanels = useMemo(() => {
     if (!panels) return [];
     return panels.filter(p => 
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      p.brand.toLowerCase().includes(searchTerm.toLowerCase())
+      p.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      p.brand?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [panels, searchTerm]);
 
@@ -54,13 +54,14 @@ export default function AdminPanelsPage() {
     try {
       const docRef = doc(db, 'panels', panelId);
       await updateDoc(docRef, { visible: !currentStatus });
+      toast({ title: currentStatus ? "Panel ocultado" : "Panel visible", duration: 2000 });
     } catch (e) {
       toast({ title: "Error", description: "No se pudo actualizar la visibilidad.", variant: "destructive" });
     }
   };
 
   const handleDelete = async (panelId: string) => {
-    if (!db || !confirm("¿Estás seguro de eliminar este panel?")) return;
+    if (!db || !confirm("¿Estás seguro de eliminar este panel permanentemente?")) return;
     try {
       await deleteDoc(doc(db, 'panels', panelId));
       toast({ title: "Eliminado", description: "El panel ha sido borrado del catálogo." });
@@ -74,10 +75,10 @@ export default function AdminPanelsPage() {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-headline font-bold">Gestión de Paneles</h1>
-          <p className="text-muted-foreground">Administra tu inventario y visibilidad de productos.</p>
+          <p className="text-muted-foreground">Administra el inventario real sincronizado con Firestore.</p>
         </div>
         <Link href="/admin/panels/new">
-          <Button className="gap-2 h-11 px-6">
+          <Button className="gap-2 h-11 px-6 shadow-lg shadow-primary/20">
             <Plus className="h-5 w-5" /> Nuevo Panel
           </Button>
         </Link>
@@ -88,80 +89,109 @@ export default function AdminPanelsPage() {
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input 
             placeholder="Buscar por nombre o marca..." 
-            className="pl-10"
+            className="pl-10 h-10 border-slate-200"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button variant="outline">Filtros Avanzados</Button>
+        <Badge variant="secondary" className="h-10 px-4 rounded-md">
+          {isLoading ? "Sincronizando..." : `${filteredPanels.length} productos`}
+        </Badge>
       </div>
 
-      <Card className="overflow-hidden border shadow-sm">
+      <Card className="overflow-hidden border shadow-sm bg-white">
         {isLoading ? (
           <div className="p-20 flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p>Cargando paneles...</p>
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="text-muted-foreground font-medium animate-pulse">Cargando base de datos en tiempo real...</p>
+          </div>
+        ) : filteredPanels.length === 0 ? (
+          <div className="p-20 flex flex-col items-center gap-4 text-center">
+            <PackageOpen className="h-16 w-16 text-slate-200" />
+            <div className="max-w-xs">
+              <p className="text-lg font-bold">No hay paneles disponibles</p>
+              <p className="text-sm text-muted-foreground">El catálogo está vacío o no coincide con tu búsqueda.</p>
+            </div>
+            <Link href="/admin/import">
+              <Button variant="outline" className="mt-2">Importar Catálogo Masivo</Button>
+            </Link>
           </div>
         ) : (
           <Table>
-            <TableHeader className="bg-slate-50">
+            <TableHeader className="bg-slate-50/50">
               <TableRow>
-                <TableHead>Producto</TableHead>
+                <TableHead className="w-[300px]">Producto</TableHead>
                 <TableHead>Marca</TableHead>
                 <TableHead>Espesor</TableHead>
-                <TableHead>Dimensiones</TableHead>
+                <TableHead>Medidas (mm)</TableHead>
                 <TableHead>Stock</TableHead>
-                <TableHead>Visibilidad</TableHead>
+                <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredPanels.map((panel) => (
-                <TableRow key={panel.id}>
+                <TableRow key={panel.id} className="hover:bg-slate-50/30 transition-colors">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded bg-slate-100 relative overflow-hidden shrink-0 border">
-                        <Image src={panel.mainImage} alt="" fill className="object-cover" />
+                      <div className="w-12 h-12 rounded-lg bg-slate-100 relative overflow-hidden shrink-0 border border-slate-100 shadow-inner">
+                        <Image 
+                          src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
+                          alt="" 
+                          fill 
+                          className="object-cover" 
+                        />
                       </div>
-                      <span className="font-medium text-sm">{panel.name}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-sm text-slate-900 leading-tight">{panel.name}</span>
+                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">{panel.id}</span>
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{panel.brand}</Badge>
+                    <Badge variant="outline" className="bg-white border-slate-200">{panel.brand}</Badge>
                   </TableCell>
-                  <TableCell>{panel.thickness} mm</TableCell>
-                  <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                  <TableCell className="font-medium">{panel.thickness} mm</TableCell>
+                  <TableCell className="text-muted-foreground text-xs font-mono">
                     {panel.width} x {panel.height}
                   </TableCell>
                   <TableCell>
-                    <span className={panel.stock < 10 ? 'text-destructive font-bold' : ''}>
-                      {panel.stock}
+                    <span className={cn(
+                      "px-2 py-1 rounded-md text-xs font-bold",
+                      panel.stock < 10 ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
+                    )}>
+                      {panel.stock} un.
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Switch 
-                      checked={panel.visible} 
-                      onCheckedChange={() => toggleVisibility(panel.id, panel.visible)}
-                    />
+                    <div className="flex items-center gap-2">
+                      <Switch 
+                        checked={panel.visible} 
+                        onCheckedChange={() => toggleVisibility(panel.id, panel.visible)}
+                      />
+                      <span className="text-[10px] font-bold uppercase text-slate-500">
+                        {panel.visible ? "Público" : "Oculto"}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="h-4 w-4 text-slate-400" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="w-40">
                         <Link href={`/admin/panels/${panel.id}/edit`}>
-                          <DropdownMenuItem className="gap-2 cursor-pointer">
-                            <Edit2 className="h-4 w-4" /> Editar
+                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium">
+                            <Edit2 className="h-3.5 w-3.5" /> Editar Ficha
                           </DropdownMenuItem>
                         </Link>
                         <DropdownMenuItem 
-                          className="gap-2 text-destructive focus:bg-destructive/10 cursor-pointer"
+                          className="gap-2 text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer font-medium"
                           onClick={() => handleDelete(panel.id)}
                         >
-                          <Trash2 className="h-4 w-4" /> Eliminar
+                          <Trash2 className="h-3.5 w-3.5" /> Eliminar
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

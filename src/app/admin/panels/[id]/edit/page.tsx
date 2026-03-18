@@ -2,17 +2,52 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation";
-import { MOCK_PANELS } from "@/services/mock-data";
 import { PanelForm } from "@/components/admin/PanelForm";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader2, AlertCircle } from "lucide-react";
+import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
+import { doc } from "firebase/firestore";
+import { Panel } from "@/lib/types";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function EditPanelPage() {
   const { id } = useParams();
   const router = useRouter();
-  const panel = MOCK_PANELS.find(p => p.id === id);
+  const db = useFirestore();
 
-  if (!panel) return <div>No encontrado</div>;
+  const panelRef = useMemoFirebase(() => {
+    if (!db || !id) return null;
+    return doc(db, 'panels', id as string);
+  }, [db, id]);
+
+  const { data: panel, isLoading, error } = useDoc<Panel>(panelRef);
+
+  if (isLoading) {
+    return (
+      <div className="h-96 flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-muted-foreground animate-pulse">Recuperando ficha técnica...</p>
+      </div>
+    );
+  }
+
+  if (error || !panel) {
+    return (
+      <div className="space-y-6">
+        <Button variant="ghost" onClick={() => router.back()} className="gap-2">
+          <ChevronLeft className="h-4 w-4" /> Volver
+        </Button>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            No pudimos encontrar el panel con ID: <code className="font-bold">{id}</code>. 
+            Es posible que el documento haya sido eliminado o el ID sea incorrecto.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -22,7 +57,7 @@ export default function EditPanelPage() {
         </Button>
         <div>
           <h1 className="text-3xl font-headline font-bold">Editar Panel</h1>
-          <p className="text-muted-foreground">Modifica los detalles del panel seleccionado.</p>
+          <p className="text-muted-foreground">Actualiza las especificaciones técnicas de <span className="text-foreground font-bold">{panel.name}</span></p>
         </div>
       </div>
 
