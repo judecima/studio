@@ -17,13 +17,13 @@ export type Panel = {
   images: string[];
   mainImage: string;
   visible: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: any;
+  updatedAt: any;
   // Extended fields
   colorGroup: ColorGroup;
   colorHue: ColorHue;
-  styleTags: StyleTag[];
-  useCases: UseCase[];
+  styleTags: string[];
+  useCases: string[];
 };
 
 export type CombinationType = 'contraste' | 'armonia' | 'funcional';
@@ -36,8 +36,8 @@ export type Combination = {
   type: CombinationType;
   useCase: UseCase;
   previewImage?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: any;
+  updatedAt: any;
   isApproved: boolean;
   isGeneratedAutomatically: boolean;
 };

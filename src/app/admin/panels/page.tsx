@@ -1,8 +1,9 @@
 
 "use client"
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Table, 
   TableBody, 
@@ -14,8 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Search, Edit2, MoreVertical, Trash2 } from "lucide-react";
-import { MOCK_PANELS } from "@/services/mock-data";
+import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2 } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -23,10 +23,51 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { Panel } from "@/lib/types";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminPanelsPage() {
+  const db = useFirestore();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const panels = MOCK_PANELS.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const panelsQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'panels'));
+  }, [db]);
+
+  const { data: panels, isLoading } = useCollection<Panel>(panelsQuery);
+
+  const filteredPanels = useMemo(() => {
+    if (!panels) return [];
+    return panels.filter(p => 
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      p.brand.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [panels, searchTerm]);
+
+  const toggleVisibility = async (panelId: string, currentStatus: boolean) => {
+    if (!db) return;
+    try {
+      const docRef = doc(db, 'panels', panelId);
+      await updateDoc(docRef, { visible: !currentStatus });
+    } catch (e) {
+      toast({ title: "Error", description: "No se pudo actualizar la visibilidad.", variant: "destructive" });
+    }
+  };
+
+  const handleDelete = async (panelId: string) => {
+    if (!db || !confirm("¿Estás seguro de eliminar este panel?")) return;
+    try {
+      await deleteDoc(doc(db, 'panels', panelId));
+      toast({ title: "Eliminado", description: "El panel ha sido borrado del catálogo." });
+    } catch (e) {
+      toast({ title: "Error", description: "No se pudo eliminar el panel.", variant: "destructive" });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -56,72 +97,81 @@ export default function AdminPanelsPage() {
       </div>
 
       <Card className="overflow-hidden border shadow-sm">
-        <Table>
-          <TableHeader className="bg-slate-50">
-            <TableRow>
-              <TableHead>Producto</TableHead>
-              <TableHead>Marca</TableHead>
-              <TableHead>Espesor</TableHead>
-              <TableHead>Dimensiones</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Visibilidad</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {panels.map((panel) => (
-              <TableRow key={panel.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-slate-100 relative overflow-hidden shrink-0 border">
-                      <Image src={panel.mainImage} alt="" fill className="object-cover" />
-                    </div>
-                    <span className="font-medium text-sm">{panel.name}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline">{panel.brand}</Badge>
-                </TableCell>
-                <TableCell>{panel.thickness} mm</TableCell>
-                <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
-                  {panel.width} x {panel.height}
-                </TableCell>
-                <TableCell>
-                   <span className={panel.stock < 10 ? 'text-destructive font-bold' : ''}>
-                    {panel.stock}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <Switch checked={panel.visible} />
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <Link href={`/admin/panels/${panel.id}/edit`}>
-                        <DropdownMenuItem className="gap-2 cursor-pointer">
-                          <Edit2 className="h-4 w-4" /> Editar
-                        </DropdownMenuItem>
-                      </Link>
-                      <DropdownMenuItem className="gap-2 text-destructive focus:bg-destructive/10 cursor-pointer">
-                        <Trash2 className="h-4 w-4" /> Eliminar
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+        {isLoading ? (
+          <div className="p-20 flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p>Cargando paneles...</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader className="bg-slate-50">
+              <TableRow>
+                <TableHead>Producto</TableHead>
+                <TableHead>Marca</TableHead>
+                <TableHead>Espesor</TableHead>
+                <TableHead>Dimensiones</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead>Visibilidad</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredPanels.map((panel) => (
+                <TableRow key={panel.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded bg-slate-100 relative overflow-hidden shrink-0 border">
+                        <Image src={panel.mainImage} alt="" fill className="object-cover" />
+                      </div>
+                      <span className="font-medium text-sm">{panel.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{panel.brand}</Badge>
+                  </TableCell>
+                  <TableCell>{panel.thickness} mm</TableCell>
+                  <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                    {panel.width} x {panel.height}
+                  </TableCell>
+                  <TableCell>
+                    <span className={panel.stock < 10 ? 'text-destructive font-bold' : ''}>
+                      {panel.stock}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Switch 
+                      checked={panel.visible} 
+                      onCheckedChange={() => toggleVisibility(panel.id, panel.visible)}
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <Link href={`/admin/panels/${panel.id}/edit`}>
+                          <DropdownMenuItem className="gap-2 cursor-pointer">
+                            <Edit2 className="h-4 w-4" /> Editar
+                          </DropdownMenuItem>
+                        </Link>
+                        <DropdownMenuItem 
+                          className="gap-2 text-destructive focus:bg-destructive/10 cursor-pointer"
+                          onClick={() => handleDelete(panel.id)}
+                        >
+                          <Trash2 className="h-4 w-4" /> Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </Card>
     </div>
   );
 }
-
-// Re-defining Image and Card locally for completeness if needed, but normally imported
-import Image from "next/image";
-import { Card } from "@/components/ui/card";

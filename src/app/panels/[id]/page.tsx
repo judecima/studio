@@ -4,30 +4,57 @@
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Navbar } from "@/components/Navbar";
-import { MOCK_PANELS, MOCK_COMBINATIONS } from "@/services/mock-data";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, Ruler, Layers, Package, Wind, Sparkles } from "lucide-react";
-import { useState, useMemo } from "react";
+import { ChevronLeft, Ruler, Layers, Loader2, Sparkles } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { generateCombinations } from "@/services/combinations-engine";
 import { CombinationCard } from "@/components/CombinationCard";
+import { useDoc, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
+import { doc, collection, query } from "firebase/firestore";
+import { Panel } from "@/lib/types";
 
 export default function PanelDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const panel = MOCK_PANELS.find(p => p.id === id);
-  const [activeImage, setActiveImage] = useState(panel?.mainImage || "");
+  const db = useFirestore();
 
-  const combinations = useMemo(() => {
-    if (!panel) return [];
-    // Combine mock manual combinations with engine-generated ones
-    const manual = MOCK_COMBINATIONS.filter(c => c.panelIds.includes(panel.id));
-    const generated = generateCombinations(panel, MOCK_PANELS);
-    return [...manual, ...generated];
+  const panelRef = useMemoFirebase(() => {
+    if (!db || !id) return null;
+    return doc(db, 'panels', id as string);
+  }, [db, id]);
+
+  const { data: panel, isLoading: isPanelLoading } = useDoc<Panel>(panelRef);
+
+  const panelsQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'panels'));
+  }, [db]);
+
+  const { data: allPanels } = useCollection<Panel>(panelsQuery);
+
+  const [activeImage, setActiveImage] = useState("");
+
+  useEffect(() => {
+    if (panel?.mainImage) setActiveImage(panel.mainImage);
   }, [panel]);
 
-  if (!panel) return <div>No encontrado</div>;
+  const combinations = useMemo(() => {
+    if (!panel || !allPanels) return [];
+    return generateCombinations(panel, allPanels);
+  }, [panel, allPanels]);
+
+  if (isPanelLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p>Cargando detalles del producto...</p>
+      </div>
+    );
+  }
+
+  if (!panel) return <div className="text-center py-20">Producto no encontrado</div>;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50/30">
@@ -41,10 +68,10 @@ export default function PanelDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white p-8 rounded-3xl border shadow-sm">
           <div className="space-y-4">
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border shadow-sm bg-slate-50">
-              <Image src={activeImage} alt={panel.name} fill className="object-cover" priority />
+              <Image src={activeImage || panel.mainImage} alt={panel.name} fill className="object-cover" priority />
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {panel.images.map((img, idx) => (
+              {[panel.mainImage, ...panel.images].filter(Boolean).map((img, idx) => (
                 <button 
                   key={idx} 
                   onClick={() => setActiveImage(img)}
@@ -105,9 +132,13 @@ export default function PanelDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {combinations.map(combo => (
-              <CombinationCard key={combo.id} combination={combo} panels={MOCK_PANELS} />
-            ))}
+            {combinations.length > 0 ? (
+              combinations.map(combo => (
+                <CombinationCard key={combo.id} combination={combo} panels={allPanels || []} />
+              ))
+            ) : (
+              <p className="col-span-full text-center py-10 text-muted-foreground">Generando combinaciones inteligentes...</p>
+            )}
           </div>
         </section>
       </main>

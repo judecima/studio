@@ -5,27 +5,36 @@ import { useState, useMemo } from "react";
 import { Navbar } from "@/components/Navbar";
 import { PanelCard } from "@/components/PanelCard";
 import { PanelFiltersSidebar } from "@/components/PanelFilters";
-import { MOCK_PANELS } from "@/services/mock-data";
-import { PanelFilters } from "@/lib/types";
+import { PanelFilters, Panel } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Loader2 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
 
 export default function Home() {
+  const db = useFirestore();
   const [filters, setFilters] = useState<PanelFilters>({
     thickness: [],
   });
 
+  const panelsQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'panels'), where('visible', '==', true));
+  }, [db]);
+
+  const { data: panels, isLoading } = useCollection<Panel>(panelsQuery);
+
   const filteredPanels = useMemo(() => {
-    return MOCK_PANELS.filter(panel => {
-      if (!panel.visible) return false;
+    if (!panels) return [];
+    return panels.filter(panel => {
       if (filters.brand && panel.brand !== filters.brand) return false;
       if (filters.search && !panel.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
       if (filters.thickness && filters.thickness.length > 0 && !filters.thickness.includes(panel.thickness)) return false;
       if (filters.hasGrain !== undefined && panel.hasGrain !== filters.hasGrain) return false;
       return true;
     });
-  }, [filters]);
+  }, [panels, filters]);
 
   const resetFilters = () => setFilters({ thickness: [] });
 
@@ -60,21 +69,30 @@ export default function Home() {
           </aside>
           
           <div className="flex-1">
-            <div className="mb-4 text-sm text-muted-foreground font-medium">
-              Mostrando {filteredPanels.length} de {MOCK_PANELS.length} paneles
-            </div>
-            
-            {filteredPanels.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredPanels.map(panel => (
-                  <PanelCard key={panel.id} panel={panel} />
-                ))}
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-muted-foreground">Cargando catálogo...</p>
               </div>
             ) : (
-              <div className="py-20 text-center bg-muted/30 rounded-xl border border-dashed">
-                <p className="text-lg font-medium">No se encontraron paneles con esos filtros.</p>
-                <Button variant="link" onClick={resetFilters}>Limpiar filtros</Button>
-              </div>
+              <>
+                <div className="mb-4 text-sm text-muted-foreground font-medium">
+                  Mostrando {filteredPanels.length} paneles
+                </div>
+                
+                {filteredPanels.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredPanels.map(panel => (
+                      <PanelCard key={panel.id} panel={panel} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-20 text-center bg-muted/30 rounded-xl border border-dashed">
+                    <p className="text-lg font-medium">No se encontraron paneles con esos filtros.</p>
+                    <Button variant="link" onClick={resetFilters}>Limpiar filtros</Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
