@@ -1,4 +1,3 @@
-
 "use client"
 
 import Link from "next/link";
@@ -9,7 +8,8 @@ import {
   Settings, 
   LogOut, 
   ChevronRight,
-  Home
+  Home,
+  FileUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { label: "Paneles", icon: Package, href: "/admin/panels" },
+    { label: "Importar Catálogo", icon: FileUp, href: "/admin/import" },
     { label: "Configuración", icon: Settings, href: "/admin/settings" },
   ];
 
