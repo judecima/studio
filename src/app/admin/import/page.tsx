@@ -39,12 +39,11 @@ export default function BulkImportPage() {
     }
     
     if (!user) {
-      addLog("❌ Error: No tienes una sesión activa para realizar cambios.");
-      toast({ title: "Sin sesión", description: "Espera a que se inicie la sesión anónima.", variant: "destructive" });
+      addLog("❌ Error: No tienes una sesión activa. Esperando...");
       return;
     }
 
-    if (!confirm("¿Estás seguro de que deseas ELIMINAR TODO el catálogo de paneles? Esta acción no se puede deshacer.")) return;
+    if (!confirm("¿Estás seguro de que deseas ELIMINAR TODO el catálogo? Esta acción no se puede deshacer.")) return;
     
     setIsProcessing(true);
     setImportStatus('clearing');
@@ -60,19 +59,16 @@ export default function BulkImportPage() {
       if (total === 0) {
         addLog("ℹ️ La base de datos ya está vacía.");
       } else {
-        addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado por lotes...`);
+        addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado...`);
         const batchSize = 50;
         const docs = querySnapshot.docs;
         
         for (let i = 0; i < docs.length; i += batchSize) {
           const batch = writeBatch(db);
           const chunk = docs.slice(i, i + batchSize);
-          
-          chunk.forEach(d => {
-            batch.delete(d.ref);
-          });
-          
+          chunk.forEach(d => batch.delete(d.ref));
           await batch.commit();
+          
           const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
           setProgress(currentProgress);
           addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
@@ -83,7 +79,6 @@ export default function BulkImportPage() {
       toast({ title: "Base de datos limpia", description: "Todos los paneles han sido eliminados con éxito." });
     } catch (error: any) {
       addLog(`❌ ERROR al limpiar: ${error.message}`);
-      console.error(error);
       toast({ title: "Error al limpiar", description: error.message, variant: "destructive" });
     } finally {
       setIsProcessing(false);
@@ -123,17 +118,15 @@ export default function BulkImportPage() {
         return;
       }
 
-      addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos enriquecidos con imágenes.`);
+      addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos enriquecidos.`);
       
-      // 3. PERSISTING ENRICHED DATA
+      // 3. PERSISTING
       const data = scrapeResult.data || [];
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
         const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
         const docRef = doc(db, 'panels', docId);
 
-        const measures = await parseMeasures(item.bodyText || "");
-        
         const enrichedData = {
           id: docId,
           name: item.name,
@@ -141,21 +134,19 @@ export default function BulkImportPage() {
           description: item.description,
           images: [],
           mainImage: item.img || `https://picsum.photos/seed/${docId}/800/600`,
-          width: measures?.width || 1830,
-          height: measures?.height || 2750,
-          thickness: measures?.thickness || 18,
+          width: item.width || 1830,
+          height: item.height || 2750,
+          thickness: item.thickness || 18,
           visible: true,
           hasGrain: item.bodyText?.toLowerCase().includes('veta') || false,
           stock: Math.floor(Math.random() * 100),
           updatedAt: serverTimestamp(),
-          source: "scraping_enriched",
           colorGroup: 'medio',
           colorHue: 'otros',
           styleTags: ['moderno'],
           useCases: ['cocina']
         };
 
-        // No await here for better performance (non-blocking)
         setDoc(docRef, enrichedData, { merge: true }).catch(err => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: docRef.path,
@@ -217,15 +208,15 @@ export default function BulkImportPage() {
           <CardContent className="space-y-4">
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'clearing' ? 'bg-red-900/20 border-red-500' : 'bg-slate-800 border-slate-700'}`}>
               <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 0: Limpieza</p>
-              <p className="text-sm">Opcional. Elimina registros antiguos para una carga limpia.</p>
+              <p className="text-sm">Elimina registros antiguos para una carga limpia.</p>
             </div>
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'seeding' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
               <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 1: Seed</p>
-              <p className="text-sm">Carga 127 registros base (Nombres, Líneas, Categorías).</p>
+              <p className="text-sm">Carga 127 registros base industriales.</p>
             </div>
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'scraping' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
               <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 2: Enriquecimiento</p>
-              <p className="text-sm">Scraping recursivo para imágenes y medidas técnicas.</p>
+              <p className="text-sm">Scraping recursivo para imágenes Base64 y medidas.</p>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
@@ -237,9 +228,6 @@ export default function BulkImportPage() {
               {isProcessing && importStatus !== 'clearing' ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
               {isProcessing && importStatus !== 'clearing' ? 'PROCESANDO...' : 'INICIAR INGESTIÓN FULL'}
             </Button>
-            <p className="text-[10px] text-center text-slate-500">
-              * El proceso puede tardar unos minutos debido al scraping recursivo.
-            </p>
           </CardFooter>
         </Card>
 
@@ -259,7 +247,7 @@ export default function BulkImportPage() {
               </div>
             )}
 
-            <div className="bg-black rounded-xl p-4 font-mono text-[10px] h-[400px] overflow-auto custom-scrollbar border-2 border-slate-800">
+            <div className="bg-black rounded-xl p-4 font-mono text-[10px] h-[400px] overflow-auto border-2 border-slate-800">
               {log.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-600 gap-4">
                   <Globe className="h-12 w-12 opacity-20" />
@@ -268,7 +256,7 @@ export default function BulkImportPage() {
               ) : (
                 log.map((entry, i) => (
                   <div key={i} className="mb-1">
-                    <span className={entry.includes('✅') ? 'text-green-400' : entry.includes('❌') || entry.includes('⚠️') || entry.includes('🗑️') ? 'text-red-400' : entry.includes('📦') ? 'text-amber-400' : 'text-slate-300'}>
+                    <span className={entry.includes('✅') ? 'text-green-400' : entry.includes('❌') || entry.includes('⚠️') ? 'text-red-400' : entry.includes('📦') ? 'text-amber-400' : 'text-slate-300'}>
                       {entry}
                     </span>
                   </div>

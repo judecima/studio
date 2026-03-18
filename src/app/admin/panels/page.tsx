@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useMemo } from "react";
@@ -14,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2, PackageOpen } from "lucide-react";
+import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2, PackageOpen, AlertTriangle } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -23,16 +24,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, doc, deleteDoc, updateDoc, orderBy } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
+import { collection, query, doc, deleteDoc, updateDoc, orderBy, getDocs, writeBatch } from "firebase/firestore";
 import { Panel } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 export default function AdminPanelsPage() {
   const db = useFirestore();
+  const { user } = useUser();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   const panelsQuery = useMemoFirebase(() => {
     if (!db) return null;
@@ -70,6 +73,32 @@ export default function AdminPanelsPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (!db || !panels || panels.length === 0) return;
+    if (!confirm(`¿Estás TOTALMENTE SEGURO de eliminar los ${panels.length} paneles del catálogo? Esta acción es irreversible.`)) return;
+
+    setIsDeletingAll(true);
+    try {
+      const colRef = collection(db, 'panels');
+      const snapshot = await getDocs(colRef);
+      const batchSize = 50;
+      const docs = snapshot.docs;
+
+      for (let i = 0; i < docs.length; i += batchSize) {
+        const batch = writeBatch(db);
+        const chunk = docs.slice(i, i + batchSize);
+        chunk.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      }
+
+      toast({ title: "Catálogo vaciado", description: `Se han eliminado ${docs.length} paneles.` });
+    } catch (error: any) {
+      toast({ title: "Error al vaciar", description: error.message, variant: "destructive" });
+    } finally {
+      setIsDeletingAll(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -77,11 +106,24 @@ export default function AdminPanelsPage() {
           <h1 className="text-3xl font-headline font-bold">Gestión de Paneles</h1>
           <p className="text-muted-foreground">Administra el inventario real sincronizado con Firestore.</p>
         </div>
-        <Link href="/admin/panels/new">
-          <Button className="gap-2 h-11 px-6 shadow-lg shadow-primary/20">
-            <Plus className="h-5 w-5" /> Nuevo Panel
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          {panels && panels.length > 0 && (
+            <Button 
+              variant="outline" 
+              className="text-red-500 border-red-200 hover:bg-red-50 gap-2 h-11"
+              onClick={handleDeleteAll}
+              disabled={isDeletingAll || isLoading}
+            >
+              {isDeletingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              Borrar Todo
+            </Button>
+          )}
+          <Link href="/admin/panels/new">
+            <Button className="gap-2 h-11 px-6 shadow-lg shadow-primary/20">
+              <Plus className="h-5 w-5" /> Nuevo Panel
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="flex items-center gap-4 bg-white p-4 rounded-xl border shadow-sm">
@@ -113,7 +155,7 @@ export default function AdminPanelsPage() {
               <p className="text-sm text-muted-foreground">El catálogo está vacío o no coincide con tu búsqueda.</p>
             </div>
             <Link href="/admin/import">
-              <Button variant="outline" className="mt-2">Importar Catálogo Masivo</Button>
+              <Button variant="outline" className="mt-2">Ir a Ingestión de Catálogo</Button>
             </Link>
           </div>
         ) : (
