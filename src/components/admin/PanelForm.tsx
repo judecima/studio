@@ -32,12 +32,16 @@ import {
   CardTitle,
   CardDescription 
 } from "@/components/ui/card";
-import { Panel, ColorGroup, ColorHue } from "@/lib/types";
-import { Sparkles, Loader2, Save, ImagePlus, X, Tag } from "lucide-react";
+import { Panel, ColorGroup } from "@/lib/types";
+import { Sparkles, Loader2, Save, X } from "lucide-react";
 import { autocompletePanelDetails } from "@/ai/flows/admin-panel-autocompletion";
 import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { useFirestore } from "@/firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
+import { useRouter } from "next/navigation";
 
 const panelSchema = z.object({
   name: z.string().min(3, "Mínimo 3 caracteres"),
@@ -66,8 +70,10 @@ interface Props {
 
 export function PanelForm({ mode, initialData }: Props) {
   const { toast } = useToast();
+  const db = useFirestore();
+  const router = useRouter();
   const [isAutocompleting, setIsAutocompleting] = useState(false);
-  const [images, setImages] = useState<string[]>(initialData?.images || []);
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(panelSchema),
@@ -139,9 +145,33 @@ export function PanelForm({ mode, initialData }: Props) {
     }
   };
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Saving Panel:", data);
-    toast({ title: "Guardado", description: "El catálogo ha sido actualizado." });
+  const onSubmit = async (data: FormValues) => {
+    setIsSaving(true);
+    try {
+      const docId = initialData?.id || data.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const docRef = doc(db, 'panels', docId);
+
+      const panelToSave = {
+        ...data,
+        id: docId, // Obligatorio para reglas de seguridad
+        updatedAt: serverTimestamp(),
+        createdAt: initialData?.createdAt || serverTimestamp(),
+      };
+
+      await setDoc(docRef, panelToSave, { merge: true });
+      
+      toast({ title: "Guardado", description: "El catálogo ha sido actualizado correctamente." });
+      router.push('/admin/panels');
+    } catch (error: any) {
+      const permissionError = new FirestorePermissionError({
+        path: `panels/${data.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+        operation: mode === 'create' ? 'create' : 'update',
+        requestResourceData: data,
+      });
+      errorEmitter.emit('permission-error', permissionError);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -237,6 +267,7 @@ export function PanelForm({ mode, initialData }: Props) {
                         <SelectItem value="madera clara">Madera Clara</SelectItem>
                         <SelectItem value="madera oscura">Madera Oscura</SelectItem>
                         <SelectItem value="negro">Negro</SelectItem>
+                        <SelectItem value="otros">Otros</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>
@@ -318,14 +349,13 @@ export function PanelForm({ mode, initialData }: Props) {
         </Card>
 
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="ghost" onClick={() => window.history.back()}>Cancelar</Button>
-          <Button type="submit" className="gap-2 px-10 h-14 text-lg font-bold">
-            <Save className="h-5 w-5" /> Guardar Producto
+          <Button type="button" variant="ghost" onClick={() => router.back()}>Cancelar</Button>
+          <Button type="submit" className="gap-2 px-10 h-14 text-lg font-bold" disabled={isSaving}>
+            {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+            Guardar Producto
           </Button>
         </div>
       </form>
     </Form>
   );
 }
-
-import { Label } from "@/components/ui/label";

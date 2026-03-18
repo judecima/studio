@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Loader2, CheckCircle2, AlertCircle, FileUp, Globe, Database, ArrowRight } from "lucide-react";
+import { Loader2, CheckCircle2, FileUp, Globe, Database } from "lucide-react";
 import { runCatalogImportAction } from "@/app/actions/scraping-actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore } from "@/firebase";
@@ -29,7 +29,6 @@ export default function BulkImportPage() {
     setProgress(0);
 
     try {
-      // 1. Fase de Scraping (Server Side)
       const result = await runCatalogImportAction();
       
       if (!result.success) {
@@ -39,29 +38,30 @@ export default function BulkImportPage() {
       setScrapedData(result.data || []);
       setImportStatus('saving');
       
-      // 2. Fase de Guardado (Client Side para persistencia Firestore)
       const data = result.data || [];
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
+        // Generar un ID único basado en el nombre para evitar duplicados
         const docId = item.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
         const docRef = doc(db, 'panels', docId);
 
-        // Guardado no bloqueante con manejo de errores contextuales
-        setDoc(docRef, {
+        const panelData = {
           ...item,
-          visible: false, // Por defecto ocultos hasta revisión
+          id: docId, // El ID es obligatorio según las reglas de seguridad
+          visible: false,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-          // Campos extendidos por defecto
           colorGroup: item.brand === 'Egger' ? 'medio' : 'claro',
           colorHue: 'otros',
           styleTags: ['moderno'],
           useCases: ['cocina']
-        }, { merge: true }).catch(err => {
+        };
+
+        setDoc(docRef, panelData, { merge: true }).catch(err => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: docRef.path,
             operation: 'write',
-            requestResourceData: item
+            requestResourceData: panelData
           }));
         });
 

@@ -1,7 +1,9 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
+import { AuthInitializer } from '@/components/AuthInitializer';
 
 export const metadata: Metadata = {
   title: 'TablerosPro | Gestión de Paneles MDF y MDP',
@@ -22,6 +24,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased min-h-screen">
         <FirebaseClientProvider>
+          <AuthInitializer />
           {children}
           <Toaster />
         </FirebaseClientProvider>
