@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ interface Props {
 }
 
 export function PanelFiltersSidebar({ filters, onChange, onReset }: Props) {
-  const brands = ["Arauco", "Faplac", "Masisa", "Guillermina"];
+  const brands = ["Arauco", "Egger", "Faplac", "Masisa", "Guillermina"];
   const thicknesses = [3, 5.5, 9, 12, 15, 18, 25];
 
   return (
