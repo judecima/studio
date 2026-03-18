@@ -1,4 +1,9 @@
 
+export type ColorGroup = 'claro' | 'medio' | 'oscuro';
+export type ColorHue = 'blanco' | 'gris' | 'beige' | 'madera clara' | 'madera oscura' | 'negro' | 'azul' | 'verde' | 'otros';
+export type StyleTag = 'moderno' | 'clasico' | 'industrial' | 'nordico' | 'minimalista';
+export type UseCase = 'cocina' | 'placard' | 'oficina' | 'baño' | 'comedor';
+
 export type Panel = {
   id: string;
   name: string;
@@ -14,6 +19,27 @@ export type Panel = {
   visible: boolean;
   createdAt: string;
   updatedAt: string;
+  // Extended fields
+  colorGroup: ColorGroup;
+  colorHue: ColorHue;
+  styleTags: StyleTag[];
+  useCases: UseCase[];
+};
+
+export type CombinationType = 'contraste' | 'armonia' | 'funcional';
+
+export type Combination = {
+  id: string;
+  name: string;
+  description: string;
+  panelIds: string[];
+  type: CombinationType;
+  useCase: UseCase;
+  previewImage?: string;
+  createdAt: string;
+  updatedAt: string;
+  isApproved: boolean;
+  isGeneratedAutomatically: boolean;
 };
 
 export type PanelFilters = {
@@ -25,6 +51,8 @@ export type PanelFilters = {
   thickness?: number[];
   hasGrain?: boolean;
   search?: string;
+  colorGroup?: ColorGroup;
+  colorHue?: ColorHue;
 };
 
 export type UserRole = 'ADMIN' | 'USER';

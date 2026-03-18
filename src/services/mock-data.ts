@@ -1,5 +1,5 @@
 
-import { Panel } from "@/lib/types";
+import { Panel, Combination } from "@/lib/types";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export const MOCK_PANELS: Panel[] = [
@@ -18,6 +18,10 @@ export const MOCK_PANELS: Panel[] = [
     visible: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    colorGroup: 'claro',
+    colorHue: 'madera clara',
+    styleTags: ['nordico', 'moderno'],
+    useCases: ['cocina', 'placard']
   },
   {
     id: "2",
@@ -34,6 +38,10 @@ export const MOCK_PANELS: Panel[] = [
     visible: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    colorGroup: 'claro',
+    colorHue: 'blanco',
+    styleTags: ['minimalista', 'moderno'],
+    useCases: ['placard', 'cocina']
   },
   {
     id: "3",
@@ -50,21 +58,44 @@ export const MOCK_PANELS: Panel[] = [
     visible: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    colorGroup: 'oscuro',
+    colorHue: 'madera oscura',
+    styleTags: ['clasico', 'industrial'],
+    useCases: ['oficina', 'comedor']
   },
   {
     id: "4",
-    name: "MDF Crudo Estándar",
-    brand: "Guillermina",
-    width: 1830,
-    height: 2600,
-    thickness: 9,
+    name: "Gris Grafito",
+    brand: "Egger",
+    width: 2800,
+    height: 2070,
+    thickness: 18,
     hasGrain: false,
-    description: "Tablero de fibra de densidad media sin revestir, apto para pintar o laquear.",
-    stock: 40,
-    images: [PlaceHolderImages[3].imageUrl],
-    mainImage: PlaceHolderImages[3].imageUrl,
+    description: "Tono gris oscuro profundo, perfecto para contrastar con maderas claras.",
+    stock: 30,
+    images: [PlaceHolderImages[4].imageUrl],
+    mainImage: PlaceHolderImages[4].imageUrl,
     visible: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    colorGroup: 'oscuro',
+    colorHue: 'gris',
+    styleTags: ['industrial', 'moderno'],
+    useCases: ['cocina', 'oficina']
+  }
+];
+
+export const MOCK_COMBINATIONS: Combination[] = [
+  {
+    id: "c1",
+    name: "Dúo Nórdico Industrial",
+    description: "Combinación equilibrada de Roble Claro con Gris Grafito.",
+    panelIds: ["1", "4"],
+    type: "contraste",
+    useCase: "cocina",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isApproved: true,
+    isGeneratedAutomatically: false
   }
 ];
