@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react";
@@ -14,6 +13,7 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { seedFaplac } from "@/lib/scripts/seedFaplacToFirestore";
+import { parseMeasures } from "@/lib/importers/faplacPuppeteerImporter";
 
 export default function BulkImportPage() {
   const { toast } = useToast();
@@ -55,7 +55,8 @@ export default function BulkImportPage() {
         const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
         const docRef = doc(db, 'panels', docId);
 
-        const measures = parseMeasures(item.bodyText || "");
+        // parseMeasures is now async because it's in a 'use server' file
+        const measures = await parseMeasures(item.bodyText || "");
 
         const enrichedData = {
           id: docId,

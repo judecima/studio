@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -98,7 +97,10 @@ async function autoScroll(page: any) {
   });
 }
 
-export function parseMeasures(text: string) {
+/**
+ * Parsea las medidas de un texto. Debe ser async por ser exportada en un archivo 'use server'.
+ */
+export async function parseMeasures(text: string) {
   const match = text.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
   if (!match) return null;
 
