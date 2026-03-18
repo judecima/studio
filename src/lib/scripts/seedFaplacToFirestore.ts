@@ -18,7 +18,7 @@ export function normalizePanelId(name: string) {
 }
 
 /**
- * Inserta el seed completo de Faplac en Firestore.
+ * Inserta el seed completo de Faplac en Firestore sin imágenes aleatorias.
  */
 export async function seedFaplac(db: Firestore) {
   console.log(`🚀 Iniciando creación de estructura para ${FAPLAC_SEED.length} productos...`);
@@ -35,7 +35,8 @@ export async function seedFaplac(db: Firestore) {
         ...item,
         id,
         images: [],
-        mainImage: `https://picsum.photos/seed/${id}/800/600`,
+        // Usamos una imagen de placeholder fija y profesional mientras se captura la real
+        mainImage: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=800&h=600",
         visible: true,
         stock: Math.floor(Math.random() * 50) + 10,
         source: "seed_faplac",

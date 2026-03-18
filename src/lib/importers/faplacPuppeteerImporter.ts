@@ -12,14 +12,14 @@ const BASE_URL = "https://www.faplaconline.com.ar";
 const CATALOG_URL = `${BASE_URL}/home/c/ar-faplac`;
 
 /**
- * Convierte una URL de imagen a un Data URI Base64.
+ * Convierte una URL de imagen a un Data URI Base64 real.
  */
 async function fetchImageAsBase64(url: string): Promise<string> {
   if (!url || !url.startsWith('http')) return "";
   try {
     const response = await axios.get(url, { 
       responseType: 'arraybuffer',
-      timeout: 20000,
+      timeout: 30000, // Timeout largo para imágenes pesadas
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Referer': BASE_URL
@@ -28,8 +28,8 @@ async function fetchImageAsBase64(url: string): Promise<string> {
     const contentType = response.headers['content-type'] || 'image/jpeg';
     const base64 = Buffer.from(response.data, 'binary').toString('base64');
     return `data:${contentType};base64,${base64}`;
-  } catch (error) {
-    console.error(`⚠️ Error al descargar imagen: ${url}`);
+  } catch (error: any) {
+    console.error(`⚠️ Error al descargar imagen: ${url} - ${error.message}`);
     return "";
   }
 }
@@ -52,10 +52,10 @@ export async function scrapeFaplacCatalog() {
     const $ = cheerio.load(html);
     const productItems = $('.product-item-info, .product-item, .item');
     
-    console.log(`✅ Se detectaron ${productItems.length} productos en el catálogo principal.`);
+    console.log(`✅ Se detectaron ${productItems.length} productos potenciales.`);
 
-    // Procesamos un número manejable para evitar timeouts y exceder límites de Firestore (1MB por doc)
-    const limit = 20; 
+    // Limitamos la captura para asegurar que el proceso termine exitosamente en el servidor
+    const limit = 35; 
     for (let i = 0; i < Math.min(productItems.length, limit); i++) {
       const el = productItems.eq(i);
       const name = el.find('.product-item-name, .title, h2, .name').text().trim();
@@ -69,7 +69,6 @@ export async function scrapeFaplacCatalog() {
         console.log(`🔎 [${i+1}/${limit}] Capturando detalle real: ${name}`);
         const detailData = await scrapeProductDetail(detailUrl);
         
-        // El og:image es la fuente más fiable para la foto real del tablero
         let imgUrlToDownload = detailData.detailImgUrl;
         
         if (imgUrlToDownload && imgUrlToDownload.startsWith('//')) {
@@ -78,7 +77,7 @@ export async function scrapeFaplacCatalog() {
           imgUrlToDownload = `${BASE_URL}${imgUrlToDownload}`;
         }
         
-        // Descargar la imagen real y convertirla a Base64 para guardarla en la BD
+        // Descargar la imagen real y convertirla a Base64
         const base64Image = imgUrlToDownload ? await fetchImageAsBase64(imgUrlToDownload) : "";
         
         enrichedResults.push({
@@ -89,7 +88,9 @@ export async function scrapeFaplacCatalog() {
         });
         
         if (base64Image) {
-          console.log(`✅ Foto industrial (Base64) capturada para: ${name}`);
+          console.log(`✅ Imagen industrial real capturada para: ${name}`);
+        } else {
+          console.warn(`❌ No se pudo capturar imagen real para: ${name}`);
         }
       } catch (e) {
         console.error(`⚠️ Falló el detalle de ${name}:`, e);
@@ -104,7 +105,7 @@ export async function scrapeFaplacCatalog() {
 }
 
 /**
- * Scrapea la página de detalle de un producto específico.
+ * Scrapea la página de detalle de un producto específico para obtener la imagen real.
  */
 async function scrapeProductDetail(url: string) {
   try {
@@ -117,10 +118,11 @@ async function scrapeProductDetail(url: string) {
     
     const $$ = cheerio.load(html);
     
-    // Captura de la imagen real desde el metatag de Facebook/OpenGraph (lo más preciso)
+    // El og:image es la fuente más fiable para la foto real del tablero de Faplac
     const detailImgUrl = $$('meta[property="og:image"]').attr('content') || 
                          $$('.gallery-placeholder__image').attr('src') ||
-                         $$('.product.media img').attr('src') || "";
+                         $$('.product.media img').attr('src') || 
+                         $$('img.fotorama__img').attr('src') || "";
 
     const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
     const bodyText = $$('body').text();
