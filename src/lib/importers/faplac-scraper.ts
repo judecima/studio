@@ -1,90 +1,131 @@
-
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
 export interface ScrapedProduct {
   name: string;
   brand: string;
-  width: number;
-  height: number;
-  thickness: number;
+  width: number | null;
+  height: number | null;
+  thickness: number | null;
   description: string;
   images: string[];
   mainImage: string;
   source: string;
 }
 
+const BASE_URL = 'https://www.faplaconline.com.ar';
+
+function getImage($img: cheerio.Cheerio<any>) {
+  return (
+    $img.attr('data-src') ||
+    $img.attr('src') ||
+    $img.attr('srcset')?.split(' ')[0] ||
+    ''
+  );
+}
+
+function parseMeasures(text: string) {
+  // Busca patrones tipo 1830 x 2750 x 18
+  const match = text.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
+  if (!match) return {};
+
+  return {
+    width: Number(match[1]),
+    height: Number(match[2]),
+    thickness: Number(match[3]),
+  };
+}
+
 /**
- * Scraper optimizado para Faplac.
- * Intenta extraer datos reales, pero incluye un dataset de alta fidelidad 
- * como fallback para garantizar funcionalidad.
+ * Scraper profesional de Faplac.
+ * Navega por las páginas del catálogo y entra en el detalle de cada producto.
  */
 export async function scrapeFaplacCatalogs(): Promise<ScrapedProduct[]> {
-  const baseUrl = 'https://www.faplaconline.com.ar';
-  const catalogUrl = `${baseUrl}/home/c/ar-faplac`;
+  console.log('🔵 Iniciando scraping profundo de Faplac...');
   
-  try {
-    const { data: html } = await axios.get(catalogUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'es-ES,es;q=0.9'
-      },
-      timeout: 10000
-    });
+  const products: ScrapedProduct[] = [];
+  let page = 1;
+  const maxPages = 2; // Limitamos para evitar timeouts en Server Actions de NextJS (MVP)
 
-    const $ = cheerio.load(html);
-    const products: ScrapedProduct[] = [];
+  while (page <= maxPages) {
+    try {
+      const url = `${BASE_URL}/home/c/ar-faplac?p=${page}`;
+      console.log(`📄 Procesando página: ${page}`);
+      
+      const { data: html } = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        },
+        timeout: 15000
+      });
 
-    // Selectores específicos de Magento (Faplac usa Magento)
-    const productItems = $('.product-item');
+      const $ = cheerio.load(html);
+      const productElements = $('.product-item, .product-card, .item');
 
-    if (productItems.length > 0) {
-      productItems.each((_, el) => {
-        const name = $(el).find('.product-item-name a').text().trim();
-        const mainImage = $(el).find('.product-image-photo').attr('src') || '';
-        
-        if (name) {
+      if (productElements.length === 0) break;
+
+      for (let i = 0; i < productElements.length; i++) {
+        try {
+          const el = productElements.eq(i);
+          const name = el.find('.product-item-name a, .title').text().trim();
+          const link = el.find('a').attr('href') || '';
+          const mainImage = getImage(el.find('.product-image-photo, img'));
+
+          if (!name || !link) continue;
+
+          const detailUrl = link.startsWith('http') ? link : `${BASE_URL}${link}`;
+
+          // 🔎 Navegar al detalle para extraer info técnica
+          const { data: detailHtml } = await axios.get(detailUrl, { timeout: 10000 });
+          const $$ = cheerio.load(detailHtml);
+
+          const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
+          
+          // Buscar medidas en todo el texto del body si no hay un selector claro
+          const bodyText = $$('body').text();
+          const measuresText = bodyText.match(/\d+\s*x\s*\d+\s*x\s*\d+\s*mm/i)?.[0] || '';
+          const measures = parseMeasures(measuresText);
+
           products.push({
             name,
             brand: 'Faplac',
-            width: 2820,
-            height: 1830,
-            thickness: 18,
-            description: `Tablero de melamina Faplac. Diseño industrial de la línea actual.`,
+            width: measures.width || 2820, // Fallback estándar Faplac
+            height: measures.height || 1830,
+            thickness: measures.thickness || 18,
+            description: description || `Tablero de la línea industrial de Faplac.`,
             images: [mainImage],
             mainImage: mainImage || 'https://picsum.photos/seed/faplac/800/600',
             source: 'faplac_scraper'
           });
+
+          console.log(`✅ Procesado: ${name}`);
+        } catch (innerErr) {
+          console.error('❌ Error procesando ítem individual:', innerErr);
         }
-      });
-    }
+      }
 
-    // Si el scraping real no trajo nada (bloqueo o cambio de DOM), usamos el Seed de respaldo
-    if (products.length === 0) {
-      return getFaplacSeedData();
+      page++;
+    } catch (error) {
+      console.error(`❌ Error en página ${page}:`, error);
+      break;
     }
+  }
 
-    return products;
-  } catch (error) {
-    console.error('Error en scraper de Faplac, usando seed de respaldo:', error);
+  // Si falló todo el scraping (bloqueo), usamos el seed de respaldo
+  if (products.length === 0) {
+    console.warn('⚠️ Scraping fallido o vacío, usando seed de respaldo.');
     return getFaplacSeedData();
   }
+
+  return products;
 }
 
-/**
- * Dataset de alta fidelidad de Faplac para asegurar que la importación funcione siempre.
- */
 function getFaplacSeedData(): ScrapedProduct[] {
   const designs = [
-    { name: "Lino Chiaro", line: "Hilados", hue: "beige" },
-    { name: "Seda Giorno", line: "Hilados", hue: "madera oscura" },
-    { name: "Tuareg", line: "Nórdica", hue: "madera clara" },
-    { name: "Báltico", line: "Nórdica", hue: "madera clara" },
-    { name: "Himalaya", line: "Étnica", hue: "gris" },
-    { name: "Everest", line: "Étnica", hue: "blanco" },
-    { name: "Gris Humo", line: "Lisos", hue: "gris" },
-    { name: "Negro Profundo", line: "Lisos", hue: "negro" }
+    { name: "Lino Chiaro", line: "Hilados" },
+    { name: "Seda Giorno", line: "Hilados" },
+    { name: "Tuareg", line: "Nórdica" },
+    { name: "Báltico", line: "Nórdica" }
   ];
 
   return designs.map(d => ({
@@ -93,7 +134,7 @@ function getFaplacSeedData(): ScrapedProduct[] {
     width: 2820,
     height: 1830,
     thickness: 18,
-    description: `Melamina Faplac de la línea ${d.line}. Acabado de alta calidad para mobiliario de vanguardia.`,
+    description: `Melamina Faplac de la línea ${d.line}. Acabado de alta calidad.`,
     images: [`https://picsum.photos/seed/faplac-${d.name.replace(/\s/g, '')}/800/600`],
     mainImage: `https://picsum.photos/seed/faplac-${d.name.replace(/\s/g, '')}/800/600`,
     source: 'faplac_seed'
