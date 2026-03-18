@@ -1,11 +1,12 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Database, Sparkles, Trash2, Globe, AlertTriangle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Loader2, Database, Sparkles, Trash2, Globe, AlertTriangle, RefreshCw } from "lucide-react";
 import { runFullFaplacImport } from "@/app/actions/import-actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore, useUser } from "@/firebase";
@@ -13,7 +14,6 @@ import { doc, setDoc, serverTimestamp, collection, getDocs, writeBatch } from "f
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { seedFaplac } from "@/lib/scripts/seedFaplacToFirestore";
-import { parseMeasures } from "@/lib/importers/faplacPuppeteerImporter";
 
 export default function BulkImportPage() {
   const { toast } = useToast();
@@ -23,6 +23,7 @@ export default function BulkImportPage() {
   const [progress, setProgress] = useState(0);
   const [log, setLog] = useState<string[]>([]);
   const [importStatus, setImportStatus] = useState<'idle' | 'clearing' | 'seeding' | 'scraping' | 'done'>('idle');
+  const [isFullLoad, setIsFullLoad] = useState(false);
 
   const addLog = (msg: string) => setLog(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 100));
 
@@ -32,50 +33,48 @@ export default function BulkImportPage() {
     }
   }, [user, isUserLoading]);
 
-  const handleClearDatabase = async () => {
-    if (!db) {
-      addLog("❌ Error: Firestore no está inicializado.");
-      return;
-    }
+  const clearDatabaseLogic = async () => {
+    if (!db) return;
+    setImportStatus('clearing');
+    setProgress(0);
+    addLog("⚠️ Iniciando limpieza de base de datos...");
+
+    const colRef = collection(db, 'panels');
+    const querySnapshot = await getDocs(colRef);
+    const total = querySnapshot.size;
     
-    if (!user) {
-      addLog("❌ Error: No tienes una sesión activa. Esperando...");
+    if (total === 0) {
+      addLog("ℹ️ La base de datos ya está vacía.");
+    } else {
+      addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado...`);
+      const batchSize = 50;
+      const docs = querySnapshot.docs;
+      
+      for (let i = 0; i < docs.length; i += batchSize) {
+        const batch = writeBatch(db);
+        const chunk = docs.slice(i, i + batchSize);
+        chunk.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+        
+        const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
+        setProgress(currentProgress);
+        addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
+      }
+      addLog(`✅ Limpieza completada: ${total} documentos eliminados.`);
+    }
+  };
+
+  const handleClearDatabase = async () => {
+    if (!db || !user) {
+      addLog("❌ Error: Base de datos o sesión no lista.");
       return;
     }
 
     if (!confirm("¿Estás seguro de que deseas ELIMINAR TODO el catálogo? Esta acción no se puede deshacer.")) return;
     
     setIsProcessing(true);
-    setImportStatus('clearing');
-    setProgress(0);
-    addLog("⚠️ Iniciando limpieza de base de datos...");
-
     try {
-      const colRef = collection(db, 'panels');
-      addLog("🔍 Consultando documentos existentes...");
-      const querySnapshot = await getDocs(colRef);
-      const total = querySnapshot.size;
-      
-      if (total === 0) {
-        addLog("ℹ️ La base de datos ya está vacía.");
-      } else {
-        addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado...`);
-        const batchSize = 50;
-        const docs = querySnapshot.docs;
-        
-        for (let i = 0; i < docs.length; i += batchSize) {
-          const batch = writeBatch(db);
-          const chunk = docs.slice(i, i + batchSize);
-          chunk.forEach(d => batch.delete(d.ref));
-          await batch.commit();
-          
-          const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
-          setProgress(currentProgress);
-          addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
-        }
-        addLog(`✅ Limpieza completada: ${total} documentos eliminados.`);
-      }
-      
+      await clearDatabaseLogic();
       toast({ title: "Base de datos limpia", description: "Todos los paneles han sido eliminados con éxito." });
     } catch (error: any) {
       addLog(`❌ ERROR al limpiar: ${error.message}`);
@@ -98,6 +97,11 @@ export default function BulkImportPage() {
     setProgress(0);
     
     try {
+      // 0. OPCIONAL: CLEARING
+      if (isFullLoad) {
+        await clearDatabaseLogic();
+      }
+
       // 1. SEEDING
       setImportStatus('seeding');
       addLog("🌱 Iniciando Seed base de 127 productos...");
@@ -203,11 +207,24 @@ export default function BulkImportPage() {
         <Card className="lg:col-span-1 border-primary shadow-xl bg-slate-900 text-white">
           <CardHeader>
             <CardTitle>Control de Ingestión</CardTitle>
-            <CardDescription className="text-slate-400">Automatización de nivel industrial.</CardDescription>
+            <CardDescription className="text-slate-400">Configuración del proceso.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            <div className="flex items-center space-x-3 p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setIsFullLoad(!isFullLoad)}>
+              <Checkbox 
+                id="full-load" 
+                checked={isFullLoad}
+                onCheckedChange={(checked) => setIsFullLoad(!!checked)}
+                className="border-slate-500 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+              />
+              <div className="grid gap-1.5 leading-none">
+                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Carga Completa</Label>
+                <p className="text-xs text-slate-400">Borra todo antes de importar (Pisa la base).</p>
+              </div>
+            </div>
+
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'clearing' ? 'bg-red-900/20 border-red-500' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 0: Limpieza</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 0: Limpieza {isFullLoad ? '(Activo)' : '(Manual)'}</p>
               <p className="text-sm">Elimina registros antiguos para una carga limpia.</p>
             </div>
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'seeding' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
@@ -216,7 +233,7 @@ export default function BulkImportPage() {
             </div>
             <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'scraping' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
               <p className="text-xs font-bold text-slate-500 uppercase mb-2">Paso 2: Enriquecimiento</p>
-              <p className="text-sm">Scraping recursivo para imágenes Base64 y medidas.</p>
+              <p className="text-sm">Scraping recursivo para imágenes y medidas.</p>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
@@ -225,8 +242,8 @@ export default function BulkImportPage() {
               onClick={handleStartFullImport}
               disabled={isProcessing || isUserLoading}
             >
-              {isProcessing && importStatus !== 'clearing' ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
-              {isProcessing && importStatus !== 'clearing' ? 'PROCESANDO...' : 'INICIAR INGESTIÓN FULL'}
+              {isProcessing && importStatus !== 'clearing' ? <Loader2 className="h-6 w-6 animate-spin" /> : (isFullLoad ? <RefreshCw className="h-6 w-6" /> : <Database className="h-6 w-6" />)}
+              {isProcessing && importStatus !== 'clearing' ? 'PROCESANDO...' : (isFullLoad ? 'REINICIAR E IMPORTAR' : 'INICIAR INGESTIÓN')}
             </Button>
           </CardFooter>
         </Card>
@@ -240,7 +257,11 @@ export default function BulkImportPage() {
             {isProcessing && (
               <div className="space-y-2">
                 <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
-                  <span>{importStatus === 'clearing' ? 'Eliminando...' : 'Sincronizando...'}</span>
+                  <span>
+                    {importStatus === 'clearing' ? 'Eliminando...' : 
+                     importStatus === 'seeding' ? 'Insertando Seed...' : 
+                     importStatus === 'scraping' ? 'Scrapeando Catálogo...' : 'Sincronizando...'}
+                  </span>
                   <span>{progress}%</span>
                 </div>
                 <Progress value={progress} className="h-3" />
