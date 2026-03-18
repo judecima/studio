@@ -2,8 +2,8 @@
 
 /**
  * @fileOverview Scraper Robusto para Faplac.
- * Utiliza Axios y Cheerio para navegar de forma recursiva sin depender de un navegador pesado.
- * Esto evita errores de librerías de sistema (como libgobject) en entornos restringidos.
+ * Utiliza Axios y Cheerio para navegar de forma recursiva.
+ * Ahora incluye una función para convertir imágenes a Base64 para persistencia en base de datos.
  */
 
 import axios from 'axios';
@@ -13,15 +13,33 @@ const BASE_URL = "https://www.faplaconline.com.ar";
 const CATALOG_URL = `${BASE_URL}/home/c/ar-faplac`;
 
 /**
+ * Convierte una URL de imagen a un Data URI Base64.
+ */
+async function fetchImageAsBase64(url: string): Promise<string> {
+  if (!url || !url.startsWith('http')) return "";
+  try {
+    const response = await axios.get(url, { 
+      responseType: 'arraybuffer',
+      timeout: 5000 
+    });
+    const contentType = response.headers['content-type'] || 'image/jpeg';
+    const base64 = Buffer.from(response.data, 'binary').toString('base64');
+    return `data:${contentType};base64,${base64}`;
+  } catch (error) {
+    console.error(`⚠️ Error al descargar imagen: ${url}`);
+    return "";
+  }
+}
+
+/**
  * Scrapea el catálogo de Faplac extrayendo datos base y entrando en cada detalle.
  */
 export async function scrapeFaplacCatalog() {
-  console.log("🔵 Iniciando Scraper Robusto (Axios/Cheerio)...");
+  console.log("🔵 Iniciando Scraper Robusto con Ingestión de Imágenes (Base64)...");
   
   const enrichedResults = [];
   
   try {
-    // 1. Obtener el listado principal
     const { data: html } = await axios.get(CATALOG_URL, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -33,28 +51,31 @@ export async function scrapeFaplacCatalog() {
     
     console.log(`✅ Se detectaron ${productItems.length} nodos de productos en el listado.`);
 
-    // 2. Procesar recursivamente cada producto (limitado a los primeros 40 para evitar timeouts)
-    for (let i = 0; i < Math.min(productItems.length, 40); i++) {
+    // Procesar los primeros 30 para evitar saturar el tamaño de los documentos de Firestore
+    for (let i = 0; i < Math.min(productItems.length, 30); i++) {
       const el = productItems.eq(i);
       const name = el.find('.product-item-name, .title').text().trim();
       const relativeLink = el.find('a').attr('href') || "";
-      const img = el.find('img').attr('data-src') || el.find('img').attr('src') || "";
+      let imgUrl = el.find('img').attr('data-src') || el.find('img').attr('src') || "";
       
       if (!name || !relativeLink) continue;
 
       const detailUrl = relativeLink.startsWith('http') ? relativeLink : `${BASE_URL}${relativeLink}`;
       
       try {
-        // 🔎 Navegar al detalle para enriquecimiento profundo
         const detailData = await scrapeProductDetail(detailUrl);
+        
+        // Convertir imagen principal a Base64
+        const fullImgUrl = imgUrl.startsWith('//') ? `https:${imgUrl}` : imgUrl;
+        const base64Image = await fetchImageAsBase64(fullImgUrl);
         
         enrichedResults.push({
           name,
-          img: img.startsWith('//') ? `https:${img}` : img,
+          img: base64Image || fullImgUrl, // Preferir base64, fallback a URL si falla
           ...detailData
         });
         
-        console.log(`🔍 [${i+1}/${productItems.length}] Enriquecido: ${name}`);
+        console.log(`🔍 [${i+1}/${productItems.length}] Descargado y Enriquecido: ${name}`);
       } catch (e) {
         console.error(`⚠️ Falló el detalle de ${name}:`, e);
       }
@@ -67,9 +88,6 @@ export async function scrapeFaplacCatalog() {
   }
 }
 
-/**
- * Navega a la URL de detalle de un producto para extraer info técnica.
- */
 async function scrapeProductDetail(url: string) {
   const { data: html } = await axios.get(url, {
     headers: {
@@ -83,25 +101,13 @@ async function scrapeProductDetail(url: string) {
   const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
   const bodyText = $$('body').text();
   
-  // Galería de imágenes
-  const galleryImages: string[] = [];
-  $$('.gallery-placeholder img, .fotorama__img, .product-image-photo').each((_, img) => {
-    const src = $$(img).attr('src') || $$(img).attr('data-src');
-    if (src) galleryImages.push(src.startsWith('//') ? `https:${src}` : src);
-  });
-
   return {
     description: description || "Tablero melamínico de alta calidad para mobiliario industrial.",
     bodyText,
-    galleryImages: [...new Set(galleryImages)]
   };
 }
 
-/**
- * Parsea las medidas de un texto.
- */
 export async function parseMeasures(text: string) {
-  // Patrón: 1830 x 2750 x 18
   const match = text.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
   if (!match) return null;
 

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Firestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -28,17 +27,19 @@ export async function seedFaplac(db: Firestore) {
       const id = normalizeId(item.name);
       const docRef = doc(db, 'panels', id);
       
+      // Usamos una imagen de picsum más estética en lugar de un placeholder de texto
+      const defaultImage = `https://picsum.photos/seed/${id}/800/600`;
+
       const panelData = {
         ...item,
         id,
         images: [],
-        mainImage: "https://placehold.co/800x600?text=Cargando...",
+        mainImage: defaultImage,
         visible: false,
         stock: 0,
         source: "seed_faplac",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        // Aesthetic defaults to be enriched
         colorGroup: 'medio',
         colorHue: 'otros',
         styleTags: [item.line.toLowerCase()],
@@ -47,16 +48,12 @@ export async function seedFaplac(db: Firestore) {
 
       await setDoc(docRef, panelData, { merge: true });
       successCount++;
-      if (successCount % 20 === 0) console.log(`📦 Procesados: ${successCount}`);
     } catch (error) {
       console.error(`❌ Error insertando ${item.name}:`, error);
       errorCount++;
     }
   }
 
-  console.log(`🎉 Inserción finalizada.`);
-  console.log(`✅ Éxito: ${successCount}`);
-  console.log(`❌ Errores: ${errorCount}`);
-  
+  console.log(`🎉 Inserción finalizada: ${successCount} éxitos.`);
   return { successCount, errorCount };
 }
