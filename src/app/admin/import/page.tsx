@@ -39,28 +39,33 @@ export default function BulkImportPage() {
     setProgress(0);
     addLog("⚠️ Iniciando limpieza de base de datos...");
 
-    const colRef = collection(db, 'panels');
-    const querySnapshot = await getDocs(colRef);
-    const total = querySnapshot.size;
-    
-    if (total === 0) {
-      addLog("ℹ️ La base de datos ya está vacía.");
-    } else {
-      addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado...`);
-      const batchSize = 50;
-      const docs = querySnapshot.docs;
+    try {
+      const colRef = collection(db, 'panels');
+      const querySnapshot = await getDocs(colRef);
+      const total = querySnapshot.size;
       
-      for (let i = 0; i < docs.length; i += batchSize) {
-        const batch = writeBatch(db);
-        const chunk = docs.slice(i, i + batchSize);
-        chunk.forEach(d => batch.delete(d.ref));
-        await batch.commit();
+      if (total === 0) {
+        addLog("ℹ️ La base de datos ya está vacía.");
+      } else {
+        addLog(`🗑️ Encontrados ${total} documentos. Iniciando borrado...`);
+        const batchSize = 50;
+        const docs = querySnapshot.docs;
         
-        const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
-        setProgress(currentProgress);
-        addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
+        for (let i = 0; i < docs.length; i += batchSize) {
+          const batch = writeBatch(db);
+          const chunk = docs.slice(i, i + batchSize);
+          chunk.forEach(d => batch.delete(d.ref));
+          await batch.commit();
+          
+          const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
+          setProgress(currentProgress);
+          addLog(`✅ Lote procesado: ${i + chunk.length}/${total}`);
+        }
+        addLog(`✅ Limpieza completada: ${total} documentos eliminados.`);
       }
-      addLog(`✅ Limpieza completada: ${total} documentos eliminados.`);
+    } catch (e: any) {
+      addLog(`❌ ERROR al limpiar: ${e.message}`);
+      throw e;
     }
   };
 
@@ -77,7 +82,6 @@ export default function BulkImportPage() {
       await clearDatabaseLogic();
       toast({ title: "Base de datos limpia", description: "Todos los paneles han sido eliminados con éxito." });
     } catch (error: any) {
-      addLog(`❌ ERROR al limpiar: ${error.message}`);
       toast({ title: "Error al limpiar", description: error.message, variant: "destructive" });
     } finally {
       setIsProcessing(false);
@@ -101,37 +105,38 @@ export default function BulkImportPage() {
         await clearDatabaseLogic();
       }
 
-      // 1. SEEDING (Base inicial con imágenes genéricas temporales)
+      // 1. SEEDING (Base inicial)
       setImportStatus('seeding');
       addLog("🌱 Iniciando Seed base de productos...");
       setProgress(10);
       const seedResult = await seedFaplac(db);
-      addLog(`✅ Seed completado: ${seedResult.successCount} insertados.`);
-      setProgress(40);
+      addLog(`✅ Seed completado: ${seedResult.successCount} productos base insertados.`);
+      setProgress(30);
 
-      // 2. SCRAPING (Enriquecimiento con imágenes REALES)
+      // 2. SCRAPING (Enriquecimiento con imágenes REALES de Faplac)
       setImportStatus('scraping');
-      addLog("🕵️ Buscando imágenes REALES en el catálogo de Faplac...");
+      addLog("🕵️ Capturando imágenes industriales REALES de alta resolución...");
       const scrapeResult = await runFullFaplacImport();
       
       if (!scrapeResult.success) {
-        addLog(`⚠️ El scraping falló: ${scrapeResult.error}. Se mantendrán los datos base.`);
+        addLog(`⚠️ El scraping falló o fue bloqueado: ${scrapeResult.error}. Se mantendrán los datos base.`);
         setImportStatus('done');
         setProgress(100);
         return;
       }
 
-      addLog(`🔍 Encontrados ${scrapeResult.data?.length} productos con imágenes reales.`);
-      
-      // 3. PERSISTING (Actualizar Firestore con los datos REALES)
       const data = scrapeResult.data || [];
+      addLog(`🔍 Se obtuvieron ${data.length} imágenes reales exitosamente.`);
+      
+      // 3. PERSISTING (Actualizar Firestore con las imágenes BASE64 reales)
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
-        // Normalizar ID para coincidir con el del Seed
+        
+        // Normalización estricta del ID para coincidir con el Seed
         const docId = item.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^\w-]/g, "");
         const docRef = doc(db, 'panels', docId);
 
-        // Si tenemos imagen real (Base64), la usamos. Si no, no sobreescribimos con random seed aquí.
+        // Si tenemos imagen real capturada por el scraper, la usamos.
         const updatePayload: any = {
           updatedAt: serverTimestamp(),
           description: item.description,
@@ -142,7 +147,8 @@ export default function BulkImportPage() {
           hasGrain: item.bodyText?.toLowerCase().includes('veta') || false,
         };
 
-        if (item.img) {
+        // Si el scraper devolvió un Data URI (Base64), lo asignamos como imagen principal
+        if (item.img && item.img.startsWith('data:image')) {
           updatePayload.mainImage = item.img;
         }
 
@@ -154,14 +160,14 @@ export default function BulkImportPage() {
           }));
         });
 
-        const currentProgress = 40 + Math.round(((i + 1) / data.length) * 60);
+        const currentProgress = 30 + Math.round(((i + 1) / data.length) * 70);
         setProgress(currentProgress);
-        if ((i + 1) % 5 === 0) addLog(`📦 Enriqueciendo: ${item.name}...`);
+        if ((i + 1) % 3 === 0) addLog(`📦 Sincronizando imagen real: ${item.name}...`);
       }
 
       setImportStatus('done');
-      addLog("🎉 PROCESO FINALIZADO. Catálogo enriquecido con imágenes reales.");
-      toast({ title: "Proceso Completo", description: "Imágenes reales cargadas con éxito." });
+      addLog("🎉 PROCESO FINALIZADO. Las imágenes reales ahora residen en tu base de datos.");
+      toast({ title: "Importación Exitosa", description: "Imágenes reales capturadas y persistidas." });
     } catch (error: any) {
       addLog(`❌ ERROR CRÍTICO: ${error.message}`);
       toast({ title: "Error Crítico", description: error.message, variant: "destructive" });
@@ -174,8 +180,8 @@ export default function BulkImportPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-headline font-bold">Ingestión de Catálogo Real</h1>
-          <p className="text-muted-foreground">Sincronización de imágenes industriales mediante captura directa.</p>
+          <h1 className="text-3xl font-headline font-bold">Ingestión de Imágenes Industriales</h1>
+          <p className="text-muted-foreground">Captura y persistencia de fotos reales directamente en Firestore.</p>
         </div>
         <div className="flex gap-2">
            <Button 
@@ -195,7 +201,7 @@ export default function BulkImportPage() {
         <Card className="lg:col-span-1 border-primary shadow-xl bg-slate-900 text-white">
           <CardHeader>
             <CardTitle>Control de Ingestión</CardTitle>
-            <CardDescription className="text-slate-400">Configuración del proceso.</CardDescription>
+            <CardDescription className="text-slate-400">Parámetros del motor de captura.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center space-x-3 p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setIsFullLoad(!isFullLoad)}>
@@ -206,22 +212,20 @@ export default function BulkImportPage() {
                 className="border-slate-500 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
               />
               <div className="grid gap-1.5 leading-none">
-                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Carga Limpia</Label>
-                <p className="text-xs text-slate-400">Elimina todo antes de capturar nuevas imágenes.</p>
+                <Label htmlFor="full-load" className="text-sm font-bold cursor-pointer">Reemplazo Total (Full)</Label>
+                <p className="text-xs text-slate-400">Borra todo antes de capturar las imágenes reales.</p>
               </div>
             </div>
 
-            <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'clearing' ? 'bg-red-900/20 border-red-500' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 0: Limpieza</p>
-              <p className="text-sm">Prepara el catálogo para datos nuevos.</p>
-            </div>
-            <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'seeding' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 1: Seed</p>
-              <p className="text-sm">Estructura base del catálogo.</p>
-            </div>
-            <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'scraping' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 2: Captura Real</p>
-              <p className="text-sm">Descarga imágenes directas de Faplac.</p>
+            <div className="space-y-4">
+              <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'seeding' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
+                <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 1: Estructura</p>
+                <p className="text-sm">Prepara los documentos base en Firestore.</p>
+              </div>
+              <div className={`p-4 border rounded-xl transition-colors ${importStatus === 'scraping' ? 'bg-primary/20 border-primary' : 'bg-slate-800 border-slate-700'}`}>
+                <p className="text-xs font-bold text-slate-500 uppercase mb-1">Paso 2: Captura Real</p>
+                <p className="text-sm">Extrae fotos reales de Faplac y las convierte a Base64.</p>
+              </div>
             </div>
           </CardContent>
           <CardFooter>
@@ -231,21 +235,21 @@ export default function BulkImportPage() {
               disabled={isProcessing || isUserLoading}
             >
               {isProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
-              {isProcessing ? 'PROCESANDO...' : 'INICIAR CAPTURA REAL'}
+              {isProcessing ? 'CAPTURANDO...' : 'INICIAR CAPTURA REAL'}
             </Button>
           </CardFooter>
         </Card>
 
         <Card className="lg:col-span-2 border-primary/10">
           <CardHeader>
-            <CardTitle>Log de Ingestión</CardTitle>
-            <CardDescription>Seguimiento de la descarga de imágenes.</CardDescription>
+            <CardTitle>Log del Motor de Captura</CardTitle>
+            <CardDescription>Seguimiento de la descarga y persistencia de imágenes industriales.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {isProcessing && (
               <div className="space-y-2">
                 <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
-                  <span>{importStatus === 'scraping' ? 'Capturando Imágenes...' : 'Sincronizando...'}</span>
+                  <span>{importStatus === 'scraping' ? 'Capturando Imágenes de Alta Resolución...' : 'Sincronizando Base de Datos...'}</span>
                   <span>{progress}%</span>
                 </div>
                 <Progress value={progress} className="h-3" />
@@ -256,7 +260,7 @@ export default function BulkImportPage() {
               {log.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-600 gap-4">
                   <Globe className="h-12 w-12 opacity-20" />
-                  <p>Listo para capturar imágenes reales...</p>
+                  <p>Listo para iniciar la captura de imágenes reales de Faplac...</p>
                 </div>
               ) : (
                 log.map((entry, i) => (
