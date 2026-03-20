@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
@@ -23,14 +22,20 @@ export function SimilarProducts({ productId }: Props) {
       setError(null);
       try {
         const response = await fetch(`/api/catalog/similar/${productId}`);
-        if (!response.ok) throw new Error("Error al cargar productos similares");
+        
+        if (!response.ok) {
+          // Si el producto base no está en el engine, el motor devuelve 404.
+          // En ese caso, simplemente no mostramos similares sin romper la página.
+          if (response.status === 404) {
+            setProducts([]);
+            return;
+          }
+          throw new Error("Error al cargar productos similares");
+        }
         
         const data = await response.json();
         
-        // El motor devuelve los productos completos, mapeamos a SimilarProduct
-        // asumiendo que el engine ya calculó scores relativos al baseProduct
         const recommendations = (data.recommendations || []).map((p: any) => {
-          // Buscamos el score que el engine le dio a este producto respecto al base
           const similarityData = data.baseProduct?.similar_a?.find((s: any) => s.id === p.id);
           
           return {
@@ -45,10 +50,10 @@ export function SimilarProducts({ productId }: Props) {
           };
         });
 
-        // Ordenar por score descendente
         setProducts(recommendations.sort((a: any, b: any) => b.score - a.score));
       } catch (err: any) {
-        setError(err.message);
+        console.error("Similar Products Error:", err);
+        setError("No se pudo conectar con el motor de recomendaciones.");
       } finally {
         setIsLoading(false);
       }
@@ -73,9 +78,11 @@ export function SimilarProducts({ productId }: Props) {
 
   if (error) {
     return (
-      <Alert variant="destructive">
-        <Info className="h-4 w-4" />
-        <AlertDescription>{error}</AlertDescription>
+      <Alert variant="default" className="border-amber-200 bg-amber-50">
+        <Info className="h-4 w-4 text-amber-600" />
+        <AlertDescription className="text-amber-700">
+          El motor de recomendaciones se está inicializando. Por favor, refresca la página en unos segundos.
+        </AlertDescription>
       </Alert>
     );
   }
@@ -84,7 +91,7 @@ export function SimilarProducts({ productId }: Props) {
     return (
       <div className="py-12 text-center bg-white rounded-3xl border border-dashed flex flex-col items-center gap-3">
         <Info className="h-8 w-8 text-muted-foreground opacity-20" />
-        <p className="text-muted-foreground font-medium">No se encontraron productos similares para este diseño.</p>
+        <p className="text-muted-foreground font-medium">Análisis de diseño en curso para este producto.</p>
       </div>
     );
   }

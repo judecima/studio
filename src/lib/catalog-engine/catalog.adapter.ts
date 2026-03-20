@@ -2,10 +2,18 @@ import { CatalogProduct, MaterialType, ColorHue, ToneType, ColorGroup } from './
 import { RawScrapedItem } from '../importers/faplac-scraper';
 
 /**
- * Normaliza strings para IDs.
+ * Normaliza el nombre del producto para usarlo como ID consistente en todo el sistema.
+ * Debe coincidir exactamente con la lógica de Firestore.
  */
-function slugify(text: string): string {
-  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+export function normalizePanelId(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 /**
@@ -63,7 +71,7 @@ export function adaptProducts(raw: RawScrapedItem[]): CatalogProduct[] {
     const thickness = dimsMatch ? parseInt(dimsMatch[3]) : 18;
 
     return {
-      id: `${item.brand.toLowerCase()}_${slugify(item.name)}`,
+      id: normalizePanelId(item.name),
       name: item.name,
       brand: item.brand,
       line: item.name.split(' ')[0] || 'General',
@@ -88,7 +96,7 @@ export function adaptProducts(raw: RawScrapedItem[]): CatalogProduct[] {
         tone,
         grainIntensity: material === 'madera' ? 3 : 0
       },
-      similar_a: [] // Se llena en el motor
+      similar_a: []
     };
   });
 }
