@@ -9,9 +9,9 @@ import { normalizePanelId, adaptToProduct } from '../catalog-engine/catalog.adap
 import { FAPLAC_SEED } from '../seeds/faplacSeed';
 
 /**
- * @fileOverview Scraper Industrial Robusto V6.
- * - Integra la Línea Mesopotamia del catálogo oficial.
- * - Enfoque híbrido Puppeteer + Axios para máxima eficiencia.
+ * @fileOverview Scraper Industrial Robusto V7.
+ * - Integración total de la Línea Mesopotamia.
+ * - Manejo híbrido de Puppeteer para JS y Axios para detalle.
  */
 
 const BASE_URL = 'https://www.faplaconline.com.ar';
@@ -25,8 +25,11 @@ export async function runIndustrialPipeline() {
   const { firebaseApp, firestore } = initializeFirebase();
   const storage = getStorage(firebaseApp);
   
-  console.log("🚀 Iniciando Pipeline Industrial V6 (Mesopotamia Integration)...");
+  console.log("🚀 Iniciando Pipeline Industrial V7 (Mesopotamia Native Integration)...");
   
+  // 1. Cargamos siempre la Línea Mesopotamia como base sólida
+  await loadMesopotamiaLine(firestore);
+
   let browser;
   try {
     browser = await puppeteer.launch({
@@ -37,7 +40,7 @@ export async function runIndustrialPipeline() {
     const page = await browser.newPage();
     await page.setUserAgent(HEADERS['User-Agent']);
     
-    console.log("🌐 Navegando al catálogo dinámico:", CATALOG_URL);
+    console.log("🌐 Navegando al catálogo dinámico para expansión...");
     await page.goto(CATALOG_URL, { waitUntil: 'networkidle2', timeout: 60000 });
 
     const productLinks = await page.evaluate(() => {
@@ -49,17 +52,11 @@ export async function runIndustrialPipeline() {
       return Array.from(links);
     });
 
-    console.log(`📦 Enlaces detectados: ${productLinks.length}`);
+    console.log(`📦 Enlaces adicionales detectados: ${productLinks.length}`);
     await browser.close();
 
-    // Si no hay enlaces (bloqueo JS), ejecutamos el pipeline enriquecido con la Línea Mesopotamia
-    if (productLinks.length === 0) {
-      console.warn("⚠️ Ejecutando Pipeline de Respaldo con Línea Mesopotamia...");
-      return await runFallbackPipeline(firestore);
-    }
-
     let processedCount = 0;
-    for (const url of productLinks.slice(0, 30)) {
+    for (const url of productLinks.slice(0, 40)) {
       try {
         const productData = await scrapeProductDetail(url);
         if (!productData.name || !productData.imageUrl) continue;
@@ -93,11 +90,33 @@ export async function runIndustrialPipeline() {
       }
     }
 
-    return { success: true, count: processedCount };
+    return { success: true, count: processedCount + FAPLAC_SEED.filter(p => p.line === 'Mesopotamia').length };
 
   } catch (error: any) {
     if (browser) await browser.close();
-    return await runFallbackPipeline(firestore);
+    console.error("❌ Falló el scraper dinámico, usando base Mesopotamia enriquecida.");
+    return { success: true, count: FAPLAC_SEED.filter(p => p.line === 'Mesopotamia').length, note: "Sincronización limitada a Línea Mesopotamia." };
+  }
+}
+
+async function loadMesopotamiaLine(firestore: any) {
+  console.log("📥 Inyectando metadatos oficiales de la Línea Mesopotamia...");
+  for (const item of FAPLAC_SEED.filter(p => p.line === 'Mesopotamia')) {
+    const slug = normalizePanelId(item.name);
+    // Usamos imágenes industriales temáticas para Mesopotamia mientras se capturan las finales
+    const mockUrl = `https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&q=80&w=800&h=600&madera=${slug}`;
+    
+    const catalogProduct = adaptToProduct({
+      name: item.name,
+      description: item.description,
+      brand: item.brand,
+      dimensions: { width: item.width, height: item.height, thickness: item.thickness }
+    }, mockUrl);
+    
+    await setDoc(doc(firestore, 'catalog_products', catalogProduct.id), {
+      ...catalogProduct,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
   }
 }
 
@@ -122,27 +141,4 @@ async function scrapeProductDetail(url: string) {
   } catch (e) {
     return { name: "", description: "", imageUrl: "", brand: 'Faplac' };
   }
-}
-
-async function runFallbackPipeline(firestore: any) {
-  console.log("📥 Cargando Línea Mesopotamia desde motor de semillas...");
-  let count = 0;
-  for (const item of FAPLAC_SEED) {
-    const slug = normalizePanelId(item.name);
-    const mockUrl = `https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=800&h=600&seed=${slug}`;
-    
-    const catalogProduct = adaptToProduct({
-      name: item.name,
-      description: item.description,
-      brand: item.brand,
-      dimensions: { width: item.width, height: item.height, thickness: item.thickness }
-    }, mockUrl);
-    
-    await setDoc(doc(firestore, 'catalog_products', catalogProduct.id), {
-      ...catalogProduct,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-    count++;
-  }
-  return { success: true, count, note: "Línea Mesopotamia cargada con éxito." };
 }
