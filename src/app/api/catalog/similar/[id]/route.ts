@@ -9,16 +9,11 @@ export async function GET(
 
   try {
     const engine = await CatalogEngine.getInstance();
-    const product = engine.getById(id);
-    
-    if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-    }
-
     const recommendations = engine.findSimilar(id);
     
     return NextResponse.json({
-      baseProduct: product,
+      productId: id,
+      count: recommendations.length,
       recommendations
     });
   } catch (error: any) {

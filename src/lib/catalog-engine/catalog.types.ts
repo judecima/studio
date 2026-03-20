@@ -35,7 +35,7 @@ export interface CatalogProduct {
   fingerprint: {
     material: MaterialType;
     tone: ToneType;
-    grainIntensity: number; // 0 a 5
+    grainIntensity: number; // 0 a 10
   };
   similar_a: {
     id: string;
