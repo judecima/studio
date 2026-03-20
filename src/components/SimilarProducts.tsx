@@ -1,11 +1,13 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
 import { SimilarProduct } from "@/lib/types";
 import { SimilarProductCard } from "./SimilarProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sparkles, Info } from "lucide-react";
+import { Sparkles, Info, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   productId: string;
@@ -15,6 +17,7 @@ export function SimilarProducts({ productId }: Props) {
   const [products, setProducts] = useState<SimilarProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     async function fetchSimilar() {
@@ -24,8 +27,6 @@ export function SimilarProducts({ productId }: Props) {
         const response = await fetch(`/api/catalog/similar/${productId}`);
         
         if (!response.ok) {
-          // Si el producto base no está en el engine, el motor devuelve 404.
-          // En ese caso, simplemente no mostramos similares sin romper la página.
           if (response.status === 404) {
             setProducts([]);
             return;
@@ -36,15 +37,14 @@ export function SimilarProducts({ productId }: Props) {
         const data = await response.json();
         
         const recommendations = (data.recommendations || []).map((p: any) => {
-          const similarityData = data.baseProduct?.similar_a?.find((s: any) => s.id === p.id);
-          
+          // Intentamos extraer el score de la respuesta enriquecida del engine
           return {
             id: p.id,
             name: p.name,
             brand: p.brand,
             mainImage: p.mainImage,
-            score: similarityData?.score || 0.5,
-            reason: similarityData?.reason || "Diseño complementario",
+            score: p.score || 0.75, // Fallback si no viene el score
+            reason: p.reason || "Diseño complementario por textura",
             thickness: p.dimensions?.thickness || 18,
             hasGrain: p.hasGrain
           };
@@ -53,14 +53,14 @@ export function SimilarProducts({ productId }: Props) {
         setProducts(recommendations.sort((a: any, b: any) => b.score - a.score));
       } catch (err: any) {
         console.error("Similar Products Error:", err);
-        setError("No se pudo conectar con el motor de recomendaciones.");
+        setError("El motor de IA está sincronizando los datos industriales.");
       } finally {
         setIsLoading(false);
       }
     }
 
     if (productId) fetchSimilar();
-  }, [productId]);
+  }, [productId, retryCount]);
 
   if (isLoading) {
     return (
@@ -78,10 +78,13 @@ export function SimilarProducts({ productId }: Props) {
 
   if (error) {
     return (
-      <Alert variant="default" className="border-amber-200 bg-amber-50">
-        <Info className="h-4 w-4 text-amber-600" />
-        <AlertDescription className="text-amber-700">
-          El motor de recomendaciones se está inicializando. Por favor, refresca la página en unos segundos.
+      <Alert variant="default" className="border-primary/20 bg-primary/5 shadow-sm">
+        <RefreshCw className="h-4 w-4 text-primary animate-spin" />
+        <AlertDescription className="text-foreground/80 flex items-center justify-between w-full">
+          <span>El motor de recomendaciones se está sincronizando con el catálogo industrial.</span>
+          <Button variant="ghost" size="sm" onClick={() => setRetryCount(prev => prev + 1)} className="h-7 text-xs font-bold">
+            Reintentar
+          </Button>
         </AlertDescription>
       </Alert>
     );
@@ -89,16 +92,26 @@ export function SimilarProducts({ productId }: Props) {
 
   if (products.length === 0) {
     return (
-      <div className="py-12 text-center bg-white rounded-3xl border border-dashed flex flex-col items-center gap-3">
-        <Info className="h-8 w-8 text-muted-foreground opacity-20" />
-        <p className="text-muted-foreground font-medium">Análisis de diseño en curso para este producto.</p>
+      <div className="py-16 text-center bg-white rounded-3xl border border-dashed border-slate-200 flex flex-col items-center gap-4">
+        <div className="h-12 w-12 bg-slate-50 rounded-full flex items-center justify-center">
+          <Info className="h-6 w-6 text-slate-300" />
+        </div>
+        <div className="max-w-xs space-y-2">
+          <p className="text-slate-900 font-bold">Análisis de diseño en curso</p>
+          <p className="text-slate-500 text-sm">
+            Este producto ha sido detectado recientemente. El motor de IA está procesando sus características para encontrar las mejores combinaciones.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => setRetryCount(prev => prev + 1)} className="mt-2">
+          Actualizar ahora
+        </Button>
       </div>
     );
   }
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-2 text-amber-600 font-bold uppercase text-xs tracking-widest">
+      <div className="flex items-center gap-2 text-amber-600 font-bold uppercase text-[10px] tracking-[0.2em]">
         <Sparkles className="h-4 w-4" /> Smart Recommendations Engine
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
