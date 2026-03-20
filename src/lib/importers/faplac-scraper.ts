@@ -7,10 +7,10 @@ import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { normalizePanelId, adaptToProduct } from '../catalog-engine/catalog.adapter';
 
 /**
- * @fileOverview Scraper Industrial Robusto V4 (Puppeteer + Axios).
- * - Usa Puppeteer para romper el renderizado dinámico de JavaScript.
- * - Captura imágenes y las persiste en Firebase Storage.
- * - Infiere metadatos de diseño para el motor de similaridad.
+ * @fileOverview Scraper Industrial Robusto V5 (Puppeteer Compatible).
+ * - Usa Puppeteer con flags de compatibilidad para entornos de servidor (no-sandbox).
+ * - Enfoque híbrido: Puppeteer para descubrir enlaces (JS) y Axios para detalles (SEO metadata).
+ * - Persistencia garantizada en Firebase Storage y Firestore.
  */
 
 const BASE_URL = 'https://www.faplaconline.com.ar';
@@ -20,63 +20,76 @@ const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
 };
 
-/**
- * Ejecuta el pipeline completo de importación.
- */
 export async function runIndustrialPipeline() {
   const { firebaseApp, firestore } = initializeFirebase();
   const storage = getStorage(firebaseApp);
   
-  console.log("🚀 Iniciando Pipeline Industrial V4 (Headless Browser Mode)...");
+  console.log("🚀 Iniciando Pipeline Industrial V5 (Puppeteer Optimized Mode)...");
   
   let browser;
   try {
-    // 1. Lanzar Puppeteer para extraer enlaces dinámicos
+    // 1. Lanzar Puppeteer con flags de compatibilidad para Linux/Containers
     browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox', 
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
     });
     
     const page = await browser.newPage();
     await page.setUserAgent(HEADERS['User-Agent']);
     
     console.log("🌐 Navegando al catálogo dinámico:", CATALOG_URL);
+    // Esperar a que la red esté estable
     await page.goto(CATALOG_URL, { waitUntil: 'networkidle2', timeout: 60000 });
 
-    // Esperar a que los items del catálogo se rendericen
+    // Esperar a que los elementos dinámicos aparezcan
     try {
-      await page.waitForSelector('.product-item', { timeout: 15000 });
+      await page.waitForSelector('.product-item', { timeout: 20000 });
     } catch (e) {
-      console.warn("⚠️ Tiempo de espera agotado para .product-item, intentando capturar lo existente...");
+      console.warn("⚠️ Selector .product-item no detectado. Intentando captura de emergencia...");
     }
 
-    // Extraer enlaces de productos desde el DOM renderizado
+    // Extraer enlaces después de la ejecución de JS
     const productLinks = await page.evaluate(() => {
       const links = new Set<string>();
-      document.querySelectorAll('.product-item-link, a.product-item-photo').forEach((el: any) => {
-        if (el.href) links.add(el.href.split('?')[0]);
+      // Buscamos en selectores comunes de Magento/Sitios industriales
+      const elements = document.querySelectorAll('.product-item-link, a.product-item-photo, .product.item.name a');
+      elements.forEach((el: any) => {
+        if (el.href && el.href.includes('/p/')) {
+          links.add(el.href.split('?')[0]);
+        }
       });
       return Array.from(links);
     });
 
-    console.log(`📦 Enlaces únicos detectados: ${productLinks.length}`);
+    console.log(`📦 Enlaces detectados por Puppeteer: ${productLinks.length}`);
     await browser.close();
 
     if (productLinks.length === 0) {
-      console.warn("❌ No se detectaron productos reales. Activando Fallback...");
+      console.warn("❌ No se encontraron productos reales mediante JS. Activando Fallback con datos semilla...");
       return await runFallbackPipeline(firestore);
     }
 
     let processedCount = 0;
-    // Limitamos a 40 productos para evitar timeouts en el servidor
-    const linksToProcess = productLinks.slice(0, 40);
+    // Procesamos un máximo de 30 para evitar saturación del servidor
+    const linksToProcess = productLinks.slice(0, 30);
 
     for (const url of linksToProcess) {
       try {
         console.log(`🔎 Procesando (${processedCount + 1}/${linksToProcess.length}): ${url}`);
         const productData = await scrapeProductDetail(url);
         
-        if (!productData.name) continue;
+        if (!productData.name || !productData.imageUrl) {
+          console.log(`⏭️ Saltando producto sin datos críticos: ${url}`);
+          continue;
+        }
 
         const slug = normalizePanelId(productData.name);
         const storagePath = `products/faplac/faplac-${slug}.jpg`;
@@ -84,12 +97,12 @@ export async function runIndustrialPipeline() {
         
         let finalImageUrl = "";
 
-        // Verificamos si la imagen ya existe para ahorrar ancho de banda
+        // DEDUPLICACIÓN: Verificar si la imagen ya existe
         try {
           finalImageUrl = await getDownloadURL(storageRef);
-          console.log(`♻️ Reutilizando imagen de Storage para: ${productData.name}`);
+          console.log(`♻️ Imagen reutilizada: ${productData.name}`);
         } catch (e) {
-          console.log(`📥 Descargando y subiendo nueva imagen: ${productData.name}`);
+          console.log(`📥 Subiendo nueva imagen: ${productData.name}`);
           const imageResponse = await axios.get(productData.imageUrl, { 
             responseType: 'arraybuffer',
             timeout: 20000,
@@ -102,7 +115,7 @@ export async function runIndustrialPipeline() {
           finalImageUrl = await getDownloadURL(storageRef);
         }
 
-        // Normalización y Persistencia
+        // Normalización e Inserción en Firestore
         const catalogProduct = adaptToProduct(productData, finalImageUrl);
         const docRef = doc(firestore, 'catalog_products', catalogProduct.id);
         
@@ -114,7 +127,7 @@ export async function runIndustrialPipeline() {
         processedCount++;
 
       } catch (err: any) {
-        console.error(`⚠️ Error en producto ${url}:`, err.message);
+        console.error(`⚠️ Falló procesamiento de ${url}:`, err.message);
       }
     }
 
@@ -122,35 +135,32 @@ export async function runIndustrialPipeline() {
 
   } catch (error: any) {
     if (browser) await browser.close();
-    console.error("🚨 Error crítico en pipeline Puppeteer:", error.message);
+    console.error("🚨 Error crítico en Pipeline V5:", error.message);
     throw error;
   }
 }
 
-/**
- * Scraper de detalle usando Axios + Cheerio (más rápido y suficiente para SEO Meta Tags).
- */
 async function scrapeProductDetail(url: string) {
   try {
+    // Para el detalle usamos Axios/Cheerio porque el og:image suele estar en el HTML estático
     const { data: html } = await axios.get(url, { headers: HEADERS, timeout: 15000 });
     const $ = cheerio.load(html);
 
     const name = $('.page-title .base').text().trim() || $('h1').first().text().trim();
     const description = $('.product.attribute.description .value').text().trim() || 
                         $('meta[property="og:description"]').attr('content') || 
-                        "Tablero melamínico profesional Faplac.";
+                        "Tablero melamínico profesional.";
     
-    // Captura de imagen industrial desde Meta Tags (Suele estar en el HTML estático)
+    // Jerarquía de extracción de imagen (Prioridad meta tags)
     let imageUrl = $('meta[property="og:image"]').attr('content') || 
                    $('meta[name="twitter:image"]').attr('content') ||
                    $('.gallery-placeholder__image').attr('src') ||
-                   "https://placehold.co/800x600?text=Faplac+Melamina";
+                   "";
 
     if (imageUrl && !imageUrl.startsWith('http')) {
       imageUrl = imageUrl.startsWith('//') ? `https:${imageUrl}` : `${BASE_URL}${imageUrl}`;
     }
 
-    // Dimensiones
     const specs = $('.additional-attributes-wrapper').text() || $('body').text();
     const dimensionsMatch = specs.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
     
@@ -162,25 +172,17 @@ async function scrapeProductDetail(url: string) {
 
     return { name, description, imageUrl, dimensions, brand: 'Faplac' };
   } catch (e) {
-    return { 
-      name: "", 
-      description: "", 
-      imageUrl: "", 
-      dimensions: { width: 1830, height: 2750, thickness: 18 }, 
-      brand: 'Faplac' 
-    };
+    return { name: "", description: "", imageUrl: "", dimensions: { width: 1830, height: 2750, thickness: 18 }, brand: 'Faplac' };
   }
 }
 
-/**
- * Fallback de seguridad con datos enriquecidos.
- */
 async function runFallbackPipeline(firestore: any) {
   const seeds = [
-    { name: "Petiribí Mesopotamia", desc: "Diseño de madera nativa con vetas profundas y elegantes.", hue: "madera clara" },
+    { name: "Petiribí Mesopotamia", desc: "Diseño de madera nativa con vetas elegantes.", hue: "madera clara" },
     { name: "Roble Escandinavo", desc: "Tono nórdico claro para ambientes minimalistas.", hue: "madera clara" },
-    { name: "Gris Humo Urban", desc: "Gris neutro de la línea Urban, ideal para mobiliario moderno.", hue: "gris" },
-    { name: "Antracita Profundo", desc: "Gris oscuro intenso para contrastes de alto impacto.", hue: "negro" }
+    { name: "Gris Humo Urban", desc: "Gris neutro ideal para mobiliario moderno.", hue: "gris" },
+    { name: "Antracita Profundo", desc: "Gris oscuro intenso para contrastes.", hue: "negro" },
+    { name: "Mont Blanc", desc: "Mármol blanco con vetas grises sofisticadas.", hue: "blanco" }
   ];
 
   let count = 0;
