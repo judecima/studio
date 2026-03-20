@@ -76,8 +76,8 @@ export default function AdminPanelsPage() {
   };
 
   const handleDeleteAll = async () => {
-    if (!db || !user) {
-      toast({ title: "Error", description: "Debes estar autenticado para realizar esta acción.", variant: "destructive" });
+    if (!db) {
+      toast({ title: "Error", description: "Base de datos no disponible.", variant: "destructive" });
       return;
     }
     
@@ -109,11 +109,12 @@ export default function AdminPanelsPage() {
       toast({ title: "Catálogo vaciado", description: `Se han eliminado ${deletedCount} paneles con éxito.` });
     } catch (error: any) {
       console.error("Error al vaciar base de datos:", error);
+      // Emitimos el error de permisos para que el listener de Firebase lo atrape
       errorEmitter.emit('permission-error', new FirestorePermissionError({
         path: 'panels',
         operation: 'delete'
       }));
-      toast({ title: "Error al vaciar", description: error.message || "Error de permisos en Firestore", variant: "destructive" });
+      toast({ title: "Error de permisos", description: "No tienes autorización para realizar esta operación masiva.", variant: "destructive" });
     } finally {
       setIsDeletingAll(false);
     }
@@ -131,7 +132,7 @@ export default function AdminPanelsPage() {
             variant="outline" 
             className="text-red-500 border-red-200 hover:bg-red-50 gap-2 h-11"
             onClick={handleDeleteAll}
-            disabled={isDeletingAll || isLoading}
+            disabled={isDeletingAll}
           >
             {isDeletingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             Borrar Todo el Catálogo

@@ -69,8 +69,8 @@ export default function BulkImportPage() {
   };
 
   const handleStartFullImport = async () => {
-    if (!db || !user) {
-      addLog("❌ Error: Firebase no está listo o sesión no iniciada.");
+    if (!db) {
+      addLog("❌ Error: Firebase no está listo.");
       return;
     }
 
@@ -200,7 +200,7 @@ export default function BulkImportPage() {
             <Button 
               className="w-full h-16 text-lg font-bold gap-3 shadow-2xl bg-primary hover:bg-primary/90" 
               onClick={handleStartFullImport}
-              disabled={isProcessing || isUserLoading}
+              disabled={isProcessing}
             >
               {isProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
               {isProcessing ? 'PROCESANDO...' : 'INICIAR CAPTURA REAL'}
