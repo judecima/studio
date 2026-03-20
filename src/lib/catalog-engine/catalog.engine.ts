@@ -1,43 +1,48 @@
-import { CatalogProduct } from './catalog.types';
-import { similarity } from './similarity';
+import { CatalogProduct, SimilarityResult } from './catalog.types';
+import { calculateSimilarityScore } from './similarity';
 
+/**
+ * Clase de motor de catálogo para búsqueda y recomendaciones.
+ */
 export class CatalogEngine {
   private products: CatalogProduct[] = [];
-  private cache = new Map<string, any>();
+  private index = new Map<string, CatalogProduct>();
 
   constructor(products: CatalogProduct[]) {
     this.products = products;
+    products.forEach(p => this.index.set(p.id, p));
   }
 
-  setProducts(products: CatalogProduct[]) {
-    this.products = products;
-    this.cache.clear();
-  }
-
-  getAll() {
+  /**
+   * Retorna todos los productos cargados.
+   */
+  getAll(): CatalogProduct[] {
     return this.products;
   }
 
-  getById(id: string) {
-    return this.products.find(p => p.id === id);
+  /**
+   * Obtiene un producto por su ID normalizado.
+   */
+  getById(id: string): CatalogProduct | undefined {
+    return this.index.get(id);
   }
 
-  findSimilar(id: string, threshold = 6) {
-    if (this.cache.has(id)) return this.cache.get(id);
-
+  /**
+   * Encuentra productos similares basados en la huella digital.
+   * @param id ID del producto base.
+   * @param threshold Puntaje mínimo de similaridad (default 5).
+   */
+  findSimilar(id: string, threshold: number = 5): SimilarityResult[] {
     const base = this.getById(id);
     if (!base) return [];
 
-    const result = this.products
+    return this.products
       .filter(p => p.id !== id)
       .map(p => ({
         product: p,
-        score: similarity(base.fingerprint, p.fingerprint)
+        score: calculateSimilarityScore(base.fingerprint, p.fingerprint)
       }))
-      .filter(p => p.score >= threshold)
+      .filter(res => res.score >= threshold)
       .sort((a, b) => b.score - a.score);
-
-    this.cache.set(id, result);
-    return result;
   }
 }

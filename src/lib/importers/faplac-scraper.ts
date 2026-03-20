@@ -10,133 +10,118 @@ export interface ScrapedProduct {
   description: string;
   images: string[];
   mainImage: string;
-  source: string;
+  url: string;
 }
 
 const BASE_URL = 'https://www.faplaconline.com.ar';
+const CATALOG_URL = `${BASE_URL}/home/c/ar-faplac/ar-melaminas`;
 
-function getImage($img: cheerio.Cheerio<any>) {
-  return (
-    $img.attr('data-src') ||
-    $img.attr('src') ||
-    $img.attr('srcset')?.split(' ')[0] ||
-    ''
-  );
+/**
+ * Scraper profesional para el catálogo de Faplac.
+ */
+export async function scrapeFaplacCatalog(): Promise<ScrapedProduct[]> {
+  const products: ScrapedProduct[] = [];
+  
+  try {
+    console.log(`[Scraper] Iniciando captura en: ${CATALOG_URL}`);
+    
+    const { data: html } = await axios.get(CATALOG_URL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+      },
+      timeout: 30000
+    });
+
+    const $ = cheerio.load(html);
+    const productElements = $('.product-item, .item.product.product-item');
+
+    console.log(`[Scraper] Detectados ${productElements.length} items en lista principal.`);
+
+    // Procesamos secuencialmente para no saturar y permitir logs limpios
+    for (let i = 0; i < Math.min(productElements.length, 24); i++) {
+      const el = productElements.eq(i);
+      const name = el.find('.product-item-link, .product-item-name a').first().text().trim();
+      const detailLink = el.find('a').first().attr('href');
+
+      if (!name || !detailLink) continue;
+
+      const detailUrl = detailLink.startsWith('http') ? detailLink : `${BASE_URL}${detailLink}`;
+      
+      try {
+        const productDetail = await scrapeProductDetail(detailUrl, name);
+        products.push(productDetail);
+        console.log(`[Scraper] ✅ Procesado: ${name}`);
+      } catch (err) {
+        console.error(`[Scraper] ❌ Error en detalle de ${name}:`, err);
+      }
+    }
+
+    return products;
+  } catch (error: any) {
+    console.error(`[Scraper] 🚨 Error crítico en scraping: ${error.message}`);
+    // Fallback de datos mínimos si el scraping falla completamente
+    return getFallbackData();
+  }
 }
 
-function parseMeasures(text: string) {
-  // Busca patrones tipo 1830 x 2750 x 18
-  const match = text.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
-  if (!match) return {};
+async function scrapeProductDetail(url: string, name: string): Promise<ScrapedProduct> {
+  const { data: html } = await axios.get(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    },
+    timeout: 15000
+  });
 
+  const $ = cheerio.load(html);
+
+  // Extraer imagen real desde og:image
+  const mainImage = $('meta[property="og:image"]').attr('content') || 
+                    $('.gallery-placeholder__image').attr('src') || 
+                    'https://placehold.co/800x600?text=Sin+Imagen';
+
+  const description = $('.product.attribute.description .value').text().trim() || 
+                      $('.description').text().trim();
+
+  // Parsear medidas (ej: 1830 x 2750 x 18 mm)
+  const bodyText = $('body').text();
+  const measuresMatch = bodyText.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
+  
   return {
-    width: Number(match[1]),
-    height: Number(match[2]),
-    thickness: Number(match[3]),
+    name,
+    brand: 'Faplac',
+    width: measuresMatch ? Number(measuresMatch[1]) : 1830,
+    height: measuresMatch ? Number(measuresMatch[2]) : 2750,
+    thickness: measuresMatch ? Number(measuresMatch[3]) : 18,
+    description: description || `Tablero melamínico de alta calidad marca Faplac.`,
+    images: [mainImage],
+    mainImage,
+    url
   };
 }
 
-/**
- * Scraper profesional de Faplac.
- * Navega por las páginas del catálogo y entra en el detalle de cada producto.
- */
-export async function scrapeFaplacCatalogs(): Promise<ScrapedProduct[]> {
-  console.log('🔵 Iniciando scraping profundo de Faplac...');
-  
-  const products: ScrapedProduct[] = [];
-  let page = 1;
-  const maxPages = 2; // Limitamos para evitar timeouts en Server Actions de NextJS (MVP)
-
-  while (page <= maxPages) {
-    try {
-      const url = `${BASE_URL}/home/c/ar-faplac?p=${page}`;
-      console.log(`📄 Procesando página: ${page}`);
-      
-      const { data: html } = await axios.get(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        },
-        timeout: 15000
-      });
-
-      const $ = cheerio.load(html);
-      const productElements = $('.product-item, .product-card, .item');
-
-      if (productElements.length === 0) break;
-
-      for (let i = 0; i < productElements.length; i++) {
-        try {
-          const el = productElements.eq(i);
-          const name = el.find('.product-item-name a, .title').text().trim();
-          const link = el.find('a').attr('href') || '';
-          const mainImage = getImage(el.find('.product-image-photo, img'));
-
-          if (!name || !link) continue;
-
-          const detailUrl = link.startsWith('http') ? link : `${BASE_URL}${link}`;
-
-          // 🔎 Navegar al detalle para extraer info técnica
-          const { data: detailHtml } = await axios.get(detailUrl, { timeout: 10000 });
-          const $$ = cheerio.load(detailHtml);
-
-          const description = $$('.description, .product-info-main .value, .product.attribute.description').text().trim();
-          
-          // Buscar medidas en todo el texto del body si no hay un selector claro
-          const bodyText = $$('body').text();
-          const measuresText = bodyText.match(/\d+\s*x\s*\d+\s*x\s*\d+\s*mm/i)?.[0] || '';
-          const measures = parseMeasures(measuresText);
-
-          products.push({
-            name,
-            brand: 'Faplac',
-            width: measures.width || 2820, // Fallback estándar Faplac
-            height: measures.height || 1830,
-            thickness: measures.thickness || 18,
-            description: description || `Tablero de la línea industrial de Faplac.`,
-            images: [mainImage],
-            mainImage: mainImage || 'https://picsum.photos/seed/faplac/800/600',
-            source: 'faplac_scraper'
-          });
-
-          console.log(`✅ Procesado: ${name}`);
-        } catch (innerErr) {
-          console.error('❌ Error procesando ítem individual:', innerErr);
-        }
-      }
-
-      page++;
-    } catch (error) {
-      console.error(`❌ Error en página ${page}:`, error);
-      break;
+function getFallbackData(): ScrapedProduct[] {
+  return [
+    {
+      name: "Blanco Nature",
+      brand: "Faplac",
+      width: 1830,
+      height: 2750,
+      thickness: 18,
+      description: "Melamina blanca con textura Nature.",
+      images: ["https://picsum.photos/seed/blanco/800/600"],
+      mainImage: "https://picsum.photos/seed/blanco/800/600",
+      url: "#"
+    },
+    {
+      name: "Roble Halifax",
+      brand: "Egger",
+      width: 2800,
+      height: 2070,
+      thickness: 18,
+      description: "Diseño de roble con vetas profundas.",
+      images: ["https://picsum.photos/seed/halifax/800/600"],
+      mainImage: "https://picsum.photos/seed/halifax/800/600",
+      url: "#"
     }
-  }
-
-  // Si falló todo el scraping (bloqueo), usamos el seed de respaldo
-  if (products.length === 0) {
-    console.warn('⚠️ Scraping fallido o vacío, usando seed de respaldo.');
-    return getFaplacSeedData();
-  }
-
-  return products;
-}
-
-function getFaplacSeedData(): ScrapedProduct[] {
-  const designs = [
-    { name: "Lino Chiaro", line: "Hilados" },
-    { name: "Seda Giorno", line: "Hilados" },
-    { name: "Tuareg", line: "Nórdica" },
-    { name: "Báltico", line: "Nórdica" }
   ];
-
-  return designs.map(d => ({
-    name: `${d.name} - Línea ${d.line}`,
-    brand: 'Faplac',
-    width: 2820,
-    height: 1830,
-    thickness: 18,
-    description: `Melamina Faplac de la línea ${d.line}. Acabado de alta calidad.`,
-    images: [`https://picsum.photos/seed/faplac-${d.name.replace(/\s/g, '')}/800/600`],
-    mainImage: `https://picsum.photos/seed/faplac-${d.name.replace(/\s/g, '')}/800/600`,
-    source: 'faplac_seed'
-  }));
 }
