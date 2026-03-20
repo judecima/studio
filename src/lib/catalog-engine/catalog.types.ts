@@ -1,29 +1,50 @@
 /**
- * @fileOverview Definiciones de tipos para el motor de catálogo.
+ * @fileOverview Definiciones de tipos para el motor de catálogo profesional.
  */
 
-export type Fingerprint = {
-  material: 'madera' | 'liso' | 'textil' | 'piedra' | 'metal';
-  colorGroup: 'claro' | 'medio' | 'oscuro';
-  colorHue: 'blanco' | 'gris' | 'beige' | 'marron' | 'negro' | 'azul' | 'rojo' | 'otros';
-  grainIntensity: number; // 0 a 5
-  tone: 'calido' | 'frio' | 'neutro';
-};
+export type ColorGroup = 'claro' | 'medio' | 'oscuro';
+export type ColorHue = 'blanco' | 'gris' | 'beige' | 'marron' | 'negro' | 'azul' | 'rojo' | 'verde' | 'otros';
+export type MaterialType = 'madera' | 'liso' | 'textil' | 'piedra' | 'metal';
+export type ToneType = 'calido' | 'frio' | 'neutro';
 
 export interface CatalogProduct {
   id: string;
   name: string;
   brand: string;
-  width: number;
-  height: number;
-  thickness: number;
+  line: string;
+  collection: string;
+  launch: boolean;
+  texture: string;
+  finish: string;
+  hasGrain: boolean;
+  color: {
+    name: string;
+    group: ColorGroup;
+    hue: ColorHue;
+    semanticTags: string[];
+  };
+  dimensions: {
+    width: number;
+    height: number;
+    thickness: number;
+  };
   description: string;
+  details: string;
   images: string[];
   mainImage: string;
-  fingerprint: Fingerprint;
+  fingerprint: {
+    material: MaterialType;
+    tone: ToneType;
+    grainIntensity: number; // 0 a 5
+  };
+  similar_a: {
+    id: string;
+    score: number;
+    reason: string;
+  }[];
 }
 
-export interface SimilarityResult {
+export interface SearchResult {
   product: CatalogProduct;
-  score: number;
+  relevance: number;
 }

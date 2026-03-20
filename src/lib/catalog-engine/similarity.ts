@@ -1,34 +1,38 @@
-import { Fingerprint } from './catalog.types';
+import { CatalogProduct } from './catalog.types';
 
 /**
- * Calcula un puntaje de similaridad ponderado entre dos huellas digitales de productos.
- * 
- * Ponderación:
- * - Material: 40% (Base del diseño)
- * - Tonalidad (Hue): 30% (Color dominante)
- * - Grupo de Color: 15% (Luminosidad)
- * - Intensidad de Veta: 10% (Textura visual)
- * - Tono: 5% (Temperatura de color)
+ * Calcula un score de similaridad entre 0 y 1.
+ * Ponderación: Material(40%), Color Hue(30%), Tono(20%), Grupo Color(10%)
  */
-export function calculateSimilarityScore(a: Fingerprint, b: Fingerprint): number {
+export function calculateSimilarity(a: CatalogProduct, b: CatalogProduct): number {
+  if (a.id === b.id) return 1;
+
   let score = 0;
 
-  // Material (Peso: 4)
-  if (a.material === b.material) score += 4;
+  // Material (40%)
+  if (a.fingerprint.material === b.fingerprint.material) score += 0.4;
 
-  // Color Hue (Peso: 3)
-  if (a.colorHue === b.colorHue) score += 3;
+  // Color Hue (30%)
+  if (a.color.hue === b.color.hue) score += 0.3;
 
-  // Color Group (Peso: 1.5)
-  if (a.colorGroup === b.colorGroup) score += 1.5;
+  // Tono (20%)
+  if (a.fingerprint.tone === b.fingerprint.tone) score += 0.2;
 
-  // Grain Intensity (Peso: 1)
-  const grainDiff = Math.abs(a.grainIntensity - b.grainIntensity);
-  if (grainDiff === 0) score += 1;
-  else if (grainDiff === 1) score += 0.5;
+  // Grupo Color (10%)
+  if (a.color.group === b.color.group) score += 0.1;
 
-  // Tone (Peso: 0.5)
-  if (a.tone === b.tone) score += 0.5;
+  return Number(score.toFixed(2));
+}
 
-  return score;
+/**
+ * Infiere la razón de similaridad.
+ */
+export function getSimilarityReason(a: CatalogProduct, b: CatalogProduct): string {
+  if (a.color.hue === b.color.hue && a.fingerprint.material === b.fingerprint.material) {
+    return "Mismo material y tonalidad similar";
+  }
+  if (a.color.hue === b.color.hue) {
+    return "Tonalidades cromáticas equivalentes";
+  }
+  return "Diseño y acabado similar";
 }
