@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
@@ -40,31 +41,36 @@ export default function BulkImportPage() {
       
       if (total === 0) {
         addLog("ℹ️ El catálogo ya está vacío.");
-      } else {
-        const batchSize = 50;
-        const docs = querySnapshot.docs;
-        
-        for (let i = 0; i < docs.length; i += batchSize) {
-          const batch = writeBatch(db);
-          const chunk = docs.slice(i, i + batchSize);
-          chunk.forEach(d => batch.delete(d.ref));
-          await batch.commit();
-          
-          const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
-          setProgress(currentProgress);
-          addLog(`🗑️ Borrados: ${i + chunk.length}/${total}`);
-        }
-        addLog(`✅ Catálogo vaciado exitosamente.`);
+        return;
       }
+
+      const batchSize = 50;
+      const docs = querySnapshot.docs;
+      
+      for (let i = 0; i < docs.length; i += batchSize) {
+        const batch = writeBatch(db);
+        const chunk = docs.slice(i, i + batchSize);
+        chunk.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+        
+        const currentProgress = Math.min(100, Math.round(((i + chunk.length) / total) * 100));
+        setProgress(currentProgress);
+        addLog(`🗑️ Borrados: ${i + chunk.length}/${total}`);
+      }
+      addLog(`✅ Catálogo vaciado exitosamente.`);
     } catch (e: any) {
       addLog(`❌ Error en limpieza: ${e.message}`);
+      errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: 'panels',
+        operation: 'delete'
+      }));
       throw e;
     }
   };
 
   const handleStartFullImport = async () => {
     if (!db || !user) {
-      addLog("❌ Error: Firebase no está listo.");
+      addLog("❌ Error: Firebase no está listo o sesión no iniciada.");
       return;
     }
 
@@ -100,7 +106,7 @@ export default function BulkImportPage() {
       const data = scrapeResult.data;
       addLog(`🔍 Se capturaron ${data.length} imágenes reales listas para persistir.`);
       
-      // 3. PERSISTENCIA (Guardar Base64 en Firestore)
+      // 3. PERSISTENCIA
       for (let i = 0; i < data.length; i++) {
         const item = data[i];
         const docId = normalizePanelId(item.name);
@@ -115,9 +121,10 @@ export default function BulkImportPage() {
           visible: true
         };
 
-        // Si tenemos la imagen real en Base64, la guardamos como dato permanente
         if (item.img && item.img.startsWith('data:image')) {
           updatePayload.mainImage = item.img;
+        } else if (item.detailImgUrl) {
+          updatePayload.mainImage = item.detailImgUrl;
         }
 
         setDoc(docRef, updatePayload, { merge: true }).catch(err => {
@@ -130,12 +137,12 @@ export default function BulkImportPage() {
 
         const currentProgress = 25 + Math.round(((i + 1) / data.length) * 75);
         setProgress(currentProgress);
-        if ((i + 1) % 2 === 0) addLog(`📦 Persistiendo imagen real: ${item.name}...`);
+        if ((i + 1) % 5 === 0) addLog(`📦 Sincronizando: ${item.name}...`);
       }
 
       setImportStatus('done');
-      addLog("🎉 CAPTURA FINALIZADA. El catálogo ahora contiene imágenes industriales reales.");
-      toast({ title: "Importación Exitosa", description: "Imágenes reales capturadas y persistidas en la base de datos." });
+      addLog("🎉 PROCESO FINALIZADO.");
+      toast({ title: "Importación Exitosa", description: "Catálogo actualizado con imágenes reales." });
     } catch (error: any) {
       addLog(`❌ Error Crítico: ${error.message}`);
       toast({ title: "Error Crítico", description: error.message, variant: "destructive" });
@@ -184,7 +191,7 @@ export default function BulkImportPage() {
               <ul className="text-xs space-y-2 text-slate-300">
                 <li className="flex gap-2">🔹 Creación de estructura industrial</li>
                 <li className="flex gap-2">🔹 Navegación recursiva a detalle</li>
-                <li className="flex gap-2">🔹 Conversión a Base64 permanente</li>
+                <li className="flex gap-2">🔹 Sincronización de fotos reales</li>
                 <li className="flex gap-2">🔹 Persistencia en Firestore</li>
               </ul>
             </div>
@@ -196,7 +203,7 @@ export default function BulkImportPage() {
               disabled={isProcessing || isUserLoading}
             >
               {isProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : <Database className="h-6 w-6" />}
-              {isProcessing ? 'CAPTURANDO...' : 'INICIAR CAPTURA REAL'}
+              {isProcessing ? 'PROCESANDO...' : 'INICIAR CAPTURA REAL'}
             </Button>
           </CardFooter>
         </Card>

@@ -76,38 +76,44 @@ export default function AdminPanelsPage() {
   };
 
   const handleDeleteAll = async () => {
-    if (!db) return;
-    
-    const colRef = collection(db, 'panels');
-    const snapshot = await getDocs(colRef);
-    
-    if (snapshot.empty) {
-      toast({ title: "Catálogo vacío", description: "No hay paneles para eliminar." });
+    if (!db || !user) {
+      toast({ title: "Error", description: "Debes estar autenticado para realizar esta acción.", variant: "destructive" });
       return;
     }
-
-    if (!confirm(`¿Estás TOTALMENTE SEGURO de eliminar los ${snapshot.size} paneles del catálogo? Esta acción es irreversible.`)) return;
+    
+    if (!confirm(`¿Estás TOTALMENTE SEGURO de vaciar el catálogo? Esta acción eliminará todos los paneles y es irreversible.`)) return;
 
     setIsDeletingAll(true);
     try {
+      const colRef = collection(db, 'panels');
+      const snapshot = await getDocs(colRef);
+      
+      if (snapshot.empty) {
+        toast({ title: "Catálogo vacío", description: "No hay paneles para eliminar." });
+        setIsDeletingAll(false);
+        return;
+      }
+
       const docs = snapshot.docs;
       const batchSize = 50;
+      let deletedCount = 0;
 
       for (let i = 0; i < docs.length; i += batchSize) {
         const batch = writeBatch(db);
         const chunk = docs.slice(i, i + batchSize);
         chunk.forEach(d => batch.delete(d.ref));
         await batch.commit();
+        deletedCount += chunk.length;
       }
 
-      toast({ title: "Catálogo vaciado", description: `Se han eliminado ${docs.length} paneles.` });
+      toast({ title: "Catálogo vaciado", description: `Se han eliminado ${deletedCount} paneles con éxito.` });
     } catch (error: any) {
       console.error("Error al vaciar base de datos:", error);
       errorEmitter.emit('permission-error', new FirestorePermissionError({
         path: 'panels',
         operation: 'delete'
       }));
-      toast({ title: "Error al vaciar", description: error.message, variant: "destructive" });
+      toast({ title: "Error al vaciar", description: error.message || "Error de permisos en Firestore", variant: "destructive" });
     } finally {
       setIsDeletingAll(false);
     }
