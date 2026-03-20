@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useParams, useRouter } from "next/navigation";
@@ -7,11 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, Ruler, Layers, Loader2, Sparkles } from "lucide-react";
-import { useState, useMemo, useEffect } from "react";
-import { generateCombinations } from "@/services/combinations-engine";
-import { CombinationCard } from "@/components/CombinationCard";
-import { useDoc, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
-import { doc, collection, query } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { SimilarProducts } from "@/components/SimilarProducts";
+import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
+import { doc } from "firebase/firestore";
 import { Panel } from "@/lib/types";
 
 export default function PanelDetailPage() {
@@ -26,29 +26,17 @@ export default function PanelDetailPage() {
 
   const { data: panel, isLoading: isPanelLoading } = useDoc<Panel>(panelRef);
 
-  const panelsQuery = useMemoFirebase(() => {
-    if (!db) return null;
-    return query(collection(db, 'panels'));
-  }, [db]);
-
-  const { data: allPanels } = useCollection<Panel>(panelsQuery);
-
   const [activeImage, setActiveImage] = useState("");
 
   useEffect(() => {
     if (panel?.mainImage) setActiveImage(panel.mainImage);
   }, [panel]);
 
-  const combinations = useMemo(() => {
-    if (!panel || !allPanels) return [];
-    return generateCombinations(panel, allPanels);
-  }, [panel, allPanels]);
-
   if (isPanelLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <p>Cargando detalles del producto...</p>
+        <p className="font-medium text-muted-foreground">Analizando ficha técnica...</p>
       </div>
     );
   }
@@ -60,8 +48,8 @@ export default function PanelDetailPage() {
       <Navbar />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => router.back()} className="mb-6 pl-0 gap-2">
-          <ChevronLeft className="h-4 w-4" /> Catálogo
+        <Button variant="ghost" onClick={() => router.back()} className="mb-6 pl-0 gap-2 hover:bg-transparent hover:text-primary transition-colors">
+          <ChevronLeft className="h-4 w-4" /> Volver al Catálogo
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-white p-6 md:p-8 rounded-3xl border shadow-sm overflow-hidden">
@@ -88,71 +76,67 @@ export default function PanelDetailPage() {
             </div>
           </div>
 
-          <div className="space-y-6 overflow-hidden">
+          <div className="space-y-6 overflow-hidden flex flex-col">
             <div className="space-y-2">
-              <Badge variant="outline" className="border-primary text-primary font-bold uppercase tracking-widest truncate max-w-full">
-                {panel.brand}
-              </Badge>
-              <h1 className="text-3xl md:text-4xl font-headline font-bold break-words">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="border-primary text-primary font-bold uppercase tracking-widest truncate max-w-full px-3 py-1">
+                  {panel.brand}
+                </Badge>
+                {panel.stock > 0 && (
+                  <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-100">
+                    Stock Disponible
+                  </Badge>
+                )}
+              </div>
+              <h1 className="text-3xl md:text-5xl font-headline font-bold break-words text-slate-900">
                 {panel.name}
               </h1>
             </div>
 
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-              {panel.description || "Sin descripción disponible para este producto."}
+              {panel.description || "Este tablero melamínico de alta calidad ofrece un acabado excepcional para proyectos de arquitectura interior y diseño de mobiliario a medida."}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-              <div className="p-4 bg-slate-50 rounded-2xl border flex flex-col justify-center">
-                <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase mb-1">
-                  <Ruler className="h-4 w-4" /> Dimensiones
+              <div className="p-4 bg-slate-50/50 rounded-2xl border flex flex-col justify-center">
+                <div className="flex items-center gap-2 text-primary text-[10px] font-bold uppercase mb-1 tracking-widest">
+                  <Ruler className="h-4 w-4" /> Dimensiones Reales
                 </div>
-                <p className="text-xl font-headline font-bold truncate">
+                <p className="text-xl font-headline font-bold truncate text-slate-800">
                   {panel.width || "?"}x{panel.height || "?"} mm
                 </p>
               </div>
-              <div className="p-4 bg-slate-50 rounded-2xl border flex flex-col justify-center">
-                <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase mb-1">
-                  <Layers className="h-4 w-4" /> Espesor
+              <div className="p-4 bg-slate-50/50 rounded-2xl border flex flex-col justify-center">
+                <div className="flex items-center gap-2 text-primary text-[10px] font-bold uppercase mb-1 tracking-widest">
+                  <Layers className="h-4 w-4" /> Espesor de Hoja
                 </div>
-                <p className="text-xl font-headline font-bold truncate">
+                <p className="text-xl font-headline font-bold truncate text-slate-800">
                   {panel.thickness || "?"} mm
                 </p>
               </div>
             </div>
 
-            <Separator />
+            <Separator className="my-2" />
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="flex-1 h-14 text-lg font-bold">Solicitar Cotización</Button>
-              <Button size="lg" variant="outline" className="flex-1 h-14 text-lg font-bold">Ficha Técnica</Button>
+            <div className="flex flex-col sm:flex-row gap-4 mt-auto">
+              <Button size="lg" className="flex-1 h-14 text-lg font-bold shadow-lg shadow-primary/20">Solicitar Cotización</Button>
+              <Button size="lg" variant="outline" className="flex-1 h-14 text-lg font-bold">Ficha Técnica PDF</Button>
             </div>
           </div>
         </div>
 
-        {/* Combinations Section */}
-        <section className="mt-16 md:mt-20">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-2">
+        {/* Similar Products Section */}
+        <section className="mt-16 md:mt-24">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-4">
             <div>
-              <div className="flex items-center gap-2 text-amber-600 font-bold uppercase text-xs tracking-widest mb-1">
-                <Sparkles className="h-4 w-4" /> Smart Recommendations
-              </div>
-              <h2 className="text-2xl md:text-3xl font-headline font-bold">Combinaciones Ideales</h2>
-              <p className="text-sm md:text-base text-muted-foreground mt-1">Sugerencias basadas en armonía tonal y uso.</p>
+              <h2 className="text-3xl md:text-4xl font-headline font-bold text-slate-900">Productos Similares</h2>
+              <p className="text-sm md:text-base text-muted-foreground mt-2 max-w-2xl">
+                Nuestro motor de inteligencia artificial ha seleccionado estas alternativas basadas en armonía cromática, materialidad y veta.
+              </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {combinations.length > 0 ? (
-              combinations.map(combo => (
-                <CombinationCard key={combo.id} combination={combo} panels={allPanels || []} />
-              ))
-            ) : (
-              <p className="col-span-full text-center py-10 text-muted-foreground bg-white rounded-2xl border border-dashed">
-                Buscando combinaciones inteligentes...
-              </p>
-            )}
-          </div>
+          <SimilarProducts productId={id as string} />
         </section>
       </main>
     </div>

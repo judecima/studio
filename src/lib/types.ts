@@ -24,7 +24,23 @@ export type Panel = {
   colorHue: ColorHue;
   styleTags: string[];
   useCases: string[];
+  // Metadata de similaridad opcional
+  similarity?: {
+    score: number;
+    reason: string;
+  };
 };
+
+export interface SimilarProduct {
+  id: string;
+  name: string;
+  brand: string;
+  mainImage: string;
+  score: number;
+  reason: string;
+  thickness: number;
+  hasGrain: boolean;
+}
 
 export type CombinationType = 'contraste' | 'armonia' | 'funcional';
 
