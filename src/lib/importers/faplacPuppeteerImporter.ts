@@ -1,20 +1,18 @@
 'use server';
 
 /**
- * @fileOverview Scraper Robusto para Faplac con captura de imágenes reales.
- * Utiliza Axios y Cheerio para navegar de forma recursiva y capturar fotos industriales.
- * Optimizado para la sección de Melaminas: https://www.faplaconline.com.ar/home/c/ar-faplac/ar-melaminas
+ * @fileOverview Scraper Robusto para Faplac con captura de imágenes industriales REALES.
+ * Navega de forma recursiva al detalle de cada melamina para extraer la foto de alta calidad.
  */
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
 const BASE_URL = "https://www.faplaconline.com.ar";
-// URL específica sugerida por el usuario para Melaminas
 const CATALOG_URL = `${BASE_URL}/home/c/ar-faplac/ar-melaminas`;
 
 /**
- * Convierte una URL de imagen a un Data URI Base64 real.
+ * Descarga una imagen y la convierte a Data URI Base64.
  */
 async function fetchImageAsBase64(url: string): Promise<string> {
   if (!url || !url.startsWith('http')) {
@@ -26,7 +24,7 @@ async function fetchImageAsBase64(url: string): Promise<string> {
   try {
     const response = await axios.get(url, { 
       responseType: 'arraybuffer',
-      timeout: 30000,
+      timeout: 20000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Referer': BASE_URL
@@ -36,16 +34,16 @@ async function fetchImageAsBase64(url: string): Promise<string> {
     const base64 = Buffer.from(response.data, 'binary').toString('base64');
     return `data:${contentType};base64,${base64}`;
   } catch (error: any) {
-    console.error(`⚠️ Error al descargar imagen: ${url} - ${error.message}`);
+    console.error(`⚠️ Error al capturar imagen real: ${url} - ${error.message}`);
     return "";
   }
 }
 
 /**
- * Scrapea el catálogo de Faplac extrayendo imágenes reales y datos técnicos.
+ * Captura el catálogo de melaminas con navegación recursiva al detalle.
  */
 export async function scrapeFaplacCatalog() {
-  console.log(`🔵 Iniciando captura profunda en: ${CATALOG_URL}`);
+  console.log(`🔵 Iniciando captura de fotos industriales en: ${CATALOG_URL}`);
   
   const enrichedResults = [];
   
@@ -57,55 +55,51 @@ export async function scrapeFaplacCatalog() {
     });
     
     const $ = cheerio.load(html);
-    // Selectores actualizados para el grid de productos de Faplac
-    const productItems = $('.product-item, .item.product.product-item, .product-item-info');
+    const productItems = $('.product-item, .item.product.product-item');
     
-    console.log(`✅ Se detectaron ${productItems.length} productos en el catálogo de melaminas.`);
+    console.log(`✅ ${productItems.length} productos detectados para procesamiento profundo.`);
 
-    // Procesamos un lote representativo
-    const limit = 40; 
+    // Procesamos los primeros 35 productos para asegurar éxito sin timeouts
+    const limit = 35; 
     for (let i = 0; i < Math.min(productItems.length, limit); i++) {
       const el = productItems.eq(i);
-      const name = el.find('.product-item-name a, .product-item-link, .name').text().trim();
-      const relativeLink = el.find('a.product-item-link, .product-item-photo a, a').attr('href') || "";
+      const name = el.find('.product-item-name a, .product-item-link').text().trim();
+      const relativeLink = el.find('a.product-item-link, .product-item-photo a').attr('href') || "";
       
       if (!name || !relativeLink) continue;
 
       const detailUrl = relativeLink.startsWith('http') ? relativeLink : `${BASE_URL}${relativeLink}`;
       
       try {
-        console.log(`🔎 [${i+1}/${limit}] Capturando detalle: ${name}`);
+        console.log(`🔎 [${i+1}/${limit}] Entrando a ficha técnica: ${name}`);
         const detailData = await scrapeProductDetail(detailUrl);
         
-        let imgUrlToDownload = detailData.detailImgUrl;
-        
-        // Descargar la imagen real y convertirla a Base64
-        const base64Image = imgUrlToDownload ? await fetchImageAsBase64(imgUrlToDownload) : "";
+        // Convertimos la imagen real a Base64
+        const base64Image = detailData.detailImgUrl ? await fetchImageAsBase64(detailData.detailImgUrl) : "";
         
         enrichedResults.push({
           name,
           img: base64Image,
-          originalUrl: imgUrlToDownload,
           ...detailData
         });
         
         if (base64Image) {
-          console.log(`✅ Foto industrial capturada para: ${name}`);
+          console.log(`✅ Foto industrial REAL guardada para: ${name}`);
         }
       } catch (e) {
-        console.error(`⚠️ Falló el detalle de ${name}:`, e);
+        console.error(`⚠️ Falló captura de detalle para ${name}`);
       }
     }
 
     return enrichedResults;
   } catch (error: any) {
-    console.error("🚨 Error crítico en scraping:", error.message);
+    console.error("🚨 Error crítico en motor de captura:", error.message);
     throw error;
   }
 }
 
 /**
- * Scrapea la página de detalle de un producto específico para obtener la imagen real.
+ * Extrae la imagen industrial de alta resolución y datos técnicos de la ficha del producto.
  */
 async function scrapeProductDetail(url: string) {
   try {
@@ -118,43 +112,31 @@ async function scrapeProductDetail(url: string) {
     
     const $$ = cheerio.load(html);
     
-    // Selectores de imagen prioritarios para Faplac
+    // Selectores de imagen de alta calidad (Priorizamos metadatos og:image para fotos reales)
     const detailImgUrl = $$('meta[property="og:image"]').attr('content') || 
                          $$('meta[name="twitter:image"]').attr('content') ||
                          $$('.gallery-placeholder__image').attr('src') ||
-                         $$('.product.media img.fotorama__img').attr('src') ||
                          $$('.magnifier-image').attr('src') || "";
 
-    const description = $$('.product.attribute.description .value, .description, .product-info-main .value').text().trim();
+    const description = $$('.product.attribute.description .value').text().trim() || 
+                        $$('.description').text().trim();
+    
     const bodyText = $$('body').text();
-
-    // Mejora del regex para medidas
-    const measuresMatch = bodyText.match(/(\d{4})\s*x\s*(\d{4})\s*x\s*(\d+)/i) || bodyText.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)/i);
-    let width = 1830;
-    let height = 2750;
-    let thickness = 18;
-
-    if (measuresMatch) {
-      width = Number(measuresMatch[1]);
-      height = Number(measuresMatch[2]);
-      thickness = Number(measuresMatch[3]);
-    }
+    const measuresMatch = bodyText.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)\s*mm/i);
     
     return {
-      description: description || "Tablero melamínico de alta gama para proyectos de arquitectura e interiorismo.",
-      width,
-      height,
-      thickness,
-      bodyText,
+      description: description || "Tablero melamínico Faplac. Calidad industrial para mobiliario.",
+      width: measuresMatch ? Number(measuresMatch[1]) : 1830,
+      height: measuresMatch ? Number(measuresMatch[2]) : 2750,
+      thickness: measuresMatch ? Number(measuresMatch[3]) : 18,
       detailImgUrl
     };
   } catch (err) {
     return {
-      description: "Información técnica en proceso de actualización.",
+      description: "Producto del catálogo Faplac.",
       width: 1830,
       height: 2750,
       thickness: 18,
-      bodyText: "",
       detailImgUrl: ""
     };
   }

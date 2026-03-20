@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { CatalogEngine } from '@/lib/catalog-engine/catalog.engine';
 import { adaptProducts } from '@/lib/catalog-engine/catalog.adapter';
-import { scrapeFaplacCatalogs } from '@/lib/faplac-scraper';
+import { scrapeFaplacCatalogs } from '@/lib/importers/faplac-scraper';
 
 let engine: CatalogEngine | null = null;
 
