@@ -1,17 +1,15 @@
-
 "use client"
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, ShoppingBag, Menu, X, LogIn } from "lucide-react";
+import { LayoutDashboard, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isAdminPath = pathname.startsWith('/admin');
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -54,10 +52,10 @@ export function Navbar() {
           </Button>
           
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/login">
+            <Link href="/admin">
               <Button variant="outline" size="sm" className="gap-2">
-                <LogIn className="h-4 w-4" />
-                Acceso Admin
+                <LayoutDashboard className="h-4 w-4" />
+                Panel Admin
               </Button>
             </Link>
           </div>
@@ -82,10 +80,10 @@ export function Navbar() {
             >
               Administración
             </Link>
-            <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+            <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
               <Button variant="outline" size="sm" className="w-full gap-2">
-                <LogIn className="h-4 w-4" />
-                Acceso Admin
+                <LayoutDashboard className="h-4 w-4" />
+                Panel Admin
               </Button>
             </Link>
           </div>

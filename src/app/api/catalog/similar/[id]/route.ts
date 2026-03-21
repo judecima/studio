@@ -1,13 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { CatalogEngine } from '@/lib/catalog-engine/catalog.engine';
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+type NextContext = {
+  params: Promise<{ id: string }>;
+};
 
+export async function GET(
+  request: NextRequest,
+  context: NextContext
+) {
   try {
+    const { id } = await context.params;
+
     const engine = await CatalogEngine.getInstance();
     const recommendations = engine.findSimilar(id);
     

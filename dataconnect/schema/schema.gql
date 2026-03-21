@@ -1,0 +1,55 @@
+type User @table {
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  companyName: String
+  contactInfo: String
+  userType: String
+}
+
+type PanelType @table {
+  name: String!
+  createdAt: Timestamp!
+  description: String
+}
+
+type Panel @table {
+  name: String!
+  panelType: PanelType!
+  createdAt: Timestamp!
+  description: String
+  material: String
+  dimensions: String
+  weight: Float
+  powerRating: String
+  voltage: String
+  features: String # Representing JSONB as String for simplicity
+  imageUrls: [String]
+  supplier: Supplier
+}
+
+type Supplier @table {
+  name: String!
+  createdAt: Timestamp!
+  contactPerson: String
+  phoneNumber: String
+  website: String
+  address: String
+  user: User
+}
+
+type ProjectList @table {
+  name: String!
+  user: User!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  description: String
+}
+
+type ProjectListPanel @table(key: ["projectList", "panel"]) {
+  projectList: ProjectList!
+  panel: Panel!
+  createdAt: Timestamp!
+  quantity: Int
+  notes: String
+}

@@ -1,12 +1,13 @@
-
 "use client"
 
 import { SimilarProduct } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import React from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles, ArrowRight, Layers } from "lucide-react";
+import { ExternalLink, Percent, Sparkles, ArrowRight, Layers } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from "@/lib/utils";
 
 interface Props {

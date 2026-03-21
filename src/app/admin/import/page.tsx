@@ -18,8 +18,8 @@ export default function IndustrialImportPage() {
   const handleStartImport = async () => {
     setIsProcessing(true);
     setLog([]);
-    addLog("🚀 Iniciando Pipeline Industrial...");
-    addLog("🌐 Conectando con Faplac Online...");
+    addLog("🚀 Iniciando Pipeline Industrial Dual...");
+    addLog("🌐 Conectando con Faplac Online y Egger Latam...");
     addLog("☁️ Inicializando Firebase Storage...");
 
     try {

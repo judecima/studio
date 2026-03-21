@@ -2,8 +2,9 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer';
+import fs from 'fs';
+import path from 'path';
 import { initializeFirebase } from '@/firebase';
-import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { normalizePanelId, adaptToProduct } from '../catalog-engine/catalog.adapter';
 import { FAPLAC_SEED } from '../seeds/faplacSeed';
@@ -22,8 +23,7 @@ const HEADERS = {
 };
 
 export async function runIndustrialPipeline() {
-  const { firebaseApp, firestore } = initializeFirebase();
-  const storage = getStorage(firebaseApp);
+  const { firestore } = initializeFirebase();
   
   console.log("🚀 Iniciando Pipeline Industrial V7 (Optimizado - Hibrido)...");
   let browser: any = null;
@@ -44,45 +44,43 @@ export async function runIndustrialPipeline() {
     const page = await browser.newPage();
     await page.setUserAgent(HEADERS['User-Agent']);
 
-    const pageUrl = `${BASE_URL}/home/c/ar-faplac/ar-melaminas`;
-    console.log(`Página Principal (Desplazando para carga dinámica)...`);
-    
-    await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+    const targetPages = [
+      `${BASE_URL}/home/c/ar-faplac/ar-melaminas`,
+      `${BASE_URL}/home/c/ar-faplac/ar-melaminas?q=%3AreleaseDate&page=1`,
+      `${BASE_URL}/home/c/ar-faplac/ar-melaminas?q=%3AreleaseDate&page=2`,
+      `${BASE_URL}/home/c/ar-faplac/ar-melaminas?q=%3AreleaseDate&page=3`
+    ];
 
-    // Scroll al final lentamente para desencadenar el Infinite Scroll de Magento
-    await page.evaluate(async () => {
-      await new Promise<void>((resolve) => {
-        let totalHeight = 0;
-        const distance = 400;
-        const timer = setInterval(() => {
-          const scrollHeight = document.body.scrollHeight;
-          window.scrollBy(0, distance);
-          totalHeight += distance;
-          // Asumimos el final o un máximo de scrolls para no bloquearnos indefinidamente
-          if (totalHeight >= scrollHeight - window.innerHeight || totalHeight > 15000) {
-            clearInterval(timer);
-            resolve();
-          }
-        }, 300);
+    for (let idx = 0; idx < targetPages.length; idx++) {
+      const pageUrl = targetPages[idx];
+      console.log(`Página Principal (Desplazando en bloque ${idx + 1}/4)...`);
+      
+      await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+
+      // Pequeño barrido hacia abajo por si hay lazy-loading de DOM
+      await page.evaluate(async () => {
+        window.scrollBy(0, document.body.scrollHeight / 2);
+        await new Promise(r => setTimeout(r, 1000));
+        window.scrollBy(0, document.body.scrollHeight);
       });
-    });
-    
-    // Dar tiempo extra a que lleguen las peticiones REST y se rendericen los nodos
-    await new Promise(r => setTimeout(r, 4000));
+      
+      await new Promise(r => setTimeout(r, 2000));
 
-    const linksOnPage = await page.evaluate(() => {
-      const links = new Set<string>();
-      const allNodes = document.querySelectorAll('a');
-      allNodes.forEach((a: any) => {
-         if (a.href && a.href.includes('/home/p/')) {
-            links.add(a.href.split('?')[0]);
-         }
+      const linksOnPage = await page.evaluate(() => {
+        const links = new Set<string>();
+        const allNodes = document.querySelectorAll('a');
+        allNodes.forEach((a: any) => {
+           if (a.href && a.href.includes('/home/p/')) {
+              links.add(a.href.split('?')[0]);
+           }
+        });
+        return Array.from(links);
       });
-      return Array.from(links);
-    });
 
-    linksOnPage.forEach((link: string) => allProductLinks.add(link));
-    console.log(`✅ Encontrados ${allProductLinks.size} enlaces únicos tras hacer scroll profundo.`);
+      linksOnPage.forEach((link: string) => allProductLinks.add(link));
+    }
+
+    console.log(`✅ Encontrados ${allProductLinks.size} enlaces únicos tras recorrer las 4 páginas del catálogo.`);
 
     // Do not close browser yet, we will use it for detail pages
     const productLinks = Array.from(allProductLinks);
@@ -108,29 +106,67 @@ export async function runIndustrialPipeline() {
           if (!productData.name || !productData.imageUrl) return;
 
           const slug = normalizePanelId(productData.name);
-          const storagePath = `products/faplac/${slug}.jpg`;
-          const storageRef = ref(storage, storagePath);
           
-          let finalImageUrl = "";
+          // --- NUEVO: Guardado Local en Next.js Public ---
+          const localDir = path.join(process.cwd(), 'public', 'images', 'faplac');
+          const localFilePath = path.join(localDir, `${slug}.jpg`);
+          const finalImageUrl = `/images/faplac/${slug}.jpg`;
+          
           try {
-            finalImageUrl = await getDownloadURL(storageRef);
+            if (!fs.existsSync(localFilePath)) {
+              if (!fs.existsSync(localDir)) {
+                fs.mkdirSync(localDir, { recursive: true });
+              }
+              const imageResponse = await axios.get(productData.imageUrl, { 
+                responseType: 'arraybuffer',
+                timeout: 20000,
+                headers: HEADERS
+              });
+              fs.writeFileSync(localFilePath, imageResponse.data);
+            }
           } catch (e) {
-            const imageResponse = await axios.get(productData.imageUrl, { 
-              responseType: 'arraybuffer',
-              timeout: 20000,
-              headers: HEADERS
-            });
-            
-            const uint8Array = new Uint8Array(imageResponse.data);
-            await uploadBytes(storageRef, uint8Array, { contentType: 'image/jpeg' });
-            finalImageUrl = await getDownloadURL(storageRef);
+            console.error(`⚠️ No se pudo guardar la imagen localmente para ${slug}.`);
           }
 
-          const catalogProduct = adaptToProduct(productData, finalImageUrl);
-          await setDoc(doc(firestore, 'catalog_products', catalogProduct.id), {
-            ...catalogProduct,
-            updatedAt: serverTimestamp()
-          }, { merge: true });
+          // --- Adaptar a Interface Panel para el Frontend ---
+          const hueMap: Record<string, string> = { 
+             'rojo': 'rojo', 'bordo': 'rojo', 'blanco': 'blanco', 'marfil': 'blanco', 
+             'negro': 'negro', 'grafito': 'negro', 'gris': 'gris', 'cemento': 'gris', 
+             'beige': 'beige', 'arena': 'beige', 'marron': 'marron', 'nogal': 'marron' 
+          };
+          
+          let materialHue = 'otros';
+          for (const [key, val] of Object.entries(hueMap)) {
+            if ((productData.name + ' ' + productData.description).toLowerCase().includes(key)) {
+               materialHue = val; break;
+            }
+          }
+
+          const isDark = (productData.name + productData.description).toLowerCase().match(/(negro|oscuro|tabaco|notte)/);
+          const isLight = (productData.name + productData.description).toLowerCase().match(/(blanco|claro|nieve|crema|marfil)/);
+
+          const panelDoc = {
+            id: slug,
+            name: productData.name,
+            brand: "Faplac",
+            width: 1830,
+            height: 2750,
+            thickness: 18,
+            hasGrain: !productData.isSmooth,
+            description: productData.description,
+            stock: 100,
+            images: [finalImageUrl],
+            mainImage: finalImageUrl,
+            visible: true,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            colorGroup: isDark ? 'oscuro' : isLight ? 'claro' : 'medio',
+            colorHue: materialHue,
+            styleTags: ['moderno', 'industrial'],
+            useCases: ['cocina', 'placard', 'oficina']
+          };
+
+          await setDoc(doc(firestore, 'panels', panelDoc.id), panelDoc, { merge: true });
           
           processedCount++;
         } catch (err: any) {
@@ -155,17 +191,44 @@ async function loadMesopotamiaLine(firestore: any) {
     // Usamos imágenes industriales temáticas para Mesopotamia mientras se capturan las finales
     const mockUrl = `https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&q=80&w=800&h=600&madera=${slug}`;
     
-    const catalogProduct = adaptToProduct({
-      name: item.name,
-      description: item.description,
-      brand: item.brand,
-      dimensions: { width: item.width, height: item.height, thickness: item.thickness }
-    }, mockUrl);
+    const hueMap: Record<string, string> = { 
+       'rojo': 'rojo', 'bordo': 'rojo', 'blanco': 'blanco', 'marfil': 'blanco', 
+       'negro': 'negro', 'grafito': 'negro', 'gris': 'gris', 'cemento': 'gris', 
+       'beige': 'beige', 'arena': 'beige', 'marron': 'marron', 'nogal': 'marron' 
+    };
     
-    await setDoc(doc(firestore, 'catalog_products', catalogProduct.id), {
-      ...catalogProduct,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
+    let materialHue = 'otros';
+    for (const [key, val] of Object.entries(hueMap)) {
+      if ((item.name + ' ' + item.description).toLowerCase().includes(key)) {
+         materialHue = val; break;
+      }
+    }
+
+    const isDark = (item.name + item.description).toLowerCase().match(/(negro|oscuro|tabaco|notte)/);
+    const isLight = (item.name + item.description).toLowerCase().match(/(blanco|claro|nieve|crema|marfil)/);
+
+    const panelDoc = {
+      id: slug,
+      name: item.name,
+      brand: item.brand || "Faplac",
+      width: item.width || 1830,
+      height: item.height || 2750,
+      thickness: item.thickness || 18,
+      hasGrain: true, // Typical for Mesopotamia
+      description: item.description || "Tablero melamínico de la Línea Mesopotamia.",
+      stock: 100,
+      images: [mockUrl],
+      mainImage: mockUrl,
+      visible: true,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      colorGroup: isDark ? 'oscuro' : isLight ? 'claro' : 'medio',
+      colorHue: materialHue,
+      styleTags: ['moderno', 'Madera'],
+      useCases: ['muebles', 'revestimiento']
+    };
+    
+    await setDoc(doc(firestore, 'panels', panelDoc.id), panelDoc, { merge: true });
   }
 }
 
