@@ -1,4 +1,3 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -9,11 +8,18 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
 
-    // Permitir acceso total si el usuario está autenticado (incluyendo anónimos) para prototipado rápido
+    function isAdmin() {
+      return isSignedIn() && (getUserRole() == 'admin');
+    }
+
+    function isAdministradorOrAdmin() {
+      return isSignedIn() && (getUserRole() in ['admin', 'administrador']);
+    }
+
     function isAuthorized() {
       return isSignedIn();
     }
@@ -28,12 +34,27 @@ service cloud.firestore {
 
     // --- Collection Rules ---
 
+    match /users/{userId} {
+       // El usuario puede leer su propio perfil. Admin lee todos.
+       allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+       // Permitir crear su perfil base 'cliente' al loguearse la primera vez.
+       allow create: if isSignedIn() && request.auth.uid == userId && request.resource.data.role == 'cliente';
+       // Solo el Superadmin puede actualizar (ej. ascender) a otros.
+       allow update, delete: if isAdmin();
+    }
+
     match /panels/{panelId} {
       // Permitir lectura si es visible públicamente O si el usuario está autorizado
       allow get, list: if isAuthorized() || isPanelVisible(resource.data);
-      
       // Permitir escritura si el usuario está autorizado
       allow create, update, delete: if isAuthorized();
+    }
+
+    match /catalog_products/{productId} {
+      // El catálogo es de lectura pública
+      allow read: if true;
+      // Scrapers y mutaciones solo por administradores
+      allow write: if isAdministradorOrAdmin();
     }
 
     match /combinations/{combinationId} {
@@ -42,9 +63,7 @@ service cloud.firestore {
     }
 
     match /roles_admin/{adminUid} {
-      allow get: if isSignedIn() && (request.auth.uid == adminUid || isAdmin());
-      allow list: if isAdmin();
-      allow create, update, delete: if false; 
+      allow read, write: if false; 
     }
 
     match /{path=**} {

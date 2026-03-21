@@ -113,23 +113,40 @@ async function scrapeProductDetail(url: string) {
     const $$ = cheerio.load(html);
     
     // Selectores de imagen de alta calidad (Priorizamos metadatos og:image para fotos reales)
-    const detailImgUrl = $$('meta[property="og:image"]').attr('content') || 
-                         $$('meta[name="twitter:image"]').attr('content') ||
-                         $$('.gallery-placeholder__image').attr('src') ||
-                         $$('.magnifier-image').attr('src') || "";
+    const detailImgUrl = $$('img.img-responsive.m-center').attr('src') ||
+                         $$('meta[property="og:image"]').attr('content') || 
+                         $$('.gallery-placeholder__image').attr('src') || "";
 
-    const description = $$('.product.attribute.description .value').text().trim() || 
-                        $$('.description').text().trim();
-    
+    const description = $$('.description').text().trim() ||
+                        $$('.product.attribute.description .value').text().trim() ||
+                        $$('meta[name="description"]').attr('content') ||
+                        $$('meta[property="og:description"]').attr('content') || "";
+                          
+    const isSmoothText = $$('.product.attribute.liso').text().toLowerCase() || '';
+    const isSmooth = isSmoothText.includes('si') || isSmoothText.includes('true');
+    const surfaceTexture = $$('.product.attribute.textura .value').text().trim() || undefined;
+    const launchYearText = $$('.product.attribute.lanzamiento .value').text().trim() || '';
+    const launchYear = launchYearText ? parseInt(launchYearText) : undefined;
+    const launch = !!launchYearText || description.toLowerCase().includes('lanzamiento');
+    const sku = $$('.code.hidden').text().trim() || $$('.product.attribute.sku .value').text().trim() || $$('.sku').text().trim() || "";
+
+    // The original function returned width, height, thickness.
+    // The new selectors don't provide direct access to these.
+    // Keeping the default values or trying to infer from description if possible.
     const bodyText = $$('body').text();
     const measuresMatch = bodyText.match(/(\d+)\s*x\s*(\d+)\s*x\s*(\d+)\s*mm/i);
-    
+
     return {
       description: description || "Tablero melamínico Faplac. Calidad industrial para mobiliario.",
       width: measuresMatch ? Number(measuresMatch[1]) : 1830,
       height: measuresMatch ? Number(measuresMatch[2]) : 2750,
       thickness: measuresMatch ? Number(measuresMatch[3]) : 18,
-      detailImgUrl
+      detailImgUrl,
+      isSmooth,
+      surfaceTexture,
+      launchYear,
+      launch,
+      sku
     };
   } catch (err) {
     return {
@@ -137,7 +154,9 @@ async function scrapeProductDetail(url: string) {
       width: 1830,
       height: 2750,
       thickness: 18,
-      detailImgUrl: ""
+      detailImgUrl: "",
+      isSmooth: false,
+      launch: false
     };
   }
 }

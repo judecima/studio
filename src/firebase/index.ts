@@ -12,10 +12,10 @@ export function initializeFirebase() {
   if (!getApps().length) {
     let firebaseApp;
     try {
-      // Intento de inicialización automática para App Hosting
-      firebaseApp = initializeApp();
-    } catch (e) {
       firebaseApp = initializeApp(firebaseConfig);
+    } catch (e) {
+      console.error('Firebase initialization error', e);
+      throw e;
     }
 
     return getSdks(firebaseApp);

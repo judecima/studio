@@ -9,11 +9,19 @@ export function calculateSimilarity(a: CatalogProduct, b: CatalogProduct): numbe
 
   let score = 0;
 
-  // Material (40%)
-  if (a.fingerprint.material === b.fingerprint.material) score += 0.4;
+  // Material (30%)
+  if (a.fingerprint.material === b.fingerprint.material) score += 0.3;
   
-  // Color Hue (30%)
-  if (a.color.hue === b.color.hue) score += 0.3;
+  // Color Hue Exacto (20%)
+  if (a.color.hue === b.color.hue) score += 0.2;
+
+  // Basic Colors Intersection (20%)
+  if (a.color.basicColors && b.color.basicColors) {
+    const commonColors = a.color.basicColors.filter(c => b.color.basicColors.includes(c));
+    if (commonColors.length > 0) {
+      score += 0.2;
+    }
+  }
 
   // Tono (20%)
   if (a.fingerprint.tone === b.fingerprint.tone) score += 0.2;
@@ -25,8 +33,13 @@ export function calculateSimilarity(a: CatalogProduct, b: CatalogProduct): numbe
 }
 
 export function getSimilarityReason(a: CatalogProduct, b: CatalogProduct): string {
-  if (a.color.hue === b.color.hue && a.fingerprint.material === b.fingerprint.material) {
-    return "Mismo material y tonalidad similar";
+  const commonColors = (a.color.basicColors || []).filter(c => (b.color.basicColors || []).includes(c));
+  
+  if (commonColors.length > 0 && a.fingerprint.material === b.fingerprint.material) {
+    return `Mismo material y tonalidad similar (${commonColors[0]})`;
+  }
+  if (commonColors.length > 0) {
+    return `Tonalidades cromáticas similares (${commonColors[0]})`;
   }
   if (a.color.hue === b.color.hue) {
     return "Tonalidades cromáticas equivalentes";

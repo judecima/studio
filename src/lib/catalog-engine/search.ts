@@ -28,12 +28,20 @@ export function searchProducts(products: CatalogProduct[], query: string): Searc
       let relevance = 0;
       const content = `${p.name} ${p.description} ${p.brand} ${p.color.hue} ${p.line}`.toLowerCase();
 
+      // Coincidencia exacta de nombre
       if (p.name.toLowerCase().includes(q)) relevance += 10;
       
+      // Coincidencia en contenido expandido
       expandedTerms.forEach(term => {
         if (content.includes(term)) relevance += 2;
       });
 
+      // Coincidencia con Colores Básicos asignados
+      if (p.color.basicColors && p.color.basicColors.some(c => expandedTerms.includes(c))) {
+        relevance += 8;
+      }
+
+      // Coincidencia por marca
       if (p.brand.toLowerCase() === q) relevance += 5;
 
       return { product: p, relevance };

@@ -10,17 +10,22 @@ export type ToneType = 'calido' | 'frio' | 'neutro';
 export interface CatalogProduct {
   id: string;
   name: string;
+  sku?: string;
   brand: string;
   line: string;
   collection: string;
   launch: boolean;
+  launchYear?: number;
   texture: string;
+  surfaceTexture?: string;
   finish: string;
   hasGrain: boolean;
+  isSmooth: boolean;
   color: {
     name: string;
     group: ColorGroup;
     hue: ColorHue;
+    basicColors: string[];
     semanticTags: string[];
   };
   dimensions: {

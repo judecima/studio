@@ -14,15 +14,35 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/firebase/provider";
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, role, isUserLoading } = useUser();
 
   const menuItems = [
-    { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
-    { label: "Paneles", icon: Package, href: "/admin/panels" },
-    { label: "Importar Catálogo", icon: FileUp, href: "/admin/import" },
-    { label: "Configuración", icon: Settings, href: "/admin/settings" },
+    { label: "Dashboard", icon: LayoutDashboard, href: "/admin", roles: ["vendedor", "administrador", "admin"] },
+    { label: "Paneles", icon: Package, href: "/admin/panels", roles: ["vendedor", "administrador", "admin"] },
+    { label: "Importar Catálogo", icon: FileUp, href: "/admin/import", roles: ["administrador", "admin"] },
+    { label: "Usuarios", icon: Settings, href: "/admin/users", roles: ["admin"] },
   ];
+
+  useEffect(() => {
+    if (!isUserLoading && (!user || role === 'cliente')) {
+      router.push('/');
+    }
+  }, [user, role, isUserLoading, router]);
+
+  if (isUserLoading || !user || role === 'cliente') {
+    return <div className="min-h-screen flex items-center justify-center">Cargando permisos...</div>;
+  }
+
+  // Filter allowed paths for the current view
+  const accessDenied = pathname.includes('/admin/import') && !['administrador', 'admin'].includes(role as string) || 
+                       pathname.includes('/admin/users') && role !== 'admin';
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
@@ -38,7 +58,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className="flex-1 space-y-1">
-          {menuItems.map((item) => (
+          {menuItems
+            .filter((item) => item.roles.includes(role as string))
+            .map((item) => (
             <Link 
               key={item.href} 
               href={item.href}
@@ -70,10 +92,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 overflow-auto bg-slate-50/50 p-4 md:p-8">
         <div className="max-w-6xl mx-auto">
-          {children}
+          {accessDenied ? (
+             <div className="p-8 text-center bg-white rounded-lg border shadow-sm">
+               <h2 className="text-xl font-bold text-slate-800 mb-2">Acceso Restringido ⛔</h2>
+               <p className="text-slate-600">No tienes permisos suficientes para visualizar este módulo. Necesitas un rango superior asignado por el administrador general.</p>
+             </div>
+          ) : children}
         </div>
       </main>
     </div>

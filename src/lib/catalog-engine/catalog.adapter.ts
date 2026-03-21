@@ -47,14 +47,19 @@ export function adaptToProduct(raw: any, storageUrl: string): CatalogProduct {
   else if (/(lino|seda|textil|hilado|tweed)/.test(content)) material = 'textil';
   else if (/(piedra|marmol|concreto|hormigon|stucco)/.test(content)) material = 'piedra';
 
-  // Inferencia de Hue
+  // Inferencia de Hue y basicColors
   let hue: ColorHue = 'otros';
+  const basicColorsSet = new Set<string>();
+
   for (const [key, value] of Object.entries(COLOR_MAP)) {
     if (content.includes(key)) {
-      hue = value;
-      break;
+      if (hue === 'otros') hue = value;
+      basicColorsSet.add(value);
     }
   }
+
+  const basicColors = Array.from(basicColorsSet);
+  if (basicColors.length === 0) basicColors.push('otros');
 
   // Tono
   const tone: ToneType = /(calido|madera|marron|arena|oro|beige)/.test(content) ? 'calido' : 
@@ -64,20 +69,33 @@ export function adaptToProduct(raw: any, storageUrl: string): CatalogProduct {
   const group: ColorGroup = /(blanco|claro|chiaro|premium|nieve|crema)/.test(content) ? 'claro' :
                            /(negro|oscuro|notte|tabaco|profundo|grafito)/.test(content) ? 'oscuro' : 'medio';
 
+  // Nuevos atributos de scraping o inferidos
+  const isLaunch = raw.launch !== undefined ? Boolean(raw.launch) : content.includes('lanzamiento');
+  let launchYear = raw.launchYear ? Number(raw.launchYear) : undefined;
+  if (!launchYear && content.includes('lanzamiento 2024')) launchYear = 2024;
+
+  const isSmooth = raw.isSmooth !== undefined ? Boolean(raw.isSmooth) : material === 'liso';
+  const surfaceTexture = raw.surfaceTexture || (material === 'madera' ? 'veta' : material === 'textil' ? 'trama' : 'mate');
+
   return {
     id: normalizePanelId(raw.name),
+    sku: raw.sku || "",
     name: raw.name,
     brand: raw.brand || "Faplac",
     line: raw.name.split(' ')[0] || "General",
     collection: "2024",
-    launch: content.includes('lanzamiento'),
-    texture: material === 'madera' ? 'veta' : material === 'textil' ? 'trama' : 'mate',
+    launch: isLaunch,
+    ...(launchYear !== undefined ? { launchYear } : {}),
+    texture: surfaceTexture || 'mate',
+    ...(surfaceTexture !== undefined ? { surfaceTexture } : {}),
     finish: 'mate',
     hasGrain: material === 'madera',
+    isSmooth,
     color: {
       name: hue,
       group,
       hue,
+      basicColors,
       semanticTags: SEMANTIC_TAGS[hue] || []
     },
     dimensions: raw.dimensions || { width: 1830, height: 2750, thickness: 18 },
