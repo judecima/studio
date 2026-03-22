@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Plus, Search, Edit2, MoreVertical, Trash2, Loader2, PackageOpen } from "lucide-react";
 import { 
   DropdownMenu, 
@@ -37,6 +38,7 @@ export default function AdminPanelsPage() {
   const { user } = useUser();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOnlyMissingImages, setShowOnlyMissingImages] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   const panelsQuery = useMemoFirebase(() => {
@@ -48,11 +50,19 @@ export default function AdminPanelsPage() {
 
   const filteredPanels = useMemo(() => {
     if (!panels) return [];
-    return panels.filter(p => 
-      p.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      p.brand?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [panels, searchTerm]);
+    return panels.filter(p => {
+      const matchesSearch = p.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                           p.brand?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      if (!matchesSearch) return false;
+      
+      if (showOnlyMissingImages) {
+        return !p.mainImage || p.mainImage.includes('placehold.co') || p.mainImage.includes('Subir+Imagen');
+      }
+      
+      return true;
+    });
+  }, [panels, searchTerm, showOnlyMissingImages]);
 
   const toggleVisibility = async (panelId: string, currentStatus: boolean) => {
     if (!db) return;
@@ -128,6 +138,11 @@ export default function AdminPanelsPage() {
           <p className="text-muted-foreground">Administra el inventario real sincronizado con Firestore.</p>
         </div>
         <div className="flex gap-2">
+          <Link href="/admin/import">
+            <Button variant="outline" className="gap-2 h-11 border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+              <Plus className="h-5 w-5" /> Importar Excel
+            </Button>
+          </Link>
           <Button 
             variant="outline" 
             className="text-red-500 border-red-200 hover:bg-red-50 gap-2 h-11"
@@ -135,7 +150,7 @@ export default function AdminPanelsPage() {
             disabled={isDeletingAll}
           >
             {isDeletingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-            Borrar Todo el Catálogo
+            Borrar Todo
           </Button>
           <Link href="/admin/panels/new">
             <Button className="gap-2 h-11 px-6 shadow-lg shadow-primary/20">
@@ -145,7 +160,7 @@ export default function AdminPanelsPage() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4 bg-white p-4 rounded-xl border shadow-sm">
+      <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded-xl border shadow-sm">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input 
@@ -155,7 +170,19 @@ export default function AdminPanelsPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Badge variant="secondary" className="h-10 px-4 rounded-md">
+        
+        <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-lg border border-slate-100">
+          <Switch 
+            id="missing-images" 
+            checked={showOnlyMissingImages}
+            onCheckedChange={setShowOnlyMissingImages}
+          />
+          <Label htmlFor="missing-images" className="text-xs font-bold uppercase tracking-tight text-slate-600 cursor-pointer">
+            Faltan Imágenes
+          </Label>
+        </div>
+
+        <Badge variant="secondary" className="h-10 px-4 rounded-md ml-auto">
           {isLoading ? "Sincronizando..." : `${filteredPanels.length} productos`}
         </Badge>
       </div>
@@ -185,6 +212,8 @@ export default function AdminPanelsPage() {
                 <TableHead>Marca</TableHead>
                 <TableHead>Espesor</TableHead>
                 <TableHead>Medidas (mm)</TableHead>
+                <TableHead>Textura</TableHead>
+                <TableHead>Atributos</TableHead>
                 <TableHead>Stock</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
@@ -203,18 +232,56 @@ export default function AdminPanelsPage() {
                           className="object-cover" 
                         />
                       </div>
-                      <div className="flex flex-col">
+                      <div className="flex flex-col max-w-[400px]">
                         <span className="font-bold text-sm text-slate-900 leading-tight">{panel.name}</span>
-                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">{panel.id}</span>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">{panel.id}</span>
+                          {panel.code && <Badge variant="outline" className="text-[9px] py-0 h-4 bg-slate-50 text-slate-500 border-slate-200">{panel.code}</Badge>}
+                        </div>
+                        {panel.description && (
+                          <p className="text-[10px] text-slate-500 line-clamp-2 mt-1 italic">
+                            "{panel.description}"
+                          </p>
+                        )}
+                        {panel.applications && panel.applications.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {panel.applications.map((app, i) => (
+                              <span key={i} className="text-[9px] bg-slate-100 text-slate-600 px-1 rounded border border-slate-200 uppercase font-medium">
+                                {app}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-white border-slate-200">{panel.brand}</Badge>
+                    <Badge variant="outline" className={cn(
+                      "bg-white border-slate-200",
+                      panel.brand === 'Egger' ? 'text-primary border-primary/20' : 'text-slate-600'
+                    )}>{panel.brand}</Badge>
                   </TableCell>
                   <TableCell className="font-medium">{panel.thickness} mm</TableCell>
                   <TableCell className="text-muted-foreground text-xs font-mono">
                     {panel.width} x {panel.height}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-xs font-medium text-slate-600">{panel.surfaceTexture || '-'}</span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-1">
+                        <Badge variant="secondary" className="text-[10px] py-0 h-4 px-1.5 font-bold">
+                          {panel.isSmooth ? 'LISO' : 'RUGOSO'}
+                        </Badge>
+                        {panel.launchYear && (
+                          <span className="text-[10px] text-primary font-bold">New {panel.launchYear}</span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        {panel.colorGroup} / {panel.colorHue}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <span className={cn(
@@ -236,26 +303,21 @@ export default function AdminPanelsPage() {
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreVertical className="h-4 w-4 text-slate-400" />
+                    <div className="flex justify-end items-center gap-1">
+                      <Link href={`/admin/panels/${panel.id}/edit`}>
+                        <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-600 hover:text-primary hover:bg-primary/5">
+                          <Edit2 className="h-4 w-4" />
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <Link href={`/admin/panels/${panel.id}/edit`}>
-                          <DropdownMenuItem className="gap-2 cursor-pointer font-medium">
-                            <Edit2 className="h-3.5 w-3.5" /> Editar Ficha
-                          </DropdownMenuItem>
-                        </Link>
-                        <DropdownMenuItem 
-                          className="gap-2 text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer font-medium"
-                          onClick={() => handleDelete(panel.id)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" /> Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      </Link>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-9 w-9 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => handleDelete(panel.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

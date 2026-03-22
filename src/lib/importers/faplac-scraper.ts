@@ -152,9 +152,8 @@ export async function runIndustrialPipeline() {
             width: 1830,
             height: 2750,
             thickness: 18,
-            hasGrain: !productData.isSmooth,
             description: productData.description,
-            stock: 100,
+            stock: 0,
             images: [finalImageUrl],
             mainImage: finalImageUrl,
             visible: true,
@@ -163,7 +162,15 @@ export async function runIndustrialPipeline() {
             colorGroup: isDark ? 'oscuro' : isLight ? 'claro' : 'medio',
             colorHue: materialHue,
             styleTags: ['moderno', 'industrial'],
-            useCases: ['cocina', 'placard', 'oficina']
+            useCases: ['cocina', 'placard', 'oficina'],
+            code: productData.sku || "",
+            surfaceTexture: productData.surfaceTexture || "",
+            isSmooth: !!productData.isSmooth,
+            launchYear: productData.launchYear || 0,
+            applications: productData.aplicaciones || [],
+            antiFingerprint: !!productData.antiFingerprint,
+            finish: productData.finish || "",
+            hasGrain: !!productData.hasGrain
           };
 
           await setDoc(doc(firestore, 'panels', panelDoc.id), panelDoc, { merge: true });
@@ -216,7 +223,7 @@ async function loadMesopotamiaLine(firestore: any) {
       thickness: item.thickness || 18,
       hasGrain: true, // Typical for Mesopotamia
       description: item.description || "Tablero melamínico de la Línea Mesopotamia.",
-      stock: 100,
+      stock: 0,
       images: [mockUrl],
       mainImage: mockUrl,
       visible: true,
@@ -245,10 +252,13 @@ function scrapeProductDetailFromHtml(url: string, html: string) {
     if (!name) name = $('.page-title .base').text().trim();
     if (!name) name = $('h1').first().text().trim();
 
-    const description = $('.description').first().text().trim() || 
+    const description = $('.product.info.overview').text().trim() || 
+                        $('.description').first().text().trim() || 
                         $('.product.attribute.description .value').text().trim() || 
                         $('meta[name="description"]').attr('content') || 
                         "Tablero melamínico de alta calidad.";
+    
+    const aplicaciones = $('.product.attribute.usos .value').text().split(',').map(s => s.trim()).filter(Boolean) || [];
     
     let imageUrl = $('img.img-responsive.m-center').attr('src') ||
                    $('meta[property="og:image"]').attr('content') || 
@@ -278,8 +288,12 @@ function scrapeProductDetailFromHtml(url: string, html: string) {
     else if (lowerDesc.includes('hilados') || url.includes('hilados')) detectedLine = 'Línea Hilados';
     else if (lowerDesc.includes('nature') || url.includes('nature')) detectedLine = 'Línea Nature';
 
-    return { name, description, imageUrl, brand: 'Faplac', linea: detectedLine, isSmooth, surfaceTexture, launchYear, launch, sku };
+    const antiFingerprint = lowerDesc.includes('anti-huella') || lowerDesc.includes('soft touch') || lowerDesc.includes('perfect sense');
+    const finish = lowerDesc.includes('mate') ? 'Mate' : (lowerDesc.includes('brillo') ? 'Brillante' : 'Seda / Natural');
+    const hasGrain = !lowerDesc.includes('unícolor') && !name.toLowerCase().includes('blanco') && (lowerDesc.includes('veta') || lowerDesc.includes('madera') || !!detectedLine?.includes('Nature'));
+
+    return { name, description, imageUrl, brand: 'Faplac', linea: detectedLine, isSmooth, surfaceTexture, launchYear, launch, sku, aplicaciones, antiFingerprint, finish, hasGrain };
   } catch (e) {
-    return { name: "", description: "", imageUrl: "", brand: 'Faplac', isSmooth: false, launch: false };
+    return { name: "", description: "", imageUrl: "", brand: 'Faplac', isSmooth: false, launch: false, aplicaciones: [] };
   }
 }

@@ -26,7 +26,7 @@ export class CatalogEngine {
           score: calculateSimilarity(base, p),
           reason: getSimilarityReason(base, p)
         }))
-        .filter(s => s.score >= 0.5)
+        .filter(s => s.score >= 0.6)
         .sort((a, b) => b.score - a.score)
         .slice(0, 8);
       

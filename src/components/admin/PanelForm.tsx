@@ -33,7 +33,14 @@ import {
   CardDescription 
 } from "@/components/ui/card";
 import { Panel, ColorGroup } from "@/lib/types";
-import { Sparkles, Loader2, Save, X } from "lucide-react";
+import { 
+  Sparkles, 
+  Loader2, 
+  Save, 
+  X, 
+  Image as ImageIcon, 
+  Upload 
+} from "lucide-react";
 import { autocompletePanelDetails } from "@/ai/flows/admin-panel-autocompletion";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -120,6 +127,24 @@ export function PanelForm({ mode, initialData }: Props) {
       useCases: [],
     },
   });
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast({ title: "Archivo demasiado grande", description: "El límite es 2MB.", variant: "destructive" });
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        form.setValue("mainImage", base64String);
+        toast({ title: "Imagen Cargada", description: "Vista previa actualizada correctamente." });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleAutocomplete = async () => {
     const name = form.getValues("name");
@@ -317,8 +342,38 @@ export function PanelForm({ mode, initialData }: Props) {
                 name="mainImage"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>URL Imagen Principal</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
+                    <FormLabel>Imagen Principal</FormLabel>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-24 h-24 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shrink-0 relative flex items-center justify-center text-slate-300">
+                        {field.value && isValidUrl(field.value) || field.value?.startsWith('data:image') ? (
+                          <img src={field.value} alt="Preview" className="w-full h-full object-cover" />
+                        ) : (
+                          <ImageIcon className="h-8 w-8" />
+                        )}
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <FormControl><Input placeholder="URL de la imagen..." {...field} /></FormControl>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            type="button" 
+                            variant="secondary" 
+                            size="sm" 
+                            className="gap-2 h-9"
+                            onClick={() => document.getElementById('image-upload')?.click()}
+                          >
+                            <Upload className="h-4 w-4" /> Subir Archivo
+                          </Button>
+                          <input 
+                            id="image-upload" 
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            onChange={handleImageUpload} 
+                          />
+                          <p className="text-[10px] text-muted-foreground">O pega una URL directa arriba.</p>
+                        </div>
+                      </div>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

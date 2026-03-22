@@ -1,6 +1,6 @@
 
-export type ColorGroup = 'claro' | 'medio' | 'oscuro';
-export type ColorHue = 'blanco' | 'gris' | 'beige' | 'madera clara' | 'madera oscura' | 'negro' | 'azul' | 'verde' | 'otros';
+export type ColorGroup = 'blanco' | 'gris' | 'negro' | 'madera' | 'beige' | 'terracota' | 'merlot' | 'amatista' | 'otro' | 'claro' | 'medio' | 'oscuro';
+export type ColorHue = string;
 export type StyleTag = 'moderno' | 'clasico' | 'industrial' | 'nordico' | 'minimalista';
 export type UseCase = 'cocina' | 'placard' | 'oficina' | 'baño' | 'comedor';
 
@@ -24,6 +24,17 @@ export type Panel = {
   colorHue: ColorHue;
   styleTags: string[];
   useCases: string[];
+  code?: string;
+  url?: string;
+  surfaceTexture?: string;
+  isSmooth?: boolean;
+  launchYear?: number;
+  applications?: string[];
+  antiFingerprint?: boolean;
+  finish?: string;
+  // Valores cromáticos certificados (fuente: fabricante o medición LAB)
+  hexColor?: string;  // Color HEX real de la placa (ej: "#E7DCC5")
+  labColor?: { l: number; a: number; b: number };  // Valores LAB certificados
   // Metadata de similaridad opcional
   similarity?: {
     score: number;
@@ -78,3 +89,33 @@ export interface AppUser {
   email: string | null;
   role: UserRole;
 }
+
+export interface EquivalenceMatch {
+  id: string;
+  name: string;
+  code: string;
+  score: number;
+  metadata?: {
+    description?: string;
+    surfaceTexture?: string;
+    isSmooth?: boolean;
+  };
+}
+
+export interface Equivalence {
+  faplacCode: string;
+  faplacName: string;
+  faplacMetadata?: any;
+  bestMatches: EquivalenceMatch[];
+  text: string;
+  updatedAt: any;
+}
+
+export type ClassifiedPanel = Panel & {
+  colorGroup: string;
+  tone: string;
+  temperature: string;
+  texture: string;
+  certifiedLab?: { l: number; a: number; b: number };
+  avgColor?: { r: number; g: number; b: number };
+};

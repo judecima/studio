@@ -1,259 +1,157 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer';
+import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
-import { initializeFirebase } from '@/firebase';
+
+import { initializeFirebase } from '../../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { normalizePanelId } from '../catalog-engine/catalog.adapter';
 
-const BASE_URL = 'https://www.egger.com';
 const START_URL = 'https://www.egger.com/es/mobiliario-e-interiorismo/?country=CL';
 
-const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-};
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export async function runEggerPipeline() {
   const { firestore } = initializeFirebase();
-  console.log("🚀 Iniciando Pipeline Egger Latam...");
-  let browser: any = null;
-  
+  console.log("🚀 Egger PRO Scraper (Auth-Integrated) iniciado...");
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+
+  console.log(`📡 Navegando a Egger para extraer tokens de sesión...`);
+  await page.goto(START_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await delay(5000);
+
+  // Intentar aceptar cookies para limpiar el DOM
   try {
-    const allProductLinks = new Set<string>();
+    const cookieBtn = await page.$('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll') || 
+                      await page.$('#onetrust-accept-btn-handler');
+    if (cookieBtn) await cookieBtn.click();
+  } catch (e) {}
 
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-dev-shm-usage',
-        '--disable-blink-features=AutomationControlled'
-      ]
-    });
+  // 🔥 EXTRAER VARIABLES DE SESION
+  const sessionData = await page.evaluate(() => {
+    return (window as any).commonScriptVariables || null;
+  });
+
+  if (!sessionData || !sessionData.csrfToken) {
+    console.log("  ⚠️ No se encontró commonScriptVariables.csrfToken. Intentando reintentar...");
+    await delay(5000);
+  }
+
+  console.log(`  🔑 Token CSRF detectado: ${sessionData?.csrfToken ? 'OK' : 'MISSING'}`);
+
+  // 🔥 EJECUTAR LLAMADAS API DESDE EL BROWSER (Hereda cookies + CSRF)
+  const allProductsData = await page.evaluate(async (data) => {
+    const apiBase = data.apiBaseURL || 'https://api.www.egger.com';
+    const csrf = data.csrfToken;
+    const searchUrl = `${apiBase}/pimedp/decor-search/api/searchLucene?country=CL&language=es`;
     
-    const page = await browser.newPage();
-    await page.setUserAgent(HEADERS['User-Agent']);
-    await page.setExtraHTTPHeaders({
-       'Accept-Language': 'es-ES,es;q=0.9',
-    });
-
-    console.log(`📡 Navegando a Catálogo Egger: ${START_URL}`);
-    try {
-      await page.goto(START_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    } catch (e) {
-      console.log(`⚠️ Advertencia: Timeout al cargar Egger (ignorable si el DOM cargó).`);
-    }
-
-    // Esperar a que la página asiente scripts básicos
-    await new Promise(r => setTimeout(r, 5000));
-
-    // Handle Cookie Banner if present
-    try {
-      await page.evaluate(() => {
-        const acceptBtn = document.querySelector('#onetrust-accept-btn-handler') as HTMLElement;
-        if (acceptBtn) acceptBtn.click();
-      });
-      await new Promise(r => setTimeout(r, 1000));
-    } catch(e) {}
-
-    console.log(`Buscando botones de "Mostrar más"...`);
-    
-    let hasMore = true;
-    let attempts = 0;
-    while (hasMore && attempts < 25) { // Seguridad contra loops infinitos
-      hasMore = await page.evaluate(() => {
-        let clicked = false;
-        const buttons = document.querySelectorAll('button, a, .js-load-more');
-        for (const btn of Array.from(buttons)) {
-          const text = (btn.textContent || '').trim().toLowerCase();
-          const className = (btn.className || '').toLowerCase();
-          
-          if (
-            (text.includes('mostrar más') || text.includes('load more') || text.includes('cargar más') || text.includes('mostrar mas')) || 
-            (className.includes('load-more') || className.includes('show-more'))
-          ) {
-             const htmlBtn = btn as HTMLElement;
-             if (htmlBtn.offsetParent !== null && !htmlBtn.hasAttribute('disabled')) { 
-               htmlBtn.click();
-               clicked = true;
-               break;
-             }
-          }
-        }
-        return clicked;
-      });
-
-      if (hasMore) {
-        console.log(`Click en Mostrar Más (Scroll ${attempts + 1})...`);
-        await new Promise(r => setTimeout(r, 3500)); // Wait for AJAX elements to render
-        await page.evaluate(() => window.scrollBy(0, document.body.scrollHeight));
-        attempts++;
+    const config: RequestInit = {
+      credentials: "include" as RequestCredentials,
+      headers: { 
+        "X-Sec-Csrf-Token": csrf,
+        "Accept": "application/json",
+        "Content-Type": "application/json"
       }
-    }
+    };
 
-    // Scroll sweep again to load images
-    await page.evaluate(async () => {
-       window.scrollBy(0, document.body.scrollHeight / 2);
-       await new Promise(r => setTimeout(r, 1000));
-       window.scrollBy(0, document.body.scrollHeight);
-    });
-
-    // Recolectar Links
-    const linksOnPage = await page.evaluate(() => {
-      const links = new Set<string>();
-      const allNodes = document.querySelectorAll('a');
-      allNodes.forEach((a: any) => {
-         // Typical Egger product path: /es/mobiliario-e-interiorismo/product-detail/...
-         if (a.href && (a.href.includes('/product-detail/') || a.href.includes('/p/'))) {
-            links.add(a.href.split('?')[0].split('#')[0]);
-         }
+    // 1. Get Codes
+    const searchRes = await fetch(searchUrl, config);
+    const searchJson = await searchRes.json();
+    const codes: string[] = searchJson.codes || [];
+    
+    // 2. Get Detail Data in chunks
+    const PAGE_SIZE = 24;
+    const detailedItems: any[] = [];
+    
+    for (let i = 0; i < codes.length; i += PAGE_SIZE) {
+      const chunk = codes.slice(i, i + PAGE_SIZE);
+      const detailRes = await fetch(`${apiBase}/pimedp/decor-search/api/detaildata`, {
+        ...config,
+        method: "POST",
+        body: JSON.stringify(chunk)
       });
-      return Array.from(links);
-    });
-
-    linksOnPage.forEach((link: string) => {
-      if (!link.startsWith('http')) link = `${BASE_URL}${link}`;
-      allProductLinks.add(link);
-    });
-
-    const productLinks = Array.from(allProductLinks);
-    console.log(`✅ Encontrados ${productLinks.length} enlaces únicos de Egger tras exprimir la paginación.`);
-
-    let processedCount = 0;
-    const chunkSize = 5;
+      const detailJson = await detailRes.json();
+      if (detailJson.items) detailedItems.push(...detailJson.items);
+    }
     
-    for (let i = 0; i < productLinks.length; i += chunkSize) {
-      const chunk = productLinks.slice(i, i + chunkSize);
-      
-      await Promise.all(chunk.map(async (url) => {
-        try {
-          const detailPage = await browser.newPage();
-          await detailPage.setUserAgent(HEADERS['User-Agent']);
-          await detailPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-          const html = await detailPage.content();
-          await detailPage.close();
+    return detailedItems;
+  }, sessionData);
 
-          const productData = scrapeProductDetailFromHtml(url, html);
-          if (!productData.name) return;
+  console.log(`✅ API respondio con ${allProductsData.length} items.`);
+  await browser.close();
 
-          const slug = normalizePanelId(`Egger ${productData.sku || productData.name}`);
-          
-          let finalImageUrl = productData.imageUrl;
-          if (finalImageUrl) {
-            const localDir = path.join(process.cwd(), 'public', 'images', 'egger');
-            const localFilePath = path.join(localDir, `${slug}.jpg`);
-            finalImageUrl = `/images/egger/${slug}.jpg`;
-            
-            try {
-              if (!fs.existsSync(localFilePath)) {
-                if (!fs.existsSync(localDir)) {
-                  fs.mkdirSync(localDir, { recursive: true });
-                }
-                const imageResponse = await axios.get(productData.imageUrl, { 
-                  responseType: 'arraybuffer',
-                  timeout: 20000,
-                  headers: Object.assign({}, HEADERS, { Referer: url })
-                });
-                fs.writeFileSync(localFilePath, imageResponse.data);
-              }
-            } catch (e) {
-              console.error(`⚠️ Fallo imagen local para ${slug}`);
-              finalImageUrl = productData.imageUrl; // fallback to remote
-            }
+  if (!allProductsData.length) throw new Error("No se recuperaron productos de la API.");
+
+  // 🔥 PROCESAR E IMPORTAR
+  let count = 0;
+  const localDir = path.join(process.cwd(), 'public', 'images', 'egger');
+  if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
+
+  for (const item of allProductsData) {
+    try {
+      const name = (item?.link?.text || item?.name || '').trim();
+      const code = (item?.overline || item?.code || '').trim();
+      if (!name || !code) continue;
+
+      const slug = normalizePanelId(`egger-${code}`);
+      let imageUrl = item?.image?.url || '';
+
+      if (imageUrl && imageUrl.startsWith('http')) {
+        const localFile = path.join(localDir, `${slug}.jpg`);
+        if (!fs.existsSync(localFile)) {
+          try {
+            const res = await axios.get(imageUrl, { responseType: 'arraybuffer', timeout: 15000 });
+            fs.writeFileSync(localFile, res.data);
+            imageUrl = `/images/egger/${slug}.jpg`;
+          } catch (e) {
+            console.log(`  ⚠️ Error imagen ${code}`);
           }
-
-          // Adaptar a Panel Firestore
-          const hueMap: Record<string, string> = { 
-             'rojo': 'rojo', 'bordo': 'rojo', 'blanco': 'blanco', 'marfil': 'blanco', 
-             'negro': 'negro', 'grafito': 'negro', 'gris': 'gris', 'cemento': 'gris', 
-             'beige': 'beige', 'arena': 'beige', 'marron': 'marron', 'nogal': 'marron',
-             'roble': 'madera clara', 'wengue': 'madera oscura', 'haya': 'madera clara'
-          };
-          
-          let materialHue = 'otros';
-          for (const [key, val] of Object.entries(hueMap)) {
-            if ((productData.name + ' ' + productData.description).toLowerCase().includes(key)) {
-               materialHue = val; break;
-            }
-          }
-
-          const isDark = (productData.name + productData.description).toLowerCase().match(/(negro|oscuro|tabaco|notte|marron|wengue)/);
-          const isLight = (productData.name + productData.description).toLowerCase().match(/(blanco|claro|nieve|crema|marfil|roble|haya)/);
-
-          const panelDoc = {
-            id: slug,
-            name: `${productData.name} ${productData.sku ? `(${productData.sku})` : ''}`.trim(),
-            brand: "Egger",
-            width: 2800,
-            height: 2070,
-            thickness: 18,
-            hasGrain: !productData.isSmooth,
-            description: productData.description || "Tablero melamínico de alta gama - Línea Egger.",
-            stock: 100,
-            images: finalImageUrl ? [finalImageUrl] : [],
-            mainImage: finalImageUrl || '',
-            visible: true,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            colorGroup: isDark ? 'oscuro' : isLight ? 'claro' : 'medio',
-            colorHue: materialHue,
-            styleTags: ['moderno', 'europeo', 'egger'],
-            useCases: ['cocina', 'placard', 'oficina', 'baño']
-          };
-
-          await setDoc(doc(firestore, 'panels', panelDoc.id), panelDoc, { merge: true });
-          
-          processedCount++;
-        } catch (err: any) {
-          console.error(`⚠️ Error en ${url}:`, err.message);
+        } else {
+          imageUrl = `/images/egger/${slug}.jpg`;
         }
-      }));
-    }
-    
-    await browser.close();
-    return { success: true, count: processedCount };
+      }
 
-  } catch (error: any) {
-    if (browser) await browser.close();
-    console.error("❌ Falló completo el scraper Egger.", error.message);
-    return { success: false, error: error.message };
+      const panelDoc = {
+        id: slug,
+        name,
+        brand: 'Egger',
+        width: 2800,
+        height: 2070,
+        thickness: 18,
+        description: `Melamina Egger de alta calidad. Diseño ${name} (${code}).`,
+        stock: 0,
+        images: imageUrl ? [imageUrl] : [],
+        mainImage: imageUrl,
+        visible: true,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        surfaceTexture: code.match(/ST\d+/) ? code.match(/ST\d+/)![0] : 'Standard',
+        isSmooth: code.includes('ST9') || name.toLowerCase().includes('mate'),
+        antiFingerprint: name.includes('PerfectSense') || name.includes('Matt') || code.includes('ST9'),
+        finish: name.includes('PerfectSense') ? 'Premium Matt' : (code.match(/ST\d+/) ? `Textura ${code.match(/ST\d+/)![0]}` : 'Textura Estándar'),
+        hasGrain: !code.includes('U') && !name.toLowerCase().includes('unicolor') && !name.toLowerCase().includes('blanco'),
+        code,
+        url: `https://www.egger.com/es/furniture-interior-design/decor-search/${code}`
+      };
+
+      await setDoc(doc(firestore, 'panels', slug), panelDoc, { merge: true });
+      count++;
+      if (count % 20 === 0) console.log(`  📥 Importados: ${count}/${allProductsData.length}`);
+
+    } catch (e: any) {
+      console.log(`❌ Error importando: ${e.message}`);
+    }
   }
-}
 
-function scrapeProductDetailFromHtml(url: string, html: string) {
-  try {
-    const $ = cheerio.load(html);
-
-    let name = $('h1').first().text().trim();
-    if (!name) name = $('.product-title').text().trim();
-    if (!name) name = $('title').text().split('|')[0].trim();
-
-    const description = $('.product-description').first().text().trim() || 
-                        $('meta[name="description"]').attr('content') || "";
-    
-    // Attempt multiple Egger Image selectors
-    let imageUrl = $('.product-image img').attr('src') ||
-                   $('meta[property="og:image"]').attr('content') ||
-                   $('.main-image img').attr('src') || "";
-
-    if (imageUrl && !imageUrl.startsWith('http')) {
-      imageUrl = imageUrl.startsWith('//') ? `https:${imageUrl}` : `${BASE_URL}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
-    }
-
-    // SKU Extraction (often H1180 or W1000)
-    let sku = '';
-    const skuMatch = name.match(/([H|W|U|F]\d{3,4})/i); 
-    if (skuMatch) {
-      sku = skuMatch[1];
-    } else {
-      sku = $('.product-sku').text().trim();
-    }
-
-    const isSmooth = description.toLowerCase().includes('liso') || description.toLowerCase().includes('st9') || description.toLowerCase().includes('mate');
-
-    return { name, description, imageUrl, sku, isSmooth };
-  } catch (e) {
-    return { name: "", description: "", imageUrl: "", sku: "", isSmooth: false };
-  }
+  console.log(`🎉 Sincronización completa: ${count} melaminas.`);
+  return { success: true, count };
 }
