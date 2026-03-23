@@ -122,47 +122,52 @@ function detectTemp(n: string): string {
 }
 
 // ----------------------------------------------------------------------
-// Muestreo de imagen (área central 40%‑60%)
+// Muestreo de imagen (Optimizado con Sharp v7.0)
 // ----------------------------------------------------------------------
 async function getAverageColor(imagePath: string): Promise<{ r: number; g: number; b: number } | undefined> {
+  const fullPath = path.join(process.cwd(), 'public', imagePath);
+  if (!fs.existsSync(fullPath)) return undefined;
+
   try {
-    const { Jimp } = await import('jimp');
-    const fullPath = path.join(process.cwd(), 'public', imagePath);
-    if (!fs.existsSync(fullPath)) return undefined;
-
-    const img = await Jimp.read(fullPath);
-    const w = img.width;
-    const h = img.height;
-    const x0 = Math.floor(w * 0.4);
-    const y0 = Math.floor(h * 0.4);
-    const x1 = Math.floor(w * 0.6);
-    const y1 = Math.floor(h * 0.6);
-
-    let rSum = 0, gSum = 0, bSum = 0, count = 0;
-    const step = Math.max(1, Math.floor((x1 - x0) / 10));
-
-    for (let y = y0; y < y1; y += step) {
-      for (let x = x0; x < x1; x += step) {
-        const rgba = img.getPixelColor(x, y);
-        // Bitwise extraction (Universal Compatibility)
-        rSum += (rgba >>> 24) & 0xff;
-        gSum += (rgba >>> 16) & 0xff;
-        bSum += (rgba >>> 8) & 0xff;
-        count++;
-      }
+    const sharpModule = await import('sharp');
+    const sharp = sharpModule.default;
+    
+    let pipeline = sharp(fullPath);
+    const metadata = await pipeline.metadata();
+    
+    // 🔥 Redimensionar a 500px para análisis ultra-veloz si es muy grande
+    if (metadata.width && metadata.height && (metadata.width > 500 || metadata.height > 500)) {
+      pipeline = pipeline.resize(500, 500, { fit: 'inside' });
     }
+    
+    const { data, info } = await pipeline
+      .raw()
+      .toBuffer({ resolveWithObject: true });
 
-    if (count === 0) return undefined;
+    const pixelCount = info.width * info.height;
+    let r = 0, g = 0, b = 0;
+    
+    // Procesar buffer raw de forma eficiente
+    const channels = info.channels || 3;
+    for (let i = 0; i < pixelCount; i++) {
+      const offset = i * channels;
+      r += data[offset];
+      g += data[offset + 1];
+      b += data[offset + 2];
+    }
+    
     return {
-      r: Math.floor(rSum / count),
-      g: Math.floor(gSum / count),
-      b: Math.floor(bSum / count)
+      r: Math.floor(r / pixelCount),
+      g: Math.floor(g / pixelCount),
+      b: Math.floor(b / pixelCount),
     };
   } catch (e) {
-    console.error(`Error en getAverageColor (${imagePath}):`, (e as Error).message);
+    console.error(`❌ Error en getAverageColor Sharp (${imagePath}):`, (e as Error).message);
     return undefined;
   }
 }
+
+
 
 function rgbToLab(r: number, g: number, b: number) {
   const lab = toLab({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 });

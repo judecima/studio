@@ -18,9 +18,12 @@ function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * 🔥 Faplac Industrial Scraper v6.8: Ultra-Fast Opt & High Res (1200H)
+ */
 export async function runIndustrialPipeline() {
   const { firestore } = initializeFirebase();
-  console.log("🚀 Iniciando Pipeline Industrial Faplac (con login y especificaciones completas)...");
+  console.log("🚀 Iniciando Pipeline Faplac v6.8 (Ultra-Fast 1200H)...");
   let browser: any = null;
 
   try {
@@ -31,32 +34,39 @@ export async function runIndustrialPipeline() {
     const page = await browser.newPage();
     await page.setUserAgent(HEADERS['User-Agent']);
 
-    // --- Login con el formulario real ---
-    console.log("🔐 Iniciando sesión en Faplac...");
-    await page.goto(LOGIN_URL, { waitUntil: 'networkidle2', timeout: 60000 });
+    // --- Bloquear recursos no esenciales para acelerar la carga ---
+    await page.setRequestInterception(true);
+    page.on('request', (request: any) => {
+      const resourceType = request.resourceType();
+      if (['image', 'stylesheet', 'font', 'media', 'websocket', 'manifest'].includes(resourceType)) {
+        request.abort();
+      } else {
+        request.continue();
+      }
+    });
+
+    // --- Login ---
+    console.log("🔐 Autenticando en portal Faplac...");
+    await page.goto(LOGIN_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
     await page.waitForSelector('input[name="j_username"]', { timeout: 15000 });
-    await page.waitForSelector('input[name="j_password"]', { timeout: 15000 });
-
-    await page.type('input[name="j_username"]', process.env.FAPLAC_USERNAME!);
-    await page.type('input[name="j_password"]', process.env.FAPLAC_PASSWORD!);
+    await page.type('input[name="j_username"]', process.env.FAPLAC_USERNAME || '');
+    await page.type('input[name="j_password"]', process.env.FAPLAC_PASSWORD || '');
 
     const csrfToken = await page.$eval('input[name="CSRFToken"]', (el: any) => el.value);
-    console.log(`🔑 CSRF Token obtenido: ${csrfToken ? 'OK' : 'MISSING'}`);
 
     await page.evaluate((csrf) => {
       const form = document.querySelector('#loginDropDownForm') as HTMLFormElement;
       if (form) {
-        const csrfInput = form.querySelector('input[name="CSRFToken"]') as HTMLInputElement;
-        if (csrfInput) csrfInput.value = csrf;
+        (form.querySelector('input[name="CSRFToken"]') as HTMLInputElement).value = csrf;
         form.submit();
       }
     }, csrfToken);
 
-    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
-    console.log("✅ Sesión iniciada correctamente.");
+    await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
+    console.log("✅ Sesión activa.");
 
-    // --- Recolectar enlaces de productos ---
+    // --- Recolectar enlaces (Fidelidad v7.4.0 + Scroll Incremental) ---
     const allProductLinks = new Set<string>();
     const targetPages = [
       `${BASE_URL}/home/c/ar-faplac/ar-melaminas`,
@@ -67,25 +77,31 @@ export async function runIndustrialPipeline() {
 
     for (const pageUrl of targetPages) {
       console.log(`📄 Explorando: ${pageUrl}`);
-      await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 60000 });
-      await page.evaluate(() => {
-        window.scrollBy(0, document.body.scrollHeight / 2);
-        setTimeout(() => window.scrollBy(0, document.body.scrollHeight), 1000);
-      });
-      await delay(2000);
+      try {
+        await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 45000 });
+        
+        // 🚀 Scroll Incremental Dinámico (Crucial para Lazy Load)
+        for (let s = 0; s < 4; s++) {
+          await page.evaluate(() => window.scrollBy(0, 1200));
+          await delay(1000); 
+        }
+        await delay(1000); 
 
-      const links = await page.evaluate(() => {
-        return Array.from(document.querySelectorAll('a'))
-          .map(a => a.href)
-          .filter(href => href.includes('/home/p/'))
-          .map(href => href.split('?')[0]);
-      });
-      links.forEach(link => allProductLinks.add(link));
+        const links = await page.evaluate(() => {
+          return Array.from(document.querySelectorAll('a'))
+            .map(a => a.href)
+            .filter(href => href && href.includes('/home/p/'))
+            .map(href => href.split('?')[0]);
+        });
+        
+        links.forEach(link => allProductLinks.add(link));
+      } catch (e) {
+        console.log(`  ⚠️ Timeout explorando página ${pageUrl.split('?').pop()}, continuando...`);
+      }
     }
 
-    console.log(`✅ Encontrados ${allProductLinks.size} enlaces únicos.`);
+    console.log(`✅ ${allProductLinks.size} productos detectados.`);
 
-    // --- Procesar cada producto ---
     const productLinks = Array.from(allProductLinks);
     let processedCount = 0;
     const localDir = path.join(process.cwd(), 'public', 'images', 'faplac');
@@ -95,198 +111,113 @@ export async function runIndustrialPipeline() {
     for (let i = 0; i < productLinks.length; i += chunkSize) {
       const chunk = productLinks.slice(i, i + chunkSize);
       await Promise.all(chunk.map(async (url) => {
+        const detailPage = await browser.newPage();
         try {
-          const detailPage = await browser.newPage();
           await detailPage.setUserAgent(HEADERS['User-Agent']);
-          await detailPage.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+          await detailPage.setRequestInterception(true);
+          detailPage.on('request', (req: any) => {
+            if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) req.abort();
+            else req.continue();
+          });
+
+          await detailPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
           const productData = await detailPage.evaluate(() => {
-            // --- Obtener el código desde la URL ---
-            const pathname = window.location.pathname; // ej: "/home/p/gris-caliza-215MESMDF18"
-            const urlCode = pathname.split('/').pop() || ''; // "gris-caliza-215MESMDF18"
-
-            // --- Descripción (color-09) ---
+            const pathname = window.location.pathname;
+            const urlCode = pathname.split('/').pop() || '';
             const descEl = document.querySelector('.description.color-09');
             const description = descEl ? descEl.textContent?.trim() : '';
-
-            // --- Detalles de producto (tab-details) ---
             const detailsEl = document.querySelector('.tab-details');
-            let details = '';
-            if (detailsEl) {
-              const paragraphs = detailsEl.querySelectorAll('p');
-              details = Array.from(paragraphs).map(p => p.textContent?.trim()).filter(Boolean).join('\n');
-            }
+            let details = detailsEl ? Array.from(detailsEl.querySelectorAll('p')).map(p => p.textContent?.trim()).join('\n') : '';
 
-            // --- Aplicaciones (USO Y APLICACIONES) ---
-            let applications: string[] = [];
-            const appHeading = Array.from(document.querySelectorAll('h3')).find(h => h.textContent?.includes('USO Y APLICACIONES'));
-            if (appHeading && appHeading.parentElement) {
-              const appDiv = appHeading.parentElement.querySelector('.description');
-              if (appDiv) {
-                const text = appDiv.textContent?.trim() || '';
-                applications = text.includes(',')
-                  ? text.split(',').map(s => s.trim()).filter(Boolean)
-                  : [text].filter(Boolean);
-              }
-            }
-
-            // --- Especificaciones (tabla) ---
-            const specs: Record<string, string> = {};
-            const specTable = document.querySelector('.product-classifications table');
-            if (specTable) {
-              const rows = specTable.querySelectorAll('tbody tr');
-              for (const row of rows) {
-                const labelCell = row.querySelector('td.attrib');
-                const valueCell = row.querySelector('td:not(.attrib)');
-                if (labelCell && valueCell) {
-                  const label = labelCell.textContent?.trim().replace(/[*:]/, '');
-                  const value = valueCell.textContent?.trim();
-                  if (label && value) specs[label] = value;
-                }
-              }
-            }
-
-            // --- Imagen ---
-            let imageUrl = document.querySelector('img.gallery-placeholder__image, img.img-responsive.m-center')?.getAttribute('src') || '';
+            // --- IMAGEN DE ALTA CALIDAD (1200H) ---
+            let imageUrl = '';
+            const visibleImg = document.querySelector('.imageGallery-h .img-responsive.m-center');
+            if (visibleImg) imageUrl = visibleImg.getAttribute('src') || '';
+            if (!imageUrl) imageUrl = document.querySelector('img.gallery-placeholder__image')?.getAttribute('src') || '';
+            if (!imageUrl) imageUrl = document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+            
             if (imageUrl && imageUrl.startsWith('//')) imageUrl = `https:${imageUrl}`;
             if (imageUrl && !imageUrl.startsWith('http')) imageUrl = `${window.location.origin}${imageUrl}`;
 
-            // --- Nombre desde campo oculto ---
             const nameInput = document.querySelector('input.js-product-name') as HTMLInputElement;
-            const name = nameInput ? nameInput.value.trim() : '';
-            const fallbackName = document.querySelector('h1.page-title span, h1.name')?.textContent?.trim() || '';
-            const finalName = name || fallbackName;
+            const finalName = nameInput ? nameInput.value.trim() : (document.querySelector('h1.page-title span, h1.name')?.textContent?.trim() || '');
 
-            const sku = document.querySelector('.product.attribute.sku .value, .sku')?.textContent?.trim() || '';
-
-            // --- Dimensiones ---
-            let width = 1830, height = 2750, thickness = 18;
-            const dimensionsRaw = specs['Medidas'] || '';
-            if (dimensionsRaw) {
-              const dimMatch = dimensionsRaw.match(/(\d+)\s*x\s*(\d+)/i);
-              if (dimMatch) {
-                width = parseInt(dimMatch[1], 10);
-                height = parseInt(dimMatch[2], 10);
-              }
-            }
-            const thicknessRaw = specs['Espesor'] || '';
-            if (thicknessRaw) {
-              const thickMatch = thicknessRaw.match(/(\d+)/);
-              if (thickMatch) thickness = parseInt(thickMatch[1], 10);
-            }
-
-            // --- Acabado ---
-            const texture = specs['Textura'] || '';
-            const finishText = (description + ' ' + texture).toLowerCase();
-            const isSmooth = finishText.includes('mate') || finishText.includes('liso') || texture.toLowerCase().includes('mate');
-            const antiFingerprint = finishText.includes('anti-huella') || finishText.includes('soft touch');
-            const hasGrain = !finishText.includes('unícolor') && !name.toLowerCase().includes('blanco') && (finishText.includes('veta') || finishText.includes('madera'));
+            const specs: Record<string, string> = {};
+            document.querySelectorAll('.product-classifications table tbody tr').forEach(row => {
+              const label = row.querySelector('td.attrib')?.textContent?.trim().replace(/[*:]/, '');
+              const value = row.querySelector('td:not(.attrib)')?.textContent?.trim();
+              if (label && value) specs[label] = value;
+            });
 
             return {
               name: finalName,
-              urlCode,            // ← código extraído de la URL
-              sku,
+              urlCode,
               description,
               details,
-              applications,
-              brand: specs['Marca'] || 'Faplac',
-              productType: specs['Producto'] || '',
-              design: specs['Diseño'] || '',
-              texture,
-              line: specs['Línea del Catálogo'] || '',
-              width,
-              height,
-              thickness,
-              substrate: specs['Sustratos'] || '',
+              specs,
               imageUrl,
-              isSmooth,
-              antiFingerprint,
-              hasGrain,
             };
           });
 
           if (!productData.name || !productData.imageUrl) return;
 
           const slug = normalizePanelId(productData.name);
-          const localFile = path.join(localDir, `${slug}.jpg`);
-          const finalImageUrl = `/images/faplac/${slug}.jpg`;
+          // Detección dinámica de extensión (Faplac suele usar .jpg pero Egger .webp)
+          const isWebP = productData.imageUrl.includes('.webp');
+          const isPng = productData.imageUrl.includes('.png');
+          const ext = isWebP ? 'webp' : (isPng ? 'png' : 'jpg');
+          
+          const localFile = path.join(localDir, `${slug}.${ext}`);
+          const finalImageUrl = `/images/faplac/${slug}.${ext}`;
 
+          // Descarga de Imagen con extensión correcta
           try {
             if (!fs.existsSync(localFile)) {
-              const imageResponse = await axios.get(productData.imageUrl, {
-                responseType: 'arraybuffer',
-                timeout: 20000,
-                headers: HEADERS
-              });
-              fs.writeFileSync(localFile, imageResponse.data);
+              const res = await axios.get(productData.imageUrl, { responseType: 'arraybuffer', timeout: 15000, headers: HEADERS });
+              fs.writeFileSync(localFile, res.data);
             }
           } catch (e) {
-            console.error(`⚠️ No se pudo guardar imagen para ${slug}`);
+            console.error(`⚠️ Error imagen ${slug}`);
           }
-
-          // Clasificación de color (usando nombre + descripción)
-          const combinedText = (productData.name + ' ' + productData.description).toLowerCase();
-          const hueMap: Record<string, string> = {
-            'rojo': 'rojo', 'bordo': 'rojo', 'blanco': 'blanco', 'marfil': 'blanco',
-            'negro': 'negro', 'grafito': 'negro', 'gris': 'gris', 'cemento': 'gris',
-            'beige': 'beige', 'arena': 'beige', 'marron': 'marron', 'nogal': 'marron'
-          };
-          let materialHue = 'otros';
-          for (const [key, val] of Object.entries(hueMap)) {
-            if (combinedText.includes(key)) {
-              materialHue = val; break;
-            }
-          }
-          const isDark = combinedText.match(/(negro|oscuro|tabaco|notte)/);
-          const isLight = combinedText.match(/(blanco|claro|nieve|crema|marfil)/);
 
           const panelDoc = {
             id: slug,
             name: productData.name,
-            brand: productData.brand,
-            line: productData.line,
-            productType: productData.productType,
-            design: productData.design,
-            substrate: productData.substrate,
-            width: productData.width,
-            height: productData.height,
-            thickness: productData.thickness,
+            brand: 'Faplac',
+            line: productData.specs['Línea del Catálogo'] || '',
+            width: productData.specs['Medidas']?.includes('2750') ? 2750 : 1830,
+            height: productData.specs['Medidas']?.includes('2750') ? 1830 : 2750,
+            thickness: parseInt(productData.specs['Espesor'] || '18'),
             description: productData.description,
-            details: productData.details,
-            applications: productData.applications,
             stock: 0,
-            images: [finalImageUrl],
             mainImage: finalImageUrl,
+            images: [finalImageUrl],
             visible: true,
-            createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
-            colorGroup: isDark ? 'oscuro' : isLight ? 'claro' : 'medio',
-            colorHue: materialHue,
-            styleTags: ['moderno', 'industrial'],
-            useCases: ['cocina', 'placard', 'oficina'],
-            code: productData.urlCode,                     // ← ahora se usa el código de URL
-            surfaceTexture: productData.texture,
-            isSmooth: productData.isSmooth,
-            antiFingerprint: productData.antiFingerprint,
-            finish: productData.isSmooth ? 'mate' : 'brillo',
-            hasGrain: productData.hasGrain,
+            code: productData.urlCode,
+            surfaceTexture: productData.specs['Textura'] || 'Mate',
+            isSmooth: (productData.name + productData.description).toLowerCase().includes('mate'),
+            finish: (productData.name + productData.description).toLowerCase().includes('mate') ? 'mate' : 'brillo',
           };
 
           await setDoc(doc(firestore, 'panels', slug), panelDoc, { merge: true });
           processedCount++;
-        } catch (err: any) {
-          console.error(`⚠️ Error en ${url}:`, err.message);
+        } catch (err) {
+          console.error(`⚠️ Timeout en ${url}`);
+        } finally {
+          await detailPage.close();
         }
       }));
     }
 
     await browser.close();
-    console.log(`✅ Procesamiento finalizado. Paneles actualizados: ${processedCount}`);
+    console.log(`✅ Faplac v6.8 finalizado: ${processedCount} actualizados.`);
     return { success: true, count: processedCount };
 
   } catch (error: any) {
     if (browser) await browser.close();
-    console.error("❌ Falló el scraper:", error.message);
-    return { success: true, count: 0, note: "Error en scraping." };
+    console.error("❌ Error Fatal Faplac:", error.message);
+    return { success: false };
   }
 }

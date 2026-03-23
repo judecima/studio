@@ -73,15 +73,15 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
         if (!res.ok) return;
         const data = await res.json();
         // Solo sobreescribimos si no hay datos en eq o si son más frescos
-        if (data.success && data.matches.length > 0 && allMatches.length === 0) {
-          setAllMatches(data.matches);
+        if (data.success && data.matches.length > 0) {
+          setAllMatches(prev => prev.length === 0 ? data.matches : prev);
         }
       } catch (e) {} finally {
         setIsDynamicLoading(false);
       }
     }
     fetchMatches();
-  }, [panelId, allMatches.length]);
+  }, [panelId]);
 
   // 🔥 Filtrado Tolerante (v6.2)
   const filteredMatches = useMemo(() => {
@@ -180,7 +180,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
                  ))
               ) : (
                 filteredMatches.map((matchPanel: any) => {
-                  const similarity = Math.max(0, Math.floor(matchPanel.matchScore || 0));
+                  const similarity = Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0));
                   return (
                     <div key={matchPanel.id} className="relative group/card">
                       <div className="absolute -top-3 -right-3 z-30">

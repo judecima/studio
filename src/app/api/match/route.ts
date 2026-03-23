@@ -80,6 +80,10 @@ export async function GET(request: Request) {
           name: m.panel.name,
           brand: m.panel.brand,
           code: m.panel.code,
+          mainImage: m.panel.mainImage,
+          width: m.panel.width,
+          height: m.panel.height,
+          thickness: m.panel.thickness,
           score: roundedScore,
           explanation: generateExplanation(targetClass, m.panel, roundedScore)
         };
