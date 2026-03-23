@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, Ruler, Layers, Loader2, FileDown, MessageSquare } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useDoc, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { doc, query, collection, where, documentId } from "firebase/firestore";
+import { doc, query, collection, where, documentId, getDocs } from "firebase/firestore";
 import { Panel, Equivalence } from "@/lib/types";
 import { Sparkles, ArrowRight, Info } from "lucide-react";
 import { PanelCard } from "@/components/PanelCard";
@@ -28,83 +28,108 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
 
   const { data: eq, isLoading: isEqLoading } = useDoc<Equivalence>(eqRef);
 
-  // Fetch real-time matches from our new Match Engine API
+  // 🔥 Hidratación Robusta v6.2
+  useEffect(() => {
+    async function hydrateMatches() {
+      // Prioridad a eq.matches (Firestore) si existe, sino a lo que traiga la API
+      const baseMatches = eq?.matches || [];
+      if (baseMatches.length === 0) return;
+      
+      try {
+        const ids = baseMatches.map(m => m.id);
+        // Firebase 'in' tiene un límite de 10
+        const q = query(collection(db, 'panels'), where(documentId(), 'in', ids.slice(0, 10)));
+        const snap = await getDocs(q);
+        
+        const hydrated = snap.docs.map(doc => {
+          const data = doc.data() as Panel;
+          const matchMeta = baseMatches.find(m => m.id === doc.id);
+          
+          return {
+            ...data,
+            id: doc.id,
+            score: matchMeta?.score || 0,
+            explanation: matchMeta?.explanation || ""
+          } as any;
+        }).sort((a: any, b: any) => b.score - a.score);
+        
+        setAllMatches(hydrated);
+      } catch (e) {
+        console.error("Error hydrating matches:", e);
+      }
+    }
+    
+    if (!isEqLoading && eq) {
+      hydrateMatches();
+    }
+  }, [eq, isEqLoading, db]);
+
+  // Real-time API Match
   useEffect(() => {
     async function fetchMatches() {
       if (!panelId) return;
       try {
-        setIsDynamicLoading(true);
         const res = await fetch(`/api/match?id=${panelId}`);
+        if (!res.ok) return;
         const data = await res.json();
-        if (data.success) {
+        // Solo sobreescribimos si no hay datos en eq o si son más frescos
+        if (data.success && data.matches.length > 0 && allMatches.length === 0) {
           setAllMatches(data.matches);
-          setTargetMetadata(data.target);
         }
-      } catch (e) {
-        console.error("Error fetching matches:", e);
-      } finally {
+      } catch (e) {} finally {
         setIsDynamicLoading(false);
       }
     }
     fetchMatches();
-  }, [panelId]);
+  }, [panelId, allMatches.length]);
 
-  // 🔥 Filtrado Estricto (Mínimo 60 Puntos)
+  // 🔥 Filtrado Tolerante (v6.2)
   const filteredMatches = useMemo(() => {
-    return allMatches.filter(m => {
-      const similarity = Math.max(0, Math.floor(m.matchScore || 0));
-      return similarity >= 60;
-    });
+    return allMatches.filter(m => (m.score || m.matchScore || 0) >= 40);
   }, [allMatches]);
 
   const similarityOfTopMatch = useMemo(() => {
     if (filteredMatches.length === 0) return 0;
     const top = filteredMatches[0];
-    return Math.max(0, Math.floor(top.matchScore || 0));
+    return Math.max(0, Math.floor(top.score || top.matchScore || 0));
   }, [filteredMatches]);
 
   const narrativeText = useMemo(() => {
-    // Si hay un texto pre-calculado en Firestore, lo priorizamos
-    if (eq?.text) return `"${eq.text}"`;
-
-    const toneMap: any = { light: 'claro', dark: 'oscuro', medium: 'medio' };
-    const tempMap: any = { warm: 'cálida', cool: 'fría', neutral: 'neutra' };
+    // 🔥 PRIORIDAD v6.5: eq.text (Firestore) contiene la lista multilínea de 5 matches
+    const rawText = eq?.text;
     
-    const tone = toneMap[targetPanel.tone] || 'medio';
-    const temp = tempMap[targetPanel.temperature] || 'neutra';
-    const color = targetPanel.colorGroup === 'merlot' ? 'rojo-violeta' : targetPanel.colorGroup === 'madera' ? 'veteado' : targetPanel.colorGroup || 'otro';
-    
-    let baseText = `El color ${targetPanel.name} (${targetPanel.brand}) es un diseño de tono ${tone} y temperatura ${temp}, con una base cromática ${color}.`;
-    
-    // Solo si hay matches excelentes (>= 60%), generamos la lista
-    if (filteredMatches.length >= 1 && similarityOfTopMatch >= 60) {
-      let listText = `${baseText}\n\nCoincidencias técnicas detectadas:\n`;
-      filteredMatches.forEach(m => {
-        const similarity = Math.max(0, Math.floor(m.matchScore || 0));
-        const mFullIdentity = `${m.name} ${m.code || ''}`.toLowerCase();
-        
-        // Detección de acabados premium (Egger PerfectSense o Gloss)
-        const isPremium = mFullIdentity.includes('perfectsense') || mFullIdentity.includes('pm') || mFullIdentity.includes('gloss') || mFullIdentity.includes('pg');
-        
-        // Detección de inconsistencia de material usando METADATOS CLASIFICADOS
-        const isStone = targetMetadata?.texture === 'piedra';
-        const mIsMetal = mFullIdentity.includes('metal') || mFullIdentity.includes('aluminio') || mFullIdentity.includes('f528');
-        const mIsLiso = m.texture === 'mate' || m.texture === 'standard' || m.texture === 'liso';
-        const mIsWood = m.texture === 'veteado';
-        
-        const isCategoryMismatch = (isStone && (mIsMetal || mIsLiso || mIsWood)) || (targetMetadata?.texture === 'mate' && m.texture === 'piedra');
-        
-        let prefix = `• ${m.name} (${m.code || m.id}) - ${m.brand} - ${similarity}%`;
-        if (isPremium) prefix += ` 💎 [Línea Premium]`;
-        if (isCategoryMismatch) prefix += ` ⚠️ [Textura diferente]`;
-        listText += `${prefix}\n`;
-      });
-      return listText;
+    if (rawText) {
+      const lines = rawText.split('\n').filter(line => line.trim().length > 0);
+      return (
+        <div className="space-y-2">
+          <h4 className="text-sm font-bold uppercase tracking-wider text-primary/80 mb-3">Recomendaciones para {targetPanel.name}:</h4>
+          {lines.map((line, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <div className="h-2 w-2 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
+              <span className="text-sm leading-relaxed text-muted-foreground italic">{line}</span>
+            </div>
+          ))}
+        </div>
+      );
     }
 
-    // Fallback si no hay matches excelentes
-    return "Análisis en tiempo real: Se han encontrado coincidencias técnicas basadas en colorimetría digital y textura.";
-  }, [eq, filteredMatches, similarityOfTopMatch, targetPanel, targetMetadata]);
+    // Fallback dinámico si no hay texto persistido
+    if (filteredMatches.length > 0) {
+      return (
+        <div className="space-y-2">
+          <h4 className="text-sm font-bold uppercase tracking-wider text-primary/80 mb-3">Recomendación para {targetPanel.name}:</h4>
+          {filteredMatches.map((match, index) => (
+            <div key={index} className="flex items-start gap-3">
+              <div className="h-2 w-2 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
+              <span className="text-sm leading-relaxed text-muted-foreground italic">{match.name} - {match.explanation || ""}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return null;
+  }, [eq, filteredMatches, targetPanel]);
 
   if (isDynamicLoading && !eq) return (
     <div className="mt-16 flex justify-center py-20">
@@ -138,7 +163,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
 
         <div className="bg-slate-50/80 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] border border-slate-100 leading-relaxed text-slate-600 italic text-lg md:text-xl font-medium shadow-inner relative group whitespace-pre-wrap">
           <div className="absolute -left-1 top-4 h-12 w-1 bg-indigo-500 rounded-full opacity-40" />
-          {narrativeText}
+          {narrativeText || (isEqLoading ? "Cargando análisis..." : "No se han encontrado coincidencias para este diseño.")}
         </div>
 
         {filteredMatches.length > 0 && (
@@ -160,7 +185,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
                     <div key={matchPanel.id} className="relative group/card">
                       <div className="absolute -top-3 -right-3 z-30">
                         <Badge className="bg-indigo-600 text-white border-2 border-white shadow-xl h-12 w-12 rounded-full p-0 flex items-center justify-center font-bold text-sm ring-4 ring-indigo-50">
-                          {similarity}
+                          {Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0))}
                         </Badge>
                       </div>
                       <PanelCard panel={matchPanel} />
@@ -238,8 +263,9 @@ export default function PanelDetailPage() {
                 src={activeImage || panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
                 alt={panel.name || "Vista principal del tablero"} 
                 fill 
+                priority
+                sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105" 
-                priority 
               />
             </div>
             
@@ -250,7 +276,7 @@ export default function PanelDetailPage() {
                   onClick={() => setActiveImage(img)}
                   className={`relative w-20 sm:w-24 aspect-square rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === img ? 'border-primary ring-4 ring-primary/10 shadow-lg scale-95' : 'border-transparent opacity-60 hover:opacity-100'}`}
                 >
-                  <Image src={img} alt={`Vista secundaria ${idx + 1}`} fill className="object-cover" />
+                  <Image src={img} alt={`Vista secundaria ${idx + 1}`} fill sizes="100px" className="object-cover" />
                 </button>
               ))}
             </div>

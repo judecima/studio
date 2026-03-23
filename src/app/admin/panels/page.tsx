@@ -243,9 +243,9 @@ export default function AdminPanelsPage() {
                             "{panel.description}"
                           </p>
                         )}
-                        {panel.applications && panel.applications.length > 0 && (
+                        {panel.applications && (
                           <div className="flex flex-wrap gap-1 mt-1.5">
-                            {panel.applications.map((app, i) => (
+                            {(Array.isArray(panel.applications) ? panel.applications : [panel.applications]).map((app, i) => (
                               <span key={i} className="text-[9px] bg-slate-100 text-slate-600 px-1 rounded border border-slate-200 uppercase font-medium">
                                 {app}
                               </span>

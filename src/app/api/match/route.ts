@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { classify } from '@/lib/equivalences/engine';
-import { findTopMatches } from '@/lib/matcher';
-import { Panel } from '@/lib/types';
+import { doc, getDoc } from 'firebase/firestore';
 
 /**
  * API ENDPOINT: /api/match?id={panelId}
- * Encuentra equivalencias en tiempo real para un panel específico.
+ * v5.4 - Optimización para Latencia Cero y Alta Concurrencia
  */
 export async function GET(request: Request) {
   try {
@@ -20,55 +17,83 @@ export async function GET(request: Request) {
 
     const { firestore } = initializeFirebase();
     
-    // 1. Obtener el panel objetivo
-    const panelRef = doc(firestore, 'panels', id);
-    const panelDoc = await panelDocToData(panelRef);
-    if (!panelDoc) {
-      return NextResponse.json({ error: 'Panel no encontrado' }, { status: 404 });
+    // 🚀 PRIORIDAD 1: Documento ya calculado y persistido (Latencia Cero)
+    const eqRef = doc(firestore, 'equivalences', id);
+    const eqSnap = await getDoc(eqRef);
+
+    if (eqSnap.exists()) {
+      const data = eqSnap.data();
+      return NextResponse.json({
+        success: true,
+        cached: true,
+        target: {
+          id: data.panelId,
+          name: data.panelName,
+          code: data.panelCode,
+          brand: data.panelBrand
+        },
+        matches: data.matches || data.bestMatches || [], // Soporte para ambas nomenclaturas
+        text: data.text,
+        lastSync: data.lastSync || data.updatedAt
+      });
     }
 
-    // 2. Clasificar el panel objetivo (enriquecer con metadatos de color/textura)
-    const targetClassified = await classify(panelDoc);
+    // 🚀 PRIORIDAD 2: Recalculo bajo demanda (Solo si no existe en la DB)
+    console.log(`📡 Recalculando match bajo demanda para: ${id}`);
+    
+    // Importación dinámica para no cargar el motor si no es necesario
+    const { collection, getDocs } = await import('firebase/firestore');
+    const { classify, calculateScore, generateExplanation } = await import('@/lib/equivalences/engine');
+    
+    // 1. Obtener panel target
+    const panelRef = doc(firestore, 'panels', id);
+    const panelSnap = await getDoc(panelRef);
+    if (!panelSnap.exists()) {
+      return NextResponse.json({ error: 'Panel no encontrado' }, { status: 404 });
+    }
+    const target = { id: panelSnap.id, ...panelSnap.data() } as any;
+    const targetClass = await classify(target);
 
-    const allPanelsSnap = await getDocs(collection(firestore, 'panels'));
-    const library: Panel[] = [];
-    allPanelsSnap.forEach(doc => {
-      const data = doc.data() as Panel;
-      if (doc.id !== id) {
-        library.push({ ...data, id: doc.id });
-      }
-    });
+    // 2. Obtener candidatos (limitado para performance de API)
+    const panelsSnap = await getDocs(collection(firestore, 'panels'));
+    const allPanels = panelsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
 
-    // 4. Clasificar la librería (en paralelo)
-    const libraryClassified = await Promise.all(library.map(p => classify(p)));
+    const scored = await Promise.all(allPanels
+      .filter(p => p.id !== id && p.brand !== target.brand)
+      .map(async (candidate) => {
+        const candClass = await classify(candidate);
+        const score = calculateScore(targetClass, candClass);
+        return { panel: candidate, score };
+      })
+    );
 
-    // 5. Encontrar matches usando el Match Engine
-    const matches = findTopMatches(targetClassified, libraryClassified);
+    const top = scored
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+
+    const result = {
+      target: { id: target.id, name: target.name, code: target.code, brand: target.brand },
+      matches: top.map(m => {
+        const roundedScore = Math.round(m.score * 100);
+        return {
+          id: m.panel.id,
+          name: m.panel.name,
+          brand: m.panel.brand,
+          code: m.panel.code,
+          score: roundedScore,
+          explanation: generateExplanation(targetClass, m.panel, roundedScore)
+        };
+      })
+    };
 
     return NextResponse.json({
       success: true,
-      target: {
-        id: targetClassified.id,
-        name: targetClassified.name,
-        colorGroup: targetClassified.colorGroup,
-        texture: targetClassified.texture
-      },
-      matches: matches.map(m => ({
-        ...m,
-        matchScore: Math.round(m.matchScore * 100) / 100
-      }))
+      cached: false,
+      ...result
     });
 
   } catch (error: any) {
-    console.error('❌ Error en /api/match:', error);
+    console.error('❌ Error en /api/match (v5.4):', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
-}
-
-async function panelDocToData(ref: any): Promise<Panel | null> {
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return null;
-  const data = snap.data();
-  if (!data) return null;
-  return { ...data, id: snap.id } as Panel;
 }

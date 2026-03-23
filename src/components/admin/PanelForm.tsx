@@ -107,8 +107,8 @@ export function PanelForm({ mode, initialData }: Props) {
       images: initialData.images,
       colorGroup: initialData.colorGroup,
       colorHue: initialData.colorHue,
-      styleTags: initialData.styleTags,
-      useCases: initialData.useCases,
+      styleTags: initialData.styleTags || [],
+      useCases: initialData.useCases || [],
     } : {
       name: "",
       brand: "",
@@ -406,9 +406,9 @@ export function PanelForm({ mode, initialData }: Props) {
                   <FormItem>
                     <FormLabel>Estilos</FormLabel>
                     <div className="flex flex-wrap gap-2 mb-2">
-                      {field.value.map(tag => (
+                      {field.value?.map(tag => (
                         <Badge key={tag} className="gap-1">
-                          {tag} <X className="h-3 w-3 cursor-pointer" onClick={() => field.onChange(field.value.filter(t => t !== tag))} />
+                          {tag} <X className="h-3 w-3 cursor-pointer" onClick={() => field.onChange((field.value || []).filter(t => t !== tag))} />
                         </Badge>
                       ))}
                     </div>

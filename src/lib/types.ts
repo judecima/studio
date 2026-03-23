@@ -93,8 +93,10 @@ export interface AppUser {
 export interface EquivalenceMatch {
   id: string;
   name: string;
-  code: string;
+  brand: string;
+  code?: string;
   score: number;
+  explanation?: string;
   metadata?: {
     description?: string;
     surfaceTexture?: string;
@@ -103,12 +105,14 @@ export interface EquivalenceMatch {
 }
 
 export interface Equivalence {
-  faplacCode: string;
-  faplacName: string;
-  faplacMetadata?: any;
-  bestMatches: EquivalenceMatch[];
+  targetId: string;
+  targetName: string;
+  targetBrand: string;
+  targetCode: string;
+  matches: EquivalenceMatch[];
   text: string;
-  updatedAt: any;
+  lastSync?: string;
+  updatedAt?: any; // Deprecated, use lastSync
 }
 
 export type ClassifiedPanel = Panel & {

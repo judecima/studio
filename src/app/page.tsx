@@ -20,7 +20,7 @@ export default function Home() {
 
   const panelsQuery = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'panels'), where('visible', '==', true));
+    return collection(db, 'panels');
   }, [db]);
 
   const { data: panels, isLoading } = useCollection<Panel>(panelsQuery);
