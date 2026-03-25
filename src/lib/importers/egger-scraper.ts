@@ -47,7 +47,6 @@ export async function runEggerPipeline(filterCodes?: string[]) {
   // Obtener variables de sesión para la API
   const sessionData = await page.evaluate(() => (window as any).commonScriptVariables || null);
 
-  // 1. Obtener lista completa de códigos vía API de Egger
   const allProductsData = await page.evaluate(async (data) => {
     const apiBase = data.apiBaseURL || 'https://api.www.egger.com';
     const csrf = data.csrfToken;
@@ -193,7 +192,9 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           }
           if (!highResUrl) highResUrl = document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
 
-          return { ncs, colorChar, size, highResUrl };
+          const nameFromH1 = document.querySelector('h1')?.textContent?.trim() || '';
+
+          return { ncs, colorChar, size, highResUrl, nameFromH1 };
         });
 
         const ncsCode = detailData.ncs.replace(/\*/g, '').trim();
@@ -220,11 +221,22 @@ export async function runEggerPipeline(filterCodes?: string[]) {
             const finalLocalFile = path.join(localDir, `${slug}${finalExt}`);
 
             // 🧠 Procesamiento en Memoria (Evita colisión Sharp y bloqueos de red)
-            const response = await axios.get(imageUrl, { 
+            let response = await axios.get(imageUrl, { 
               responseType: 'arraybuffer', 
               timeout: 60000,
               headers: { 'User-Agent': 'Mozilla/5.0' }
             });
+
+            // 🛠️ VALIDACIÓN DE TAMAÑO: Si es < 2KB, probablemente es un placeholder/1x1
+            if (response.data.byteLength < 2000 && imageUrl.includes('width=2880')) {
+               const fallbackUrl = imageUrl.replace('width=2880', 'width=1200');
+               console.log(`  ⚠️ Imagen pequeña (${response.data.byteLength}b). Reintentando fallback: ${fallbackUrl}`);
+               const retryScale = await axios.get(fallbackUrl, { responseType: 'arraybuffer', timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+               if (retryScale.data.byteLength > response.data.byteLength) {
+                 response = retryScale;
+                 imageUrl = fallbackUrl;
+               }
+            }
 
             const sharp = (await import('sharp')).default;
             await sharp(response.data)
@@ -239,9 +251,11 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           }
         }
 
+        const panelName = detailData.nameFromH1 || name;
+
         const panelDoc = {
           id: slug,
-          name,
+          name: panelName,
           brand: 'Egger',
           width: 2800,
           height: 2070,
@@ -266,7 +280,8 @@ export async function runEggerPipeline(filterCodes?: string[]) {
 
         await setDoc(doc(firestore, 'panels', slug), panelDoc, { merge: true });
         count++;
-        if (count % 10 === 0) console.log(`  📥 Egger PRO: ${count}/${allProductsData.length}`);
+        if (count % 10 === 0) console.log(`  📥 Egger PRO: ${count}/${filterCodes ? filterCodes.length : allProductsData.length} | ${slug} | IMG: ${imageUrl ? 'YES' : 'NO'}`);
+        if (imageUrl && imageUrl.includes('width=')) console.log(`  🖼️ URL: ${imageUrl}`);
 
       } catch (e: any) {
         console.log(`❌ Error ${item?.code}: ${e.message}`);

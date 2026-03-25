@@ -11,7 +11,7 @@ export function PanelCard({ panel }: { panel: Panel }) {
     <Card className="overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 bg-white border-none shadow-sm flex flex-col h-full rounded-[2rem] relative ring-1 ring-slate-100">
       
       {/* Image Wrapper */}
-      <Link href={`/panels/${panel.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-3 rounded-[1.5rem]">
+      <Link href={`/panels/${panel.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-3 rounded-[1.5rem] shadow-md ring-1 ring-slate-100">
         <Image
           src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"}
           alt={panel.name || "Panel industrial"}

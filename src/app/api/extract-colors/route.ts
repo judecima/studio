@@ -128,3 +128,69 @@ export async function GET() {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const { imageUrl, base64 } = await req.json();
+    let imageSource = imageUrl;
+    
+    if (base64) {
+      imageSource = base64;
+    } else if (imageUrl && !imageUrl.startsWith('http')) {
+      // Local path in public folder
+      const fullPath = path.join(process.cwd(), 'public', imageUrl);
+      if (fs.existsSync(fullPath)) {
+        imageSource = fullPath;
+      }
+    }
+
+    if (!imageSource) {
+      return NextResponse.json({ success: false, error: 'No image source provided' }, { status: 400 });
+    }
+
+    const { Jimp } = await import('jimp');
+    const img = await Jimp.read(imageSource);
+    
+    const w = img.width;
+    const h = img.height;
+    const x0 = Math.floor(w * 0.35);
+    const y0 = Math.floor(h * 0.35);
+    const x1 = Math.floor(w * 0.65);
+    const y1 = Math.floor(h * 0.65);
+
+    let rSum = 0, gSum = 0, bSum = 0, count = 0;
+    const step = Math.max(1, Math.floor((x1 - x0) / 20));
+
+    for (let y = y0; y < y1; y += step) {
+      for (let x = x0; x < x1; x += step) {
+        const hex = img.getPixelColor(x, y);
+        const r = (hex >>> 24) & 0xff;
+        const g = (hex >>> 16) & 0xff;
+        const b = (hex >>> 8) & 0xff;
+        rSum += r; gSum += g; bSum += b; count++;
+      }
+    }
+
+    if (count === 0) return NextResponse.json({ success: false, error: 'Could not sample pixels' }, { status: 400 });
+
+    const r = Math.round(rSum / count);
+    const g = Math.round(gSum / count);
+    const b = Math.round(bSum / count);
+    const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    const labColor = toLab({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 });
+    
+    return NextResponse.json({
+      success: true,
+      hex,
+      lab: {
+        l: Math.round((labColor?.l ?? 0) * 100) / 100,
+        a: Math.round((labColor?.a ?? 0) * 100) / 100,
+        b: Math.round((labColor?.b ?? 0) * 100) / 100,
+      }
+    });
+
+  } catch (error: any) {
+    console.error('❌ Error en POST extract-colors:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

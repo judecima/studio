@@ -1,5 +1,5 @@
 
-export type ColorGroup = 'blanco' | 'gris' | 'negro' | 'madera' | 'beige' | 'terracota' | 'merlot' | 'amatista' | 'otro' | 'claro' | 'medio' | 'oscuro';
+export type ColorGroup = 'blanco' | 'gris' | 'negro' | 'madera' | 'beige' | 'terracota' | 'merlot' | 'amatista' | 'verde' | 'azul' | 'otro' | 'claro' | 'medio' | 'oscuro';
 export type ColorHue = string;
 export type StyleTag = 'moderno' | 'clasico' | 'industrial' | 'nordico' | 'minimalista';
 export type UseCase = 'cocina' | 'placard' | 'oficina' | 'baño' | 'comedor';
@@ -25,6 +25,7 @@ export type Panel = {
   styleTags: string[];
   useCases: string[];
   code?: string;
+  ncs?: string;
   url?: string;
   surfaceTexture?: string;
   isSmooth?: boolean;

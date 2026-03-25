@@ -258,7 +258,7 @@ export default function PanelDetailPage() {
           
           {/* Gallery Section */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="relative aspect-[4/3] sm:aspect-video lg:aspect-[4/3] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border-4 border-slate-50 shadow-inner bg-slate-100 group">
+            <div className="relative aspect-[4/3] sm:aspect-video lg:aspect-[4/3] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border-4 border-slate-50 shadow-2xl shadow-slate-300/50 bg-slate-100 group ring-1 ring-slate-200/50">
               <Image 
                 src={activeImage || panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
                 alt={panel.name || "Vista principal del tablero"} 

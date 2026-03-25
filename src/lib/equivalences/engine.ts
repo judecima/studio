@@ -267,37 +267,71 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   return Math.min(1, Math.max(0, finalScore));
 }
 
-// ----------------------------------------------------------------------
-// Generación de explicación
-// ----------------------------------------------------------------------
+/**
+ * Genera una descripción textual de un panel para el usuario.
+ */
+function describePanel(panel: ClassifiedPanel): string {
+  const toneMap: any = { dark: 'oscuro', medium: 'medio', light: 'claro' };
+  const tempMap: any = { warm: 'cálida', cool: 'fría', neutral: 'neutra' };
+  const textureMap: any = {
+    veteado: 'veteado',
+    textil: 'textil',
+    piedra: 'piedra',
+    mate: 'mate',
+    gloss: 'brillo',
+    standard: 'liso'
+  };
+  const colorName = panel.colorGroup === 'madera' ? 'diseño de madera' : panel.colorGroup;
+  const tone = toneMap[panel.tone] || 'medio';
+  const temp = tempMap[panel.temperature] || 'neutra';
+  const texture = textureMap[panel.texture] || panel.texture;
+  return `${colorName} ${tone} con temperatura ${temp} y acabado ${texture}`;
+}
+
+/**
+ * Genera una explicación legible de la equivalencia.
+ */
 function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, score: number): string {
   const percentage = Math.round(score * 100);
-  let reasoning = "";
+  const targetDesc = describePanel(target);
+  const matchDesc = describePanel(match);
 
-  if (target.texture !== match.texture) {
+  // Razones de similitud de color
+  let colorReason = '';
+  if (target.certifiedLab && match.certifiedLab) {
+    const dE = de2000(target.certifiedLab, match.certifiedLab);
+    if (dE < 5) colorReason = 'color prácticamente idéntico';
+    else if (dE < 10) colorReason = 'color muy similar';
+    else if (dE < 20) colorReason = 'color cercano';
+    else colorReason = 'color moderadamente similar';
+  } else {
+    if (target.colorGroup === match.colorGroup) colorReason = `mismo grupo cromático (${target.colorGroup})`;
+    else colorReason = `grupo cromático ${target.colorGroup} vs ${match.colorGroup}`;
+  }
+
+  // Compatibilidad de textura
+  let textureMsg = '';
+  if (target.texture === match.texture) {
+    textureMsg = `ambos tienen acabado ${target.texture}.`;
+  } else {
     const targetIsWood = target.texture === 'veteado' || target.texture === 'madera';
     const matchIsWood = match.texture === 'veteado' || match.texture === 'madera';
-    if (targetIsWood || matchIsWood) reasoning += " Diferencia de veta.";
-    else reasoning += " Contrastes de textura.";
+    if (targetIsWood || matchIsWood) textureMsg = `discrepan en textura (madera vs liso).`;
+    else textureMsg = `acabados diferentes (${target.texture} vs ${match.texture}).`;
   }
 
-  if (target.certifiedLab && (match as any).certifiedLab) {
-    const diffL = (match as any).certifiedLab.l - target.certifiedLab.l;
-    if (Math.abs(diffL) > 4) {
-      reasoning += ` Tonalidad más ${diffL > 0 ? 'clara' : 'intensa'}.`;
-    }
-  }
-
-  let conclusion = "";
-  if (percentage >= 85) conclusion = "Coincidencia técnica de alta fidelidad.";
-  else if (percentage >= 70) conclusion = "Equivalencia visual recomendada.";
-  else conclusion = "Alternativa técnica sugerida.";
-
+  // Fuente de la equivalencia
   const sourceNote = (match as any).colorSource === 'certified_master_list'
-    ? " (dato maestro)"
-    : ((match as any).colorSource === 'ncs_objective' ? " (NCS objetivo)" : " (estimación visual)");
+    ? ' (datos maestro de color)'
+    : ((match as any).colorSource === 'ncs_objective' ? ' (datos NCS objetivos)' : ' (estimación visual)');
 
-  return `${match.name} - ${conclusion}${reasoning}${sourceNote} (Match: ${percentage}%)`;
+  // Construir mensaje final
+  let conclusion = '';
+  if (percentage >= 85) conclusion = 'Coincidencia técnica excelente';
+  else if (percentage >= 70) conclusion = 'Equivalencia visual recomendada';
+  else conclusion = 'Alternativa técnica sugerida';
+
+  return `${match.name} (${match.brand}) es ${matchDesc}. Su ${colorReason} con el panel objetivo (${targetDesc}) y ${textureMsg} ${conclusion} con un ${percentage}% de similitud${sourceNote}.`;
 }
 
 // ----------------------------------------------------------------------
@@ -320,7 +354,7 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
         const scored = await Promise.all(candidates.map(async (candidate) => {
           const candClass = await getCachedClassifiedPanel(candidate);
           const score = calculateScore(targetClass, candClass);
-          return { panel: candidate, score };
+          return { panel: candClass, score }; // ✅ Guardamos el panel clasificado
         }));
 
         const topMatches = scored.sort((a, b) => b.score - a.score).slice(0, 5);
