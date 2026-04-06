@@ -50,6 +50,11 @@ export const useFirestore = () => {
   return context.firestore;
 };
 
+export const useStorage = () => {
+  const context = useFirebase();
+  return context.storage;
+};
+
 export function useMemoFirebase<T>(factory: () => T, deps: any[]): T & {__memo?: boolean} {
   const { areServicesAvailable } = useFirebase();
   // Only execute the query builder when Firebase guarantees readiness
@@ -81,7 +86,7 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
         firebaseApp: app,
         firestore: fs,
         db: fs,
-        storage: null,
+        storage: initResult.storage,
         auth: null,
         user: null,
         role: 'admin',

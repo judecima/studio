@@ -44,13 +44,16 @@ import {
 import { autocompletePanelDetails } from "@/ai/flows/admin-panel-autocompletion";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
-import { useFirestore } from "@/firebase";
+import { useFirestore, useStorage } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
 import { ncsToHex, inferColorGroupFromNcs } from "@/lib/constants/colors";
 import { converter } from "culori";
+import { classifyPanel } from "@/app/actions/classify-panel";
+import { COLOR_PARENTS, SUB_LEVELS } from "@/lib/equivalences/classifier";
 
 const toLab = converter('lab');
 
@@ -64,8 +67,8 @@ const panelSchema = z.object({
   description: z.string().optional(),
   stock: z.coerce.number().min(0),
   visible: z.boolean(),
-  mainImage: z.string().url("URL de imagen principal inválida"),
-  images: z.array(z.string().url()).default([]),
+  mainImage: z.string().min(1, "La imagen principal es requerida"),
+  images: z.array(z.string()).default([]),
   colorGroup: z.string(),
   colorHue: z.string(),
   styleTags: z.array(z.string()).default([]),
@@ -86,6 +89,8 @@ const panelSchema = z.object({
     a: z.number(),
     b: z.number(),
   }).optional(),
+  colorParent: z.string().optional(),
+  colorSub: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof panelSchema>;
@@ -93,14 +98,17 @@ type FormValues = z.infer<typeof panelSchema>;
 interface Props {
   mode: 'create' | 'edit';
   initialData?: Panel;
+  collectionName?: string;
 }
 
-export function PanelForm({ mode, initialData }: Props) {
+export function PanelForm({ mode, initialData, collectionName = 'panels' }: Props) {
   const { toast } = useToast();
   const db = useFirestore();
+  const storage = useStorage();
   const router = useRouter();
   const [isAutocompleting, setIsAutocompleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const isValidUrl = (url: string) => {
     try {
@@ -139,6 +147,8 @@ export function PanelForm({ mode, initialData }: Props) {
       applications: initialData.applications || [],
       hexColor: initialData.hexColor,
       labColor: initialData.labColor,
+      colorParent: (initialData as any).colorParent || "",
+      colorSub: (initialData as any).colorSub || "",
     } : {
       name: "",
       brand: "",
@@ -166,25 +176,34 @@ export function PanelForm({ mode, initialData }: Props) {
     },
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        toast({ title: "Archivo demasiado grande", description: "El límite es 2MB.", variant: "destructive" });
+    if (file && storage) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({ title: "Archivo demasiado grande", description: "El límite es 5MB.", variant: "destructive" });
         return;
       }
       
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        form.setValue("mainImage", base64String);
-        toast({ title: "Imagen Cargada", description: "Vista previa actualizada correctamente." });
-        // Trigger color calculation if NCS is missing
-        if (!form.getValues("ncs")) {
-          handleCalculateColor(base64String);
-        }
-      };
-      reader.readAsDataURL(file);
+      setIsUploadingImage(true);
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const storageRef = ref(storage, `catalog/${fileName}`);
+        
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        
+        form.setValue("mainImage", downloadURL);
+        toast({ title: "Imagen Cargada", description: "Subida a la nube correctamente." });
+        
+        // Trigger color calculation
+        handleCalculateColor(downloadURL);
+      } catch (error: any) {
+        console.error("Error uploading image:", error);
+        toast({ title: "Error de Subida", description: "No se pudo guardar la imagen en la nube.", variant: "destructive" });
+      } finally {
+        setIsUploadingImage(false);
+      }
     }
   };
 
@@ -221,7 +240,21 @@ export function PanelForm({ mode, initialData }: Props) {
         if (result.success) {
           form.setValue("hexColor", result.hex);
           form.setValue("labColor", result.lab);
-          toast({ title: "Color extraído de la imagen", description: `HEX: ${result.hex}` });
+          
+          // 🔥 Auto-clasificar jerarquía
+          const classification = await classifyPanel({
+            ...form.getValues(),
+            mainImage,
+            labColor: result.lab
+          } as any);
+          
+          if (classification) {
+            if (classification.colorParent) form.setValue("colorParent", classification.colorParent);
+            if (classification.colorSub) form.setValue("colorSub", classification.colorSub);
+            if (classification.colorGroup) form.setValue("colorGroup", classification.colorGroup);
+          }
+          
+          toast({ title: "Color extraído", description: `HEX: ${result.hex} | Padre: ${classification?.colorParent}` });
         }
       } catch (e) {
         toast({ title: "Error al extraer color", description: "No se pudo analizar la imagen.", variant: "destructive" });
@@ -278,11 +311,28 @@ export function PanelForm({ mode, initialData }: Props) {
       
       const generatedId = `${brandSlug}-${nameSlug}${codeSlug}`;
       const docId = initialData?.id || generatedId;
-      const docRef = doc(db, 'panels', docId);
+      const docRef = doc(db, collectionName, docId);
 
-      console.log(`Intentando guardar panel: ${docId}`, data);
+      console.log(`Intentando guardar panel: ${generatedId}`, data);
+      
+      // ✅ AUTO-CLASSIFY: Use the engine to detect group and tone if labColor exists
+      let finalData = { ...data };
+      if (data.labColor) {
+        try {
+          const classified = await classifyPanel(data as any);
+          if (classified) {
+            finalData.colorGroup = data.colorGroup || classified.colorGroup;
+            finalData.colorHue = data.colorHue || classified.tone;
+            finalData.colorParent = data.colorParent || classified.colorParent;
+            finalData.colorSub = data.colorSub || classified.colorSub;
+            finalData.isSmooth = classified.texture === 'mate' || classified.texture === 'standard' || classified.texture === 'smooth';
+          }
+        } catch (e) {
+          console.warn("Auto-classification failed, using manual values", e);
+        }
+      }
 
-      // In create mode, check if ID already exists to avoid unintended overwrites
+      // In create mode, check if ID already exists
       if (mode === 'create') {
         const { getDoc } = await import('firebase/firestore');
         const docSnap = await getDoc(docRef);
@@ -298,7 +348,7 @@ export function PanelForm({ mode, initialData }: Props) {
       }
 
       const panelToSave: any = {
-        ...data,
+        ...finalData,
         id: docId,
         updatedAt: serverTimestamp(),
         createdAt: initialData?.createdAt || serverTimestamp(),
@@ -319,7 +369,7 @@ export function PanelForm({ mode, initialData }: Props) {
         toast({ title: "Guardado", description: "El producto ha sido creado. Formulario listo para el siguiente." });
       } else {
         router.refresh();
-        router.push('/admin/panels');
+        router.push(`/admin/panels`);
       }
     } catch (error: any) {
       console.error("Error al guardar panel:", error);
@@ -329,7 +379,7 @@ export function PanelForm({ mode, initialData }: Props) {
         variant: "destructive" 
       });
       const permissionError = new FirestorePermissionError({
-        path: `panels/${data.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+        path: `${collectionName}/${data.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
         operation: mode === 'create' ? 'create' : 'update',
         requestResourceData: data,
       });
@@ -523,9 +573,11 @@ export function PanelForm({ mode, initialData }: Props) {
                           <SelectItem value="madera">Madera</SelectItem>
                           <SelectItem value="blanco">Blanco</SelectItem>
                           <SelectItem value="gris">Gris</SelectItem>
-                          <SelectItem value="beige">Beige</SelectItem>
+                          <SelectItem value="beige">Beige / Arena</SelectItem>
                           <SelectItem value="negro">Negro</SelectItem>
-                          <SelectItem value="merlot">Rojo/Merlot</SelectItem>
+                          <SelectItem value="verde">Verde</SelectItem>
+                          <SelectItem value="azul">Azul</SelectItem>
+                          <SelectItem value="merlot">Rojo / Merlot</SelectItem>
                           <SelectItem value="otro">Otro</SelectItem>
                         </SelectContent>
                       </Select>
@@ -551,14 +603,66 @@ export function PanelForm({ mode, initialData }: Props) {
                 />
               </div>
 
+              <div className="pt-4 border-t border-slate-100 mt-4">
+                <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-4">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  Jerarquía de Color Objetiva (IA)
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="colorParent"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold text-slate-700">Color Padre (LAB)</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger className="h-10 border-amber-100 bg-amber-50/30"><SelectValue placeholder="Seleccionar" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            {COLOR_PARENTS.map(p => (
+                              <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="colorSub"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold text-slate-700">Sub-gama (L*)</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger className="h-10 border-amber-100 bg-amber-50/30"><SelectValue placeholder="Seleccionar" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            {SUB_LEVELS.map(s => (
+                              <SelectItem key={s.name} value={s.name}>{s.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="surfaceTexture"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold text-slate-700">Textura Superficial</FormLabel>
-                      <FormControl><Input placeholder="Ej: ST22, Porosa, Seda..." className="h-10" {...field} /></FormControl>
+                      <FormLabel className="font-bold text-slate-700">Tipo de Material / Textura</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormControl><SelectTrigger className="h-10"><SelectValue placeholder="Seleccionar material" /></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="liso">Liso / Básico</SelectItem>
+                          <SelectItem value="madera">Madera (Vetas)</SelectItem>
+                          <SelectItem value="concreto">Concreto / Piedra</SelectItem>
+                          <SelectItem value="textil">Textil / Tela</SelectItem>
+                          <SelectItem value="metal">Metal / Acero</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormItem>
                   )}
                 />
@@ -568,7 +672,16 @@ export function PanelForm({ mode, initialData }: Props) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-bold text-slate-700">Acabado (Mate/Brillo)</FormLabel>
-                      <FormControl><Input placeholder="Ej: Extra Mate, Gloss..." className="h-10" {...field} /></FormControl>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormControl><SelectTrigger className="h-10"><SelectValue placeholder="Seleccionar" /></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="mate">Mate</SelectItem>
+                          <SelectItem value="brillo">Brillo / Gloss</SelectItem>
+                          <SelectItem value="satinado">Satinado</SelectItem>
+                          <SelectItem value="texturado">Texturado</SelectItem>
+                          <SelectItem value="soft">Soft / Sedoso</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormItem>
                   )}
                 />
@@ -580,7 +693,7 @@ export function PanelForm({ mode, initialData }: Props) {
                   name="hasGrain"
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-2 space-y-0 border rounded-lg p-2 flex-1 min-w-[120px]">
-                      <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                      <FormControl><Switch checked={!!field.value} onCheckedChange={field.onChange} /></FormControl>
                       <FormLabel className="text-xs uppercase font-bold text-slate-500">Tiene Veta</FormLabel>
                     </FormItem>
                   )}
@@ -590,7 +703,7 @@ export function PanelForm({ mode, initialData }: Props) {
                   name="isSmooth"
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-2 space-y-0 border rounded-lg p-2 flex-1 min-w-[120px]">
-                      <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                      <FormControl><Switch checked={!!field.value} onCheckedChange={field.onChange} /></FormControl>
                       <FormLabel className="text-xs uppercase font-bold text-slate-500">Acabado Liso</FormLabel>
                     </FormItem>
                   )}
@@ -600,7 +713,7 @@ export function PanelForm({ mode, initialData }: Props) {
                   name="antiFingerprint"
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-2 space-y-0 border rounded-lg p-2 flex-1 min-w-[120px]">
-                      <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                      <FormControl><Switch checked={!!field.value} onCheckedChange={field.onChange} /></FormControl>
                       <FormLabel className="text-xs uppercase font-bold text-slate-500">Anti-huella</FormLabel>
                     </FormItem>
                   )}
@@ -628,6 +741,12 @@ export function PanelForm({ mode, initialData }: Props) {
                         ) : (
                           <ImageIcon className="h-8 w-8" />
                         )}
+                        {isUploadingImage && (
+                          <div className="absolute inset-0 bg-slate-50/80 flex flex-col items-center justify-center z-10">
+                            <Loader2 className="h-6 w-6 animate-spin text-indigo-500 mb-1" />
+                            <span className="text-[8px] font-bold text-indigo-600 uppercase tracking-wider">Subiendo</span>
+                          </div>
+                        )}
                         {field.value && (
                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                              <Button type="button" size="icon" variant="ghost" className="text-white h-8 w-8" onClick={() => handleCalculateColor()}>
@@ -645,8 +764,10 @@ export function PanelForm({ mode, initialData }: Props) {
                             size="sm" 
                             className="gap-2 h-9 border-slate-200 text-slate-600"
                             onClick={() => document.getElementById('image-upload')?.click()}
+                            disabled={isUploadingImage}
                           >
-                            <Upload className="h-4 w-4" /> Subir Archivo
+                            {isUploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                            {isUploadingImage ? "Subiendo..." : "Subir Archivo"}
                           </Button>
                           <input 
                             id="image-upload" 

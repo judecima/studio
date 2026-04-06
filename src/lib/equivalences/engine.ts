@@ -1,11 +1,21 @@
 import fs from 'fs';
 import path from 'path';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
 import { initializeFirebase } from '@/firebase';
 // @ts-ignore
 import { converter, differenceCiede2000 } from 'culori';
 import { Panel, ClassifiedPanel } from '@/lib/types';
 import { FAPLAC_MASTER_DATA, EGGER_MASTER_DATA, inferColorGroupFromNcs, ncsToHex } from '@/lib/constants/colors';
+
+import { 
+  normalizeName, 
+  detectColor, 
+  detectTexture, 
+  detectTone,
+  detectTemp,
+  getColorParent,
+  getColorSub
+} from './classifier';
 
 function getDb() {
   const sdk = initializeFirebase();
@@ -15,8 +25,27 @@ function getDb() {
 const toLab = converter('lab');
 const de2000 = differenceCiede2000();
 
-function normalize(text: string): string {
-  return (text || '').toLowerCase();
+// 🚀 SINGLETONS: Evitar fugas de memoria por imports dinámicos en HMR
+let sharpInstance: any = null;
+let ncsInstance: any = null;
+
+// 🚀 CLUSTERING: Cache de centroides en memoria
+let colorCentroids: { lab: { l: number; a: number; b: number }; name: string }[] | null = null;
+
+async function loadColorCentroids() {
+  if (colorCentroids) return colorCentroids;
+  const db = getDb();
+  try {
+    const snap = await getDocs(collection(db, 'color_groups'));
+    colorCentroids = snap.docs.map(doc => ({
+      lab: doc.data().lab,
+      name: doc.data().name,
+    }));
+    return colorCentroids;
+  } catch (e) {
+    console.error("⚠️ Error cargando centroides:", (e as Error).message);
+    return [];
+  }
 }
 
 /**
@@ -60,9 +89,11 @@ async function getNcsLab(ncsCode: string): Promise<{ l: number; a: number; b: nu
 
   // 3. Calcular con ncs-color y guardar en caché
   try {
-    const ncsModule = await import('ncs-color');
-    const ncs = (ncsModule as any).default || ncsModule;
-    const rgbStr = ncs.rgb(cleanCode);
+    if (!ncsInstance) {
+      const ncsModule = await import('ncs-color');
+      ncsInstance = (ncsModule as any).default || ncsModule;
+    }
+    const rgbStr = ncsInstance.rgb(cleanCode);
     if (rgbStr) {
       const lab = toLab(rgbStr);
       if (lab) {
@@ -80,48 +111,6 @@ async function getNcsLab(ncsCode: string): Promise<{ l: number; a: number; b: nu
 }
 
 // ----------------------------------------------------------------------
-// Clasificación por texto (fallback)
-// ----------------------------------------------------------------------
-function detectColor(n: string, ncs?: string): string {
-  if (ncs) {
-    const inferred = inferColorGroupFromNcs(ncs);
-    if (inferred) return inferred;
-  }
-  const norm = normalize(n);
-  if (norm.match(/merlot|bordo|granate|vino|rojo|cereza|amaranto|borravino|ciruela|terracota/i)) return 'merlot';
-  if (norm.match(/gris|grafito|cemento|plata|aluminio|titanio|plomo|antracita|amberes|shadow|london/i)) return 'gris';
-  if (norm.match(/negro|notte|carbon|obsidiana|pizarra/i)) return 'negro';
-  if (norm.match(/blanco|nieve|marfil|alpino|polar/i)) return 'blanco';
-  if (norm.match(/roble|nogal|madera|veta|fresno|pino|cedro|haya|teka|abeto|lincoln|hamilton|kendall/i)) return 'madera';
-  if (norm.match(/beige|arena|caramelo|almendra|crema|sahara|amatista|cajú|tapestry|macadan|cachemira|guijarro/i)) return 'beige';
-  return 'otro';
-}
-
-function detectTexture(n: string): string {
-  const norm = normalize(n);
-  if (norm.match(/hilas|hilados|textura hilas|lino|tela|seda|tweed|st10/i)) return 'textil';
-  if (norm.match(/cemento|piedra|urban|concreto|st75|st76|st20/i)) return 'piedra';
-  if (norm.match(/veta|madera|poro|st12|st19|st22|st32|st37|st38/i)) return 'veteado';
-  if (norm.match(/st9|mate|extra mate|satinado|standard|liso|smooth/i)) return 'mate';
-  if (norm.match(/gloss|brillo|shining|pg|st30/i)) return 'gloss';
-  return 'standard';
-}
-
-function detectTone(n: string): string {
-  const norm = normalize(n);
-  if (norm.match(/oscuro|dark|deep/i)) return 'dark';
-  if (norm.match(/claro|light|suave/i)) return 'light';
-  return 'medium';
-}
-
-function detectTemp(n: string): string {
-  const norm = normalize(n);
-  if (norm.match(/cálido|warm|beige|roble|miel|terracota/i)) return 'warm';
-  if (norm.match(/frío|cool|gris|hielo|shadow/i)) return 'cool';
-  return 'neutral';
-}
-
-// ----------------------------------------------------------------------
 // Muestreo de imagen (Optimizado con Sharp v7.0)
 // ----------------------------------------------------------------------
 async function getAverageColor(imagePath: string): Promise<{ r: number; g: number; b: number } | undefined> {
@@ -129,10 +118,12 @@ async function getAverageColor(imagePath: string): Promise<{ r: number; g: numbe
   if (!fs.existsSync(fullPath)) return undefined;
 
   try {
-    const sharpModule = await import('sharp');
-    const sharp = sharpModule.default;
+    if (!sharpInstance) {
+      const sharpModule = await import('sharp');
+      sharpInstance = sharpModule.default;
+    }
     
-    let pipeline = sharp(fullPath);
+    let pipeline = sharpInstance(fullPath);
     const metadata = await pipeline.metadata();
     
     // 🔥 Redimensionar a 500px para análisis ultra-veloz si es muy grande
@@ -186,26 +177,70 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
       ...panel,
       certifiedLab: masterInfo.lab,
       colorGroup: masterInfo.cat,
-      tone: detectTone(panel.name),
-      temperature: detectTemp(panel.name),
-      texture: detectTexture(panel.name),
+      tone: detectTone(masterInfo.lab.l),
+      temperature: 'neutral',
+      texture: detectTexture(panel.name, (panel as any).surfaceTexture),
       colorSource: 'certified_master_list'
     } as ClassifiedPanel;
   }
 
-  const n = normalize(`${panel.name} ${panel.code} ${panel.id} ${(panel as any).colorData?.ncs || ''}`);
-  const ncsCode = (panel as any).colorData?.ncs;
+  const n = normalizeName(`${panel.name} ${panel.code} ${panel.id} ${(panel as any).colorData?.ncs || ''}`);
 
   const classified: any = {
     ...panel,
-    colorGroup: detectColor(n, ncsCode),
-    tone: detectTone(n),
-    temperature: detectTemp(n),
-    texture: detectTexture(n)
+    texture: detectTexture(panel.name, (panel as any).surfaceTexture),
+    hasGrain: detectTexture(panel.name, (panel as any).surfaceTexture) === 'madera',
+    isSmooth: detectTexture(panel.name, (panel as any).surfaceTexture) === 'liso'
   };
 
-  let lab = (panel as any).labColor;
   let needsSync = false;
+
+  // ✅ PRIORIDAD 1: SEMÁNTICA (Keywords como 'Safari' o 'Almendra' ganan)
+  const ncsCode = panel.ncs || (panel as any).ncsCode || (panel as any).colorData?.ncs;
+  let colorGroup: string | null = detectColor(panel.name, ncsCode);
+  if (colorGroup === 'Otro') colorGroup = null;
+
+  // 🔥 BUG FIX: Ensure changes in group, texture or grain/smoothness trigger a sync
+  if (
+    colorGroup !== (panel as any).colorGroup || 
+    classified.texture !== (panel as any).texture ||
+    classified.hasGrain !== (panel as any).hasGrain ||
+    classified.isSmooth !== (panel as any).isSmooth
+  ) {
+    needsSync = true;
+  }
+
+  // ✅ PRIORIDAD 2: Centros Cromáticos (Fallback si no hay keyword clara)
+  let lab = (panel as any).labColor || panel.labColor;
+  if (!lab && (panel as any).hexColor) {
+    lab = toLab((panel as any).hexColor);
+  }
+
+  if (!colorGroup && lab) {
+    const centroids = await loadColorCentroids();
+    if (centroids && centroids.length) {
+      let minDE = Infinity;
+      let best = null;
+      for (const cent of centroids) {
+        const dE = de2000(lab, cent.lab);
+        if (dE < minDE) {
+          minDE = dE;
+          best = cent.name;
+        }
+      }
+      if (best) colorGroup = best;
+    }
+  }
+
+  classified.colorGroup = colorGroup || 'Otro';
+  classified.tone = (panel.colorHue && panel.colorHue !== 'medium') ? panel.colorHue : detectTone(lab?.l || 50);
+  classified.temperature = (panel as any).temperature || 'neutral';
+  
+  // ✅ NUEVO: Jerarquía Objetiva (Parent/Sub) con Enfoque Híbrido
+  if (lab) {
+    classified.colorParent = getColorParent(lab, panel.name);
+    classified.colorSub = getColorSub(lab.l);
+  }
 
   // Intentar obtener LAB desde NCS (caché o cálculo)
   if (!lab && ncsCode) {
@@ -229,12 +264,22 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   if (needsSync && lab) {
     try {
       const db = getDb();
+      console.log(`📡 Sincronizando DB para ${panel.id}: Group=${classified.colorGroup}, needsSync=${needsSync}`);
       await updateDoc(doc(db, 'panels', panel.id), {
         labColor: lab,
+        colorGroup: classified.colorGroup,
+        colorHue: classified.tone,
+        colorParent: classified.colorParent,
+        colorSub: classified.colorSub,
+        surfaceTexture: classified.texture, // PERSISTENCIA DE TEXTURA UNIFICADA
+        hasGrain: classified.hasGrain,
+        isSmooth: classified.isSmooth,
         colorSource: classified.colorSource || 'analytical_v6.1',
         updatedAt: new Date().toISOString()
       });
-    } catch (e) { /* ignora errores de actualización */ }
+    } catch (e: any) { 
+      console.error(`❌ Error sincronizando ${panel.id}:`, e.message);
+    }
   }
 
   classified.certifiedLab = lab;
@@ -251,17 +296,36 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   let colorScore = 0;
   if (labA && labB) {
     const dE = de2000(labA, labB);
-    colorScore = Math.max(0, 1 - (dE / 15));
+    // Tolerancia optimizada para comparaciones cromáticas puras
+    colorScore = Math.max(0, 1 - (dE / 18));
   } else {
     colorScore = (a.colorGroup === b.colorGroup) ? 0.8 : 0.2;
   }
 
-  const textureBonus = (a.texture === b.texture) ? 0.3 : 0.1;
-  let finalScore = (colorScore * 0.7) + textureBonus;
+  const isMetalSmooth = (a.texture === 'metal' && b.texture === 'liso') || (a.texture === 'liso' && b.texture === 'metal');
+  const textureBonus = (a.texture === b.texture || isMetalSmooth) ? 0.2 : 0.1;
+  let finalScore = (colorScore * 0.8) + textureBonus;
 
-  // Penalización si los grupos de color son muy opuestos
-  if (a.colorGroup !== b.colorGroup && a.colorGroup !== 'otro' && b.colorGroup !== 'otro') {
-    finalScore *= 0.5;
+  // ✅ NUEVO: Bonificaciones jerárquicas (0.10 si coinciden grupo + sub)
+  if (a.colorParent && b.colorParent) {
+    if (a.colorParent === b.colorParent && a.colorSub === b.colorSub) {
+      finalScore = Math.min(1, finalScore + 0.10);
+    } else if (a.colorParent === b.colorParent) {
+      finalScore = Math.min(1, finalScore + 0.05);
+    }
+  }
+
+  // 🛡️ BARRERA DE MATERIAL: Penalización crítica si uno es madera y el otro es sólido
+  if (a.hasGrain !== b.hasGrain) {
+    finalScore *= 0.3; 
+  }
+
+  // 🛡️ BARRERA DE GRUPO: Penalización FUERTE si los grupos OBJECTIVOS no coinciden
+  const parentA = a.colorParent || a.colorGroup;
+  const parentB = b.colorParent || b.colorGroup;
+  
+  if (parentA !== parentB && parentA !== 'otro' && parentB !== 'otro') {
+    finalScore *= 0.6; 
   }
 
   return Math.min(1, Math.max(0, finalScore));
@@ -274,18 +338,18 @@ function describePanel(panel: ClassifiedPanel): string {
   const toneMap: any = { dark: 'oscuro', medium: 'medio', light: 'claro' };
   const tempMap: any = { warm: 'cálida', cool: 'fría', neutral: 'neutra' };
   const textureMap: any = {
-    veteado: 'veteado',
+    madera: 'madera',
     textil: 'textil',
-    piedra: 'piedra',
-    mate: 'mate',
-    gloss: 'brillo',
-    standard: 'liso'
+    concreto: 'concreto',
+    metal: 'metal',
+    liso: 'liso'
   };
-  const colorName = panel.colorGroup === 'madera' ? 'diseño de madera' : panel.colorGroup;
-  const tone = toneMap[panel.tone] || 'medio';
-  const temp = tempMap[panel.temperature] || 'neutra';
+  
+  const parentName = panel.colorParent || panel.colorGroup;
+  const subName = panel.colorSub || toneMap[panel.tone] || 'medio';
   const texture = textureMap[panel.texture] || panel.texture;
-  return `${colorName} ${tone} con temperatura ${temp} y acabado ${texture}`;
+  
+  return `${parentName} ${subName} (${texture})`;
 }
 
 /**
@@ -309,16 +373,25 @@ function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, sc
     else colorReason = `grupo cromático ${target.colorGroup} vs ${match.colorGroup}`;
   }
 
-  // Compatibilidad de textura
+  // Compatibilidad de material y textura
+  let groupMsg = '';
+  if (target.colorGroup !== match.colorGroup) {
+    groupMsg = ` [Grupo: ${target.colorGroup} vs ${match.colorGroup}]`;
+  }
+
+  let materialMsg = '';
+  if (target.hasGrain !== match.hasGrain) {
+    materialMsg = target.hasGrain ? 'discrepancia material (madera vs liso)' : 'discrepancia material (liso vs madera)';
+  }
+
   let textureMsg = '';
   if (target.texture === match.texture) {
     textureMsg = `ambos tienen acabado ${target.texture}.`;
   } else {
-    const targetIsWood = target.texture === 'veteado' || target.texture === 'madera';
-    const matchIsWood = match.texture === 'veteado' || match.texture === 'madera';
-    if (targetIsWood || matchIsWood) textureMsg = `discrepan en textura (madera vs liso).`;
-    else textureMsg = `acabados diferentes (${target.texture} vs ${match.texture}).`;
+    textureMsg = `acabados diferentes (${target.texture} vs ${match.texture}).`;
   }
+
+  const visualMsg = materialMsg ? `${materialMsg} y ${textureMsg}` : textureMsg;
 
   // Fuente de la equivalencia
   const sourceNote = (match as any).colorSource === 'certified_master_list'
@@ -331,13 +404,14 @@ function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, sc
   else if (percentage >= 70) conclusion = 'Equivalencia visual recomendada';
   else conclusion = 'Alternativa técnica sugerida';
 
-  return `${match.name} (${match.brand}) es ${matchDesc}. Su ${colorReason} con el panel objetivo (${targetDesc}) y ${textureMsg} ${conclusion} con un ${percentage}% de similitud${sourceNote}.`;
+  return `${match.name} (${match.brand}) es ${matchDesc}.${groupMsg} Su ${colorReason} con el panel objetivo (${targetDesc}) y ${visualMsg} ${conclusion} con un ${percentage}% de similitud${sourceNote}.`;
 }
 
 // ----------------------------------------------------------------------
 // Procesamiento por lotes
 // ----------------------------------------------------------------------
 export async function runEquivalenceSync(allPanels: Panel[]) {
+  classificationCache.clear(); // 🔥 Limpiar caché antes de cada sincronización
   const db = getDb();
   const BATCH_SIZE = 5;
   const results = [];
@@ -349,15 +423,18 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
     const batchResults = await Promise.all(batch.map(async (target) => {
       try {
         const targetClass = await getCachedClassifiedPanel(target);
-        const candidates = allPanels.filter(p => p.brand !== target.brand);
-
+        const candidates = allPanels.filter(p => p.id !== target.id);
+        
         const scored = await Promise.all(candidates.map(async (candidate) => {
           const candClass = await getCachedClassifiedPanel(candidate);
           const score = calculateScore(targetClass, candClass);
-          return { panel: candClass, score }; // ✅ Guardamos el panel clasificado
+          return { panel: candClass, score };
         }));
 
-        const topMatches = scored.sort((a, b) => b.score - a.score).slice(0, 5);
+        const topMatches = scored
+          .filter(m => m.score > 0.3) // Solo mostrar coincidencias razonables (>30%)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5);
 
         const result = {
           targetId: target.id,

@@ -1,7 +1,8 @@
 
 "use client"
 
-import { useParams, useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { PanelForm } from "@/components/admin/PanelForm";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Loader2, AlertCircle } from "lucide-react";
@@ -10,15 +11,18 @@ import { doc } from "firebase/firestore";
 import { Panel } from "@/lib/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export default function EditPanelPage() {
+function EditPanelContent() {
   const { id } = useParams();
   const router = useRouter();
   const db = useFirestore();
 
+  const searchParams = useSearchParams();
+  const collectionName = searchParams.get('collection') || 'panels';
+
   const panelRef = useMemoFirebase(() => {
     if (!db || !id) return null;
-    return doc(db, 'panels', id as string);
-  }, [db, id]);
+    return doc(db, collectionName, id as string);
+  }, [db, id, collectionName]);
 
   const { data: panel, isLoading, error } = useDoc<Panel>(panelRef);
 
@@ -62,8 +66,16 @@ export default function EditPanelPage() {
       </div>
 
       <div className="max-w-4xl">
-        <PanelForm mode="edit" initialData={panel} />
+        <PanelForm mode="edit" initialData={panel} collectionName={collectionName} />
       </div>
     </div>
+  );
+}
+
+export default function EditPanelPage() {
+  return (
+    <Suspense fallback={<div className="h-96 flex items-center justify-center text-muted-foreground">Cargando editor...</div>}>
+      <EditPanelContent />
+    </Suspense>
   );
 }

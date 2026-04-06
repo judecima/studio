@@ -1,5 +1,5 @@
 
-export type ColorGroup = 'blanco' | 'gris' | 'negro' | 'madera' | 'beige' | 'terracota' | 'merlot' | 'amatista' | 'verde' | 'azul' | 'otro' | 'claro' | 'medio' | 'oscuro';
+export type ColorGroup = string;
 export type ColorHue = string;
 export type StyleTag = 'moderno' | 'clasico' | 'industrial' | 'nordico' | 'minimalista';
 export type UseCase = 'cocina' | 'placard' | 'oficina' | 'baño' | 'comedor';
@@ -22,6 +22,8 @@ export type Panel = {
   // Extended fields
   colorGroup: ColorGroup;
   colorHue: ColorHue;
+  colorParent?: string; // Nuevo: Categoría objetiva LAB
+  colorSub?: string;    // Nuevo: Sub-gama L* (Muy Claro, etc)
   styleTags: string[];
   useCases: string[];
   code?: string;
@@ -121,6 +123,8 @@ export type ClassifiedPanel = Panel & {
   tone: string;
   temperature: string;
   texture: string;
+  colorParent?: string;
+  colorSub?: string;
   certifiedLab?: { l: number; a: number; b: number };
   avgColor?: { r: number; g: number; b: number };
 };

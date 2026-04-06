@@ -5,10 +5,15 @@ import path from 'path';
 import { initializeFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { normalizePanelId } from '../catalog-engine/catalog.adapter';
+import { extractColorFromImage, getColorFromNcs } from '../colors/extractor';
+import { classify } from '../equivalences/engine';
 
 const BASE_URL = 'https://www.faplaconline.com.ar';
 const LOGIN_URL = `${BASE_URL}/home/login`;
 const CATALOG_URL = `${BASE_URL}/home/c/ar-faplac/ar-melaminas?p=1`;
+
+const WOOD_KEYWORDS = /roble|nogal|cedro|pino|haya|teka|fresno|ebano|wengue|guatambu|jacaranda|petiribi|paraiso|madera|veta|wood|grain|oak|walnut|mesopotamia/i;
+const TEXTURE_GRAIN = /woodtext|veteado|veta|mesh|lineal|nature/i;
 
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -55,7 +60,7 @@ export async function runIndustrialPipeline() {
 
     const csrfToken = await page.$eval('input[name="CSRFToken"]', (el: any) => el.value);
 
-    await page.evaluate((csrf) => {
+    await page.evaluate((csrf: string) => {
       const form = document.querySelector('#loginDropDownForm') as HTMLFormElement;
       if (form) {
         (form.querySelector('input[name="CSRFToken"]') as HTMLInputElement).value = csrf;
@@ -64,7 +69,28 @@ export async function runIndustrialPipeline() {
     }, csrfToken);
 
     await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
-    console.log("✅ Sesión activa.");
+
+    // --- Validación de Login ---
+    const isError = await page.evaluate(() => {
+      const errorMsg = document.querySelector('.alert-danger, .alert-error, .global-alerts')?.textContent?.trim();
+      return errorMsg || null;
+    });
+
+    if (isError) {
+      console.error(`❌ Error de login detectado: "${isError}"`);
+      if (browser) await browser.close();
+      return { success: false, error: isError };
+    }
+
+    const isLoggedIn = await page.evaluate(() => {
+      return !!document.querySelector('.js-logged-in, .user-name, a[href*="logout"]');
+    });
+
+    if (!isLoggedIn) {
+      console.warn("⚠️ Advertencia: No se detectó selector de sesión iniciada, pero se continuará...");
+    } else {
+      console.log("✅ Sesión iniciada correctamente.");
+    }
 
     // --- Recolectar enlaces (Fidelidad v7.4.0 + Scroll Incremental) ---
     const allProductLinks = new Set<string>();
@@ -94,7 +120,7 @@ export async function runIndustrialPipeline() {
             .map(href => href.split('?')[0]);
         });
         
-        links.forEach(link => allProductLinks.add(link));
+        links.forEach((link: string) => allProductLinks.add(link));
       } catch (e) {
         console.log(`  ⚠️ Timeout explorando página ${pageUrl.split('?').pop()}, continuando...`);
       }
@@ -171,15 +197,25 @@ export async function runIndustrialPipeline() {
           const localFile = path.join(localDir, `${slug}.${ext}`);
           const finalImageUrl = `/images/faplac/${slug}.${ext}`;
 
-          // Descarga de Imagen con extensión correcta
+          // Descarga de Imagen con extracción de color
+          let colorData = null;
           try {
+            const res = await axios.get(productData.imageUrl, { responseType: 'arraybuffer', timeout: 30000, headers: HEADERS });
+            colorData = await extractColorFromImage(res.data);
+            
             if (!fs.existsSync(localFile)) {
-              const res = await axios.get(productData.imageUrl, { responseType: 'arraybuffer', timeout: 15000, headers: HEADERS });
               fs.writeFileSync(localFile, res.data);
             }
           } catch (e) {
-            console.error(`⚠️ Error imagen ${slug}`);
+            console.error(`⚠️ Error color/imagen ${slug}`);
           }
+
+          const texture = productData.specs['Textura'] || '';
+          const name = productData.name;
+          const desc = productData.description;
+          
+          const hasGrain = TEXTURE_GRAIN.test(texture) || WOOD_KEYWORDS.test(name) || WOOD_KEYWORDS.test(desc);
+          const isSmooth = /matt|mate|smooth|liso/i.test(texture) && !hasGrain;
 
           const panelDoc = {
             id: slug,
@@ -193,13 +229,32 @@ export async function runIndustrialPipeline() {
             stock: 0,
             mainImage: finalImageUrl,
             images: [finalImageUrl],
+            hexColor: colorData?.hex || null,
+            labColor: colorData?.lab || null,
+            colorSource: colorData ? 'image' : null,
             visible: true,
             updatedAt: serverTimestamp(),
             code: productData.urlCode,
             surfaceTexture: productData.specs['Textura'] || 'Mate',
             isSmooth: (productData.name + productData.description).toLowerCase().includes('mate'),
+            hasGrain: hasGrain,
             finish: (productData.name + productData.description).toLowerCase().includes('mate') ? 'mate' : 'brillo',
+            colorGroup: null as any,
+            colorHue: null as any,
           };
+
+          // ✅ AUTO-CLASSIFY: Use the engine to detect group and tone
+          if (panelDoc.labColor) {
+            try {
+              const classified = await classify(panelDoc as any);
+              if (classified) {
+                panelDoc.colorGroup = classified.colorGroup;
+                panelDoc.colorHue = classified.tone;
+              }
+            } catch (e) {
+              console.warn(`⚠️ Auto-classification failed for ${slug}`, e);
+            }
+          }
 
           await setDoc(doc(firestore, 'panels', slug), panelDoc, { merge: true });
           processedCount++;

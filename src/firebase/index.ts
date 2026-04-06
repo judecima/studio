@@ -2,11 +2,17 @@ import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage';
 
 /**
  * @fileOverview Inicialización universal de Firebase.
  * Se eliminó 'use client' para permitir el uso en Server Actions y Scrapers.
  */
+
+// 🛡️ Evitar avisos de MaxListeners en HMR (Next.js)
+if (typeof process !== 'undefined' && typeof process.setMaxListeners === 'function') {
+  process.setMaxListeners(20);
+}
 
 export function initializeFirebase() {
   if (!getApps().length) {
@@ -28,7 +34,8 @@ export function getSdks(firebaseApp: FirebaseApp) {
   return {
     firebaseApp,
     auth: getAuth(firebaseApp),
-    firestore: getFirestore(firebaseApp)
+    firestore: getFirestore(firebaseApp),
+    storage: getStorage(firebaseApp)
   };
 }
 

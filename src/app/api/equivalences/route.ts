@@ -4,6 +4,9 @@ import { collection, getDocs } from 'firebase/firestore';
 import { Panel } from '@/lib/types';
 import { runEquivalenceSync } from '@/lib/equivalences/engine';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const sdk = initializeFirebase();

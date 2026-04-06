@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/firebase/config"; // Asumimos que existe un config con admin o db directo
+import { initializeFirebase } from "@/firebase"; 
+const { firestore: db } = initializeFirebase();
 import { collection, doc, getDocs, writeBatch, query, where, serverTimestamp, setDoc } from "firebase/firestore";
 import { Panel } from "@/lib/types";
-import { classify } from "@/lib/equivalences/engine";
+import { detectColor, detectTexture, getColorSub } from "@/lib/equivalences/classifier";
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +50,8 @@ export async function POST(req: NextRequest) {
         const docRef = doc(db, 'panels', newId);
         
         // Clasificación automática básica basada en el nombre
-        const classification = classify(update.name, ""); 
+        const texture = detectTexture(update.name);
+        const colorGroup = detectColor(update.name);
 
         const newPanel: Partial<Panel> = {
           id: newId,
@@ -63,12 +65,10 @@ export async function POST(req: NextRequest) {
           mainImage: `https://placehold.co/800x600?text=${encodeURIComponent(update.name)}+Sin+Imagen`,
           images: [],
           description: `Producto importado vía planilla: ${update.articulo}`,
-          hasGrain: update.name.toLowerCase().includes('roble') || update.name.toLowerCase().includes('pino') || update.name.toLowerCase().includes('veta'),
-          surfaceTexture: classification.texture || "standard",
-          colorGroup: classification.colorGroup || "medio",
-          colorHue: classification.colorHue || "otros",
-          tone: classification.tone || "medium",
-          temperature: classification.temperature || "neutral",
+          hasGrain: texture === 'madera',
+          surfaceTexture: texture,
+          colorGroup: colorGroup,
+          colorHue: "medio",
           applications: ["Mobiliario", "Interiores"],
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()

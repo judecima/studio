@@ -6,6 +6,8 @@ import path from 'path';
 import { initializeFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { normalizePanelId } from '../catalog-engine/catalog.adapter';
+import { extractColorFromImage, getColorFromNcs } from '../colors/extractor';
+import { classify } from '../equivalences/engine';
 
 const START_URL = 'https://www.egger.com/es/mobiliario-e-interiorismo/?country=CL';
 
@@ -221,31 +223,44 @@ export async function runEggerPipeline(filterCodes?: string[]) {
             const finalLocalFile = path.join(localDir, `${slug}${finalExt}`);
 
             // 🧠 Procesamiento en Memoria (Evita colisión Sharp y bloqueos de red)
-            let response = await axios.get(imageUrl, { 
+            const response = await axios.get(imageUrl, { 
               responseType: 'arraybuffer', 
               timeout: 60000,
               headers: { 'User-Agent': 'Mozilla/5.0' }
             });
 
             // 🛠️ VALIDACIÓN DE TAMAÑO: Si es < 2KB, probablemente es un placeholder/1x1
+            let finalImageData = response.data;
             if (response.data.byteLength < 2000 && imageUrl.includes('width=2880')) {
-               const fallbackUrl = imageUrl.replace('width=2880', 'width=1200');
-               console.log(`  ⚠️ Imagen pequeña (${response.data.byteLength}b). Reintentando fallback: ${fallbackUrl}`);
-               const retryScale = await axios.get(fallbackUrl, { responseType: 'arraybuffer', timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
-               if (retryScale.data.byteLength > response.data.byteLength) {
-                 response = retryScale;
-                 imageUrl = fallbackUrl;
-               }
+                const fallbackUrl = imageUrl.replace('width=2880', 'width=1200');
+                console.log(`  ⚠️ Imagen pequeña (${response.data.byteLength}b). Reintentando fallback: ${fallbackUrl}`);
+                const retryScale = await axios.get(fallbackUrl, { responseType: 'arraybuffer', timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
+                if (retryScale.data.byteLength > response.data.byteLength) {
+                  finalImageData = retryScale.data;
+                  imageUrl = fallbackUrl;
+                }
             }
 
-            const sharp = (await import('sharp')).default;
-            await sharp(response.data)
+            // 🎨 EXTRACCIÓN DE COLOR EN INGESTA
+            let colorData = null;
+            if (ncsCode) {
+              colorData = await getColorFromNcs(ncsCode);
+            }
+            if (!colorData) {
+              colorData = await extractColorFromImage(finalImageData);
+            }
+
+            const sharpInstance = (await import('sharp')).default;
+            await sharpInstance(finalImageData)
               .resize(500, 500, { fit: 'cover', position: 'centre' })
               .png({ compressionLevel: 9, quality: 100 })
               .toFile(finalLocalFile);
 
             imageUrl = `/images/egger/${slug}${finalExt}`;
-            await delay(200); // 🕒 Cortesía para evitar ERR_CONNECTION_CLOSED
+            
+            // Adjuntar datos de color al objeto local para guardarlos luego
+            (item as any).extractedColor = colorData;
+            await delay(200); 
           } catch (e) {
             console.log(`  ⚠️ Error transformando imagen ${slug}:`, (e as Error).message);
           }
@@ -270,13 +285,31 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           visible: true,
           updatedAt: serverTimestamp(),
           colorData: { ncs: ncsCode || null },
+          hexColor: (item as any).extractedColor?.hex || null,
+          labColor: (item as any).extractedColor?.lab || null,
+          colorSource: (item as any).extractedColor ? (ncsCode ? 'ncs' : 'image') : null,
           surfaceTexture: code.match(/ST\d+/) ? code.match(/ST\d+/)![0] : 'Standard',
           isSmooth: code.includes('ST9') || name.toLowerCase().includes('mate'),
-          hasGrain: !code.includes('U') && !name.toLowerCase().includes('unicolor'),
+          hasGrain: !code.includes('U') && !name.toLowerCase().includes('unicolor') && !name.toLowerCase().includes('mate'),
           code,
           originalCode: code,
-          url: detailUrl
+          url: detailUrl,
+          colorGroup: null as any,
+          colorHue: null as any,
         };
+
+        // ✅ AUTO-CLASSIFY: Use the engine to detect group and tone
+        if (panelDoc.labColor) {
+          try {
+            const classified = await classify(panelDoc as any);
+            if (classified) {
+              panelDoc.colorGroup = classified.colorGroup;
+              panelDoc.colorHue = classified.tone;
+            }
+          } catch (e) {
+            console.warn(`⚠️ Auto-classification failed for ${slug}`, e);
+          }
+        }
 
         await setDoc(doc(firestore, 'panels', slug), panelDoc, { merge: true });
         count++;

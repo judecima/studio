@@ -35,6 +35,24 @@ export function Navbar() {
               Catálogo
             </Link>
             <Link 
+              href="/customizer" 
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === "/customizer" ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              Personalizador 3D
+            </Link>
+            <Link 
+              href="/customizer" 
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === "/customizer" ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              Personalizador 3D
+            </Link>
+            <Link 
               href="/admin" 
               className={cn(
                 "text-sm font-medium transition-colors hover:text-primary",
@@ -72,6 +90,20 @@ export function Navbar() {
               className="text-sm font-medium p-2 rounded-md hover:bg-accent"
             >
               Catálogo
+            </Link>
+            <Link 
+              href="/customizer" 
+              onClick={() => setIsMenuOpen(false)}
+              className="text-sm font-medium p-2 rounded-md hover:bg-accent"
+            >
+              Personalizador 3D
+            </Link>
+            <Link 
+              href="/customizer" 
+              onClick={() => setIsMenuOpen(false)}
+              className="text-sm font-medium p-2 rounded-md hover:bg-accent"
+            >
+              Personalizador 3D
             </Link>
             <Link 
               href="/admin" 
