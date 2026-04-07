@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import React from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, Percent, Sparkles, ArrowRight, Layers } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 
 interface Props {
   product: SimilarProduct;
@@ -25,7 +25,6 @@ export function SimilarProductCard({ product }: Props) {
 
   return (
     <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-none bg-white group flex flex-col h-full rounded-[2rem] shadow-sm ring-1 ring-slate-100">
-      {/* Refuerzo de bordes con ring-slate-200 para paneles claros */}
       <Link href={`/panels/${product.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-2.5 rounded-[1.5rem] ring-1 ring-slate-200 shadow-sm">
         <Image 
           src={product.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
@@ -59,10 +58,7 @@ export function SimilarProductCard({ product }: Props) {
           </p>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-            <Layers className="h-3.5 w-3.5" /> {product.thickness}MM
-          </div>
+        <div className="flex items-center justify-end mt-auto pt-4 border-t border-slate-50">
           <Link href={`/panels/${product.id}`}>
             <Button size="sm" variant="ghost" className="rounded-full h-10 w-10 p-0 hover:bg-primary hover:text-white">
               <ArrowRight className="h-4 w-4" />
