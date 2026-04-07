@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
@@ -26,11 +25,8 @@ function getDb() {
 const toLab = converter('lab');
 const de2000 = differenceCiede2000();
 
-// 🚀 SINGLETONS
 let sharpInstance: any = null;
 let ncsInstance: any = null;
-
-// 🚀 CLUSTERING
 let colorCentroids: { lab: { l: number; a: number; b: number }; name: string }[] | null = null;
 
 async function loadColorCentroids() {
@@ -40,11 +36,10 @@ async function loadColorCentroids() {
     const snap = await getDocs(collection(db, 'color_groups'));
     colorCentroids = snap.docs.map(doc => ({
       lab: doc.data().lab,
-      name: doc.data().name,
+      name: doc.data().name.toLowerCase(),
     }));
     return colorCentroids;
   } catch (e) {
-    console.error("⚠️ Error cargando centroides:", (e as Error).message);
     return [];
   }
 }
@@ -76,9 +71,7 @@ async function getNcsLab(ncsCode: string): Promise<{ l: number; a: number; b: nu
       const data = cacheSnap.data();
       if (data.l !== undefined) return { l: data.l, a: data.a, b: data.b };
     }
-  } catch (e) {
-    console.warn(`⚠️ Error leyendo cache NCS para ${cleanCode}:`, (e as Error).message);
-  }
+  } catch (e) {}
 
   try {
     if (!ncsInstance) {
@@ -129,7 +122,7 @@ async function getAverageColor(imagePath: string): Promise<{ r: number; g: numbe
       const offset = i * channels;
       r += data[offset];
       g += data[offset + 1];
-      b += data[offset + 2];
+      r += data[offset + 2];
     }
     
     return {
@@ -138,7 +131,6 @@ async function getAverageColor(imagePath: string): Promise<{ r: number; g: numbe
       b: Math.floor(b / pixelCount),
     };
   } catch (e) {
-    console.error(`❌ Error en getAverageColor Sharp (${imagePath}):`, (e as Error).message);
     return undefined;
   }
 }
@@ -150,7 +142,6 @@ function rgbToLab(r: number, g: number, b: number) {
 
 async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   const panelId = panel.id.toLowerCase();
-  // 🔥 FIX: Manejar IDs con prefijo de marca para búsqueda en Matriz Maestra
   const baseId = panelId.replace(/^(faplac|egger|arauco|masisa)-/, '');
   const masterInfo = FAPLAC_MASTER_DATA[baseId] || EGGER_MASTER_DATA[baseId] || EGGER_MASTER_DATA[panel.code?.toLowerCase() || ''];
 
@@ -158,15 +149,15 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
     return {
       ...panel,
       certifiedLab: masterInfo.lab,
-      colorGroup: masterInfo.cat,
+      colorGroup: masterInfo.cat.toLowerCase(),
+      colorParent: masterInfo.cat.toLowerCase(),
+      colorSub: getColorSub(masterInfo.lab.l),
       tone: detectTone(masterInfo.lab.l),
       temperature: 'neutral',
       texture: detectTexture(panel.name, (panel as any).surfaceTexture),
       colorSource: 'certified_master_list'
     } as ClassifiedPanel;
   }
-
-  const n = normalizeName(`${panel.name} ${panel.code} ${panel.id} ${(panel as any).colorData?.ncs || ''}`);
 
   const classified: any = {
     ...panel,
@@ -176,19 +167,9 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   };
 
   let needsSync = false;
-
   const ncsCode = panel.ncs || (panel as any).ncsCode || (panel as any).colorData?.ncs;
   let colorGroup: string | null = detectColor(panel.name, ncsCode);
-  if (colorGroup === 'Otro') colorGroup = null;
-
-  if (
-    colorGroup !== (panel as any).colorGroup || 
-    classified.texture !== (panel as any).texture ||
-    classified.hasGrain !== (panel as any).hasGrain ||
-    classified.isSmooth !== (panel as any).isSmooth
-  ) {
-    needsSync = true;
-  }
+  if (colorGroup === 'otro') colorGroup = null;
 
   let lab = (panel as any).labColor || panel.labColor;
   if (!lab && (panel as any).hexColor) {
@@ -207,17 +188,17 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
           best = cent.name;
         }
       }
-      if (best) colorGroup = best;
+      if (best) colorGroup = best.toLowerCase();
     }
   }
 
-  classified.colorGroup = colorGroup || 'Otro';
+  classified.colorGroup = (colorGroup || 'otro').toLowerCase();
   classified.tone = (panel.colorHue && panel.colorHue !== 'medium') ? panel.colorHue : detectTone(lab?.l || 50);
   classified.temperature = (panel as any).temperature || 'neutral';
   
   if (lab) {
-    classified.colorParent = getColorParent(lab, panel.name);
-    classified.colorSub = getColorSub(lab.l);
+    classified.colorParent = getColorParent(lab, panel.name).toLowerCase();
+    classified.colorSub = getColorSub(lab.l).toLowerCase();
   }
 
   if (!lab && ncsCode) {
@@ -249,12 +230,10 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
         surfaceTexture: classified.texture,
         hasGrain: classified.hasGrain,
         isSmooth: classified.isSmooth,
-        colorSource: classified.colorSource || 'analytical_v6.1',
+        colorSource: classified.colorSource || 'analytical_v6.5',
         updatedAt: new Date().toISOString()
       });
-    } catch (e: any) { 
-      console.error(`❌ Error sincronizando ${panel.id}:`, e.message);
-    }
+    } catch (e) {}
   }
 
   classified.certifiedLab = lab;
@@ -270,48 +249,44 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
     const dE = de2000(labA, labB);
     colorScore = Math.max(0, 1 - (dE / 18));
   } else {
-    colorScore = (a.colorGroup === b.colorGroup) ? 0.8 : 0.2;
+    colorScore = (a.colorGroup.toLowerCase() === b.colorGroup.toLowerCase()) ? 0.8 : 0.2;
   }
 
   const isMetalSmooth = (a.texture === 'metal' && b.texture === 'liso') || (a.texture === 'liso' && b.texture === 'metal');
   const textureBonus = (a.texture === b.texture || isMetalSmooth) ? 0.2 : 0.1;
   let finalScore = (colorScore * 0.8) + textureBonus;
 
-  // 🔥 BOOST POR NOMBRE (Caso Almendra)
   const normA = a.name.toLowerCase();
   const normB = b.name.toLowerCase();
   if (normA.includes('almendra') && normB.includes('almendra')) {
-    finalScore = Math.min(1, finalScore + 0.15);
+    finalScore = Math.min(1, finalScore + 0.2);
   }
 
-  if (a.colorParent && b.colorParent) {
-    if (a.colorParent === b.colorParent && a.colorSub === b.colorSub) {
-      finalScore = Math.min(1, finalScore + 0.10);
-    } else if (a.colorParent === b.colorParent) {
+  const parentA = (a.colorParent || a.colorGroup || 'otro').toLowerCase();
+  const parentB = (b.colorParent || b.colorGroup || 'otro').toLowerCase();
+  const subA = (a.colorSub || a.tone || 'medio').toLowerCase();
+  const subB = (b.colorSub || b.tone || 'medio').toLowerCase();
+
+  if (parentA === parentB) {
+    finalScore = Math.min(1, finalScore + 0.05);
+    if (subA === subB) {
       finalScore = Math.min(1, finalScore + 0.05);
     }
+  } else if (parentA !== 'otro' && parentB !== 'otro') {
+    finalScore *= 0.6; 
   }
 
   if (a.hasGrain !== b.hasGrain) {
-    finalScore *= 0.3; 
-  }
-
-  const parentA = a.colorParent || a.colorGroup;
-  const parentB = b.colorParent || b.colorGroup;
-  
-  if (parentA !== parentB && parentA !== 'otro' && parentB !== 'otro') {
-    finalScore *= 0.6; 
+    finalScore *= 0.35; 
   }
 
   return Math.min(1, Math.max(0, finalScore));
 }
 
 function describePanel(panel: ClassifiedPanel): string {
-  const toneMap: any = { dark: 'oscuro', medium: 'medio', light: 'claro' };
-  const textureMap: any = { madera: 'madera', textil: 'textil', concreto: 'concreto', metal: 'metal', liso: 'liso' };
   const parentName = panel.colorParent || panel.colorGroup;
-  const subName = panel.colorSub || toneMap[panel.tone] || 'medio';
-  const texture = textureMap[panel.texture] || panel.texture;
+  const subName = panel.colorSub || panel.tone || 'medio';
+  const texture = panel.texture;
   return `${parentName} ${subName} (${texture})`;
 }
 
@@ -327,7 +302,7 @@ function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, sc
     else if (dE < 20) colorReason = 'color cercano';
     else colorReason = 'color moderadamente similar';
   } else {
-    if (target.colorGroup === match.colorGroup) colorReason = `mismo grupo cromático (${target.colorGroup})`;
+    if (target.colorGroup.toLowerCase() === match.colorGroup.toLowerCase()) colorReason = `mismo grupo cromático (${target.colorGroup})`;
     else colorReason = `grupo cromático ${target.colorGroup} vs ${match.colorGroup}`;
   }
   let textureMsg = target.texture === match.texture ? `ambos tienen acabado ${target.texture}.` : `acabados diferentes (${target.texture} vs ${match.texture}).`;
@@ -379,7 +354,6 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
         await setDoc(doc(db, 'equivalences', target.id), result);
         return result;
       } catch (e) {
-        console.error(`❌ Error en panel ${target.id}:`, (e as Error).message);
         return null;
       }
     }));

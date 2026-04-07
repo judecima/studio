@@ -15,12 +15,9 @@ function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * 🔥 Egger PRO Scraper v6.12: Captura 4K (PNG Fallback for Jimp) & Ultra-Fast Parallel Optimization
- */
 export async function runEggerPipeline(filterCodes?: string[]) {
   const { firestore } = initializeFirebase();
-  console.log("🚀 Egger PRO Scraper (v6.12: 4K PNG Stability) iniciado...");
+  console.log("🚀 Egger PRO Scraper (v6.15: Symmetric Material Fix) iniciado...");
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -30,11 +27,9 @@ export async function runEggerPipeline(filterCodes?: string[]) {
   const page = await browser.newPage();
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
-  console.log(`📡 Navegando a Egger Discovery...`);
   await page.goto(START_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await delay(5000);
 
-  // Aceptar cookies
   try {
     const cookieBtn = await page.$('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll') || 
                       await page.$('#onetrust-accept-btn-handler');
@@ -45,8 +40,6 @@ export async function runEggerPipeline(filterCodes?: string[]) {
   } catch (e) {}
 
   const cookies = await page.cookies();
-
-  // Obtener variables de sesión para la API
   const sessionData = await page.evaluate(() => (window as any).commonScriptVariables || null);
 
   const allProductsData = await page.evaluate(async (data) => {
@@ -82,27 +75,18 @@ export async function runEggerPipeline(filterCodes?: string[]) {
     return detailedItems;
   }, sessionData);
 
-  console.log(`✅ API respondió con ${allProductsData.length} items de catálogo.`);
-  if (!allProductsData.length) {
-    await browser.close();
-    throw new Error("No se recuperaron productos de la API.");
-  }
-
   let finalProducts = allProductsData;
   if (filterCodes && filterCodes.length > 0) {
     finalProducts = allProductsData.filter(item => {
       const code = (item?.overline || item?.code || '').trim();
       return filterCodes.some(f => code.includes(f));
     });
-    console.log(`🎯 Filtrando por códigos: ${filterCodes.join(', ')}. Procesando ${finalProducts.length} items.`);
   }
 
   const localDir = path.join(process.cwd(), 'public', 'images', 'egger');
   if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
 
   let count = 0;
-
-  // 2. Procesar detalles en Lotes (Chunks) de 5 para Ultra-Velocidad
   const chunkSize = 5;
   for (let i = 0; i < finalProducts.length; i += chunkSize) {
     const chunk = finalProducts.slice(i, i + chunkSize);
@@ -121,7 +105,6 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           ? `https://www.egger.com${detailPath}?country=CL`
           : `https://www.egger.com/es/mobiliario-e-interiorismo/disenos/${code.split(' ')[0]}?country=CL`;
 
-        // Optimización: Interceptar recursos
         await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
         await detailPage.setCookie(...cookies);
         await detailPage.setRequestInterception(true);
@@ -150,21 +133,15 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           let colorChar = document.querySelector('[data-track-id="decordetail_edp_decor_data_download"]')?.textContent?.trim() || '';
           let size = document.querySelector('.absolute.right-5.bottom-5')?.textContent?.trim() || '';
 
-          // 🎬 IMAGEN DE ALTA CALIDAD v7.3 (Multi-Fidelidad & Robustness)
           let highResUrl = '';
           const picture = document.querySelector('picture');
-          
           if (picture) {
-            // 1. Prioridad: original.png (Suele ser 3000px+)
             const imgEl = picture.querySelector('img');
             const fallbackSrc = imgEl?.getAttribute('src') || '';
             if (fallbackSrc.includes('original.png')) highResUrl = fallbackSrc;
-
-            // 2. Busqueda en srcset (Mayor ancho disponible)
             if (!highResUrl) {
               const allSources = Array.from(picture.querySelectorAll('source, img'));
               const urlsWithWidth: {url: string, width: number}[] = [];
-              
               allSources.forEach(s => {
                 const srcset = s.getAttribute('srcset') || s.getAttribute('src') || '';
                 const parts = srcset.split(',');
@@ -173,29 +150,14 @@ export async function runEggerPipeline(filterCodes?: string[]) {
                   if (match) urlsWithWidth.push({ url: match[1], width: parseInt(match[2]) });
                 });
               });
-
-              // Ordenar por ancho descendente
               urlsWithWidth.sort((a, b) => b.width - a.width);
               if (urlsWithWidth.length > 0) {
-                // Preferir 2880 o el más grande disponible
                 const best = urlsWithWidth.find(u => u.width === 2880) || urlsWithWidth[0];
                 highResUrl = best.url;
               }
             }
           }
-
-          // Fallbacks de última instancia
-          if (!highResUrl || highResUrl.length < 10) {
-            highResUrl = document.querySelector('[data-zoom-image]')?.getAttribute('data-zoom-image') || '';
-          }
-          if (!highResUrl) {
-            const galleryImg = document.querySelector('.gallery-placeholder__image, .product-image-gallery__image');
-            highResUrl = galleryImg?.getAttribute('src') || galleryImg?.getAttribute('data-src') || '';
-          }
-          if (!highResUrl) highResUrl = document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
-
           const nameFromH1 = document.querySelector('h1')?.textContent?.trim() || '';
-
           return { ncs, colorChar, size, highResUrl, nameFromH1 };
         });
 
@@ -207,66 +169,44 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           imageUrl = detailData.highResUrl.startsWith('//') ? `https:${detailData.highResUrl}` : detailData.highResUrl;
         }
 
-        let patternHeight = 0, patternWidth = 0;
-        const sizeMatch = patternSize.match(/aprox\.\s*([\d.,]+)\s*x\s*([\d.,]+)\s*mm/i);
-        if (sizeMatch) {
-          patternHeight = parseFloat(sizeMatch[1].replace(',', '.'));
-          patternWidth = parseFloat(sizeMatch[2].replace(',', '.'));
-        }
-
-        // 🖼️ Descarga & Transformación a 500x500 Cuadrado con sharp (v7.0)
-        // 🖼️ Descarga & Transformación a 500x500 Cuadrado con sharp (v7.2)
+        let extractedColor = null;
         if (imageUrl && imageUrl.startsWith('http')) {
           try {
-            const urlObj = new URL(imageUrl);
-            const finalExt = '.png';
-            const finalLocalFile = path.join(localDir, `${slug}${finalExt}`);
-
-            // 🧠 Procesamiento en Memoria (Evita colisión Sharp y bloqueos de red)
             const response = await axios.get(imageUrl, { 
               responseType: 'arraybuffer', 
               timeout: 60000,
               headers: { 'User-Agent': 'Mozilla/5.0' }
             });
 
-            // 🛠️ VALIDACIÓN DE TAMAÑO: Si es < 2KB, probablemente es un placeholder/1x1
             let finalImageData = response.data;
             if (response.data.byteLength < 2000 && imageUrl.includes('width=2880')) {
                 const fallbackUrl = imageUrl.replace('width=2880', 'width=1200');
-                console.log(`  ⚠️ Imagen pequeña (${response.data.byteLength}b). Reintentando fallback: ${fallbackUrl}`);
                 const retryScale = await axios.get(fallbackUrl, { responseType: 'arraybuffer', timeout: 30000, headers: { 'User-Agent': 'Mozilla/5.0' } });
                 if (retryScale.data.byteLength > response.data.byteLength) {
                   finalImageData = retryScale.data;
-                  imageUrl = fallbackUrl;
                 }
             }
 
-            // 🎨 EXTRACCIÓN DE COLOR EN INGESTA
-            let colorData = null;
-            if (ncsCode) {
-              colorData = await getColorFromNcs(ncsCode);
-            }
-            if (!colorData) {
-              colorData = await extractColorFromImage(finalImageData);
-            }
+            if (ncsCode) extractedColor = await getColorFromNcs(ncsCode);
+            if (!extractedColor) extractedColor = await extractColorFromImage(finalImageData);
 
             const sharpInstance = (await import('sharp')).default;
+            const finalLocalFile = path.join(localDir, `${slug}.png`);
             await sharpInstance(finalImageData)
               .resize(500, 500, { fit: 'cover', position: 'centre' })
               .png({ compressionLevel: 9, quality: 100 })
               .toFile(finalLocalFile);
 
-            imageUrl = `/images/egger/${slug}${finalExt}`;
-            
-            // Adjuntar datos de color al objeto local para guardarlos luego
-            (item as any).extractedColor = colorData;
-            await delay(200); 
-          } catch (e) {
-            console.log(`  ⚠️ Error transformando imagen ${slug}:`, (e as Error).message);
-          }
+            imageUrl = `/images/egger/${slug}.png`;
+          } catch (e) {}
         }
 
         const panelName = detailData.nameFromH1 || name;
+        const surfaceTexture = code.match(/ST\d+/) ? code.match(/ST\d+/)![0] : 'Standard';
+        
+        const hasGrain = !code.toUpperCase().startsWith('U') && 
+                         !code.toUpperCase().startsWith('W') && 
+                         !name.toLowerCase().includes('unicolor');
 
         const panelDoc = {
           id: slug,
@@ -277,47 +217,37 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           thickness: 18,
           description: colorCharacter || `Melamina Egger de alta calidad. Diseño ${name} (${code}).`,
           patternSize,
-          patternWidth,
-          patternHeight,
           stock: 0,
           images: imageUrl ? [imageUrl] : [],
           mainImage: imageUrl,
           visible: true,
           updatedAt: serverTimestamp(),
           colorData: { ncs: ncsCode || null },
-          hexColor: (item as any).extractedColor?.hex || null,
-          labColor: (item as any).extractedColor?.lab || null,
-          colorSource: (item as any).extractedColor ? (ncsCode ? 'ncs' : 'image') : null,
-          surfaceTexture: code.match(/ST\d+/) ? code.match(/ST\d+/)![0] : 'Standard',
-          isSmooth: code.includes('ST9') || name.toLowerCase().includes('mate'),
-          hasGrain: !code.includes('U') && !name.toLowerCase().includes('unicolor') && !name.toLowerCase().includes('mate'),
+          hexColor: extractedColor?.hex || null,
+          labColor: extractedColor?.lab || null,
+          colorSource: extractedColor ? (ncsCode ? 'ncs' : 'image') : null,
+          surfaceTexture,
+          isSmooth: surfaceTexture === 'ST9' || name.toLowerCase().includes('mate'),
+          hasGrain,
           code,
-          originalCode: code,
           url: detailUrl,
           colorGroup: null as any,
           colorHue: null as any,
         };
 
-        // ✅ AUTO-CLASSIFY: Use the engine to detect group and tone
         if (panelDoc.labColor) {
           try {
             const classified = await classify(panelDoc as any);
             if (classified) {
-              panelDoc.colorGroup = classified.colorGroup;
-              panelDoc.colorHue = classified.tone;
+              panelDoc.colorGroup = classified.colorGroup.toLowerCase();
+              panelDoc.colorHue = classified.tone.toLowerCase();
             }
-          } catch (e) {
-            console.warn(`⚠️ Auto-classification failed for ${slug}`, e);
-          }
+          } catch (e) {}
         }
 
         await setDoc(doc(firestore, 'panels', slug), panelDoc, { merge: true });
         count++;
-        if (count % 10 === 0) console.log(`  📥 Egger PRO: ${count}/${filterCodes ? filterCodes.length : allProductsData.length} | ${slug} | IMG: ${imageUrl ? 'YES' : 'NO'}`);
-        if (imageUrl && imageUrl.includes('width=')) console.log(`  🖼️ URL: ${imageUrl}`);
-
       } catch (e: any) {
-        console.log(`❌ Error ${item?.code}: ${e.message}`);
       } finally {
         await detailPage.close();
       }
@@ -326,6 +256,5 @@ export async function runEggerPipeline(filterCodes?: string[]) {
   }
 
   await browser.close();
-  console.log(`🎉 Sincronización Egger PRO completa: ${count} melaminas.`);
   return { success: true, count };
 }
