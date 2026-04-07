@@ -1,4 +1,3 @@
-// @ts-ignore
 import { converter, differenceCiede2000 } from 'culori';
 import { inferColorGroupFromNcs } from '@/lib/constants/colors';
 
@@ -179,8 +178,6 @@ export const SUB_LEVELS = [
   { name: 'Muy Oscuro', minL: 0, maxL: 20 }
 ];
 
-const de2000 = differenceCiede2000();
-
 export function getColorParent(lab: { l: number; a: number; b: number }, name?: string): string {
   // 1. Prioridad: Búsqueda semántica forzada (si hay nombre)
   if (name) {
@@ -191,14 +188,14 @@ export function getColorParent(lab: { l: number; a: number; b: number }, name?: 
     }
     // Casos especiales mapeados
     if (detected === 'Safari' || detected === 'Oliva') return 'Verde';
-    if (detected === 'Almendra') return 'Beige'; // O podrías añadir Almendra como Padre si quieres
+    if (detected === 'Almendra') return 'Beige'; 
   }
 
   // 2. Fallback: Distancia LAB pura (CIEDE2000)
   let bestParent = COLOR_PARENTS[0];
   let minDE = Infinity;
   for (const parent of COLOR_PARENTS) {
-    const dE = de2000(lab, parent.lab);
+    const dE = de2000(lab as any, parent.lab as any);
     if (dE < minDE) {
       minDE = dE;
       bestParent = parent;
