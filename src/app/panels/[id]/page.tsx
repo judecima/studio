@@ -7,17 +7,16 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, Ruler, Layers, Loader2, FileDown, MessageSquare } from "lucide-react";
+import { ChevronLeft, Loader2, MessageSquare, FileDown } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
-import { useDoc, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
 import { doc, query, collection, where, documentId, getDocs } from "firebase/firestore";
 import { Panel, Equivalence } from "@/lib/types";
-import { Sparkles, ArrowRight, Info } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { PanelCard } from "@/components/PanelCard";
 
 function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetPanel: any }) {
   const [allMatches, setAllMatches] = useState<any[]>([]);
-  const [targetMetadata, setTargetMetadata] = useState<any>(null);
   const [isDynamicLoading, setIsDynamicLoading] = useState(true);
   
   const db = useFirestore();
@@ -28,16 +27,13 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
 
   const { data: eq, isLoading: isEqLoading } = useDoc<Equivalence>(eqRef);
 
-  // 🔥 Hidratación Robusta v6.2
   useEffect(() => {
     async function hydrateMatches() {
-      // Prioridad a eq.matches (Firestore) si existe, sino a lo que traiga la API
       const baseMatches = eq?.matches || [];
       if (baseMatches.length === 0) return;
       
       try {
         const ids = baseMatches.map(m => m.id);
-        // Firebase 'in' tiene un límite de 10
         const q = query(collection(db, 'panels'), where(documentId(), 'in', ids.slice(0, 10)));
         const snap = await getDocs(q);
         
@@ -64,7 +60,6 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
     }
   }, [eq, isEqLoading, db]);
 
-  // Real-time API Match
   useEffect(() => {
     async function fetchMatches() {
       if (!panelId) return;
@@ -72,7 +67,6 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
         const res = await fetch(`/api/match?id=${panelId}`);
         if (!res.ok) return;
         const data = await res.json();
-        // Solo sobreescribimos si no hay datos en eq o si son más frescos
         if (data.success && data.matches.length > 0) {
           setAllMatches(prev => prev.length === 0 ? data.matches : prev);
         }
@@ -83,19 +77,11 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
     fetchMatches();
   }, [panelId]);
 
-  // 🔥 Filtrado Tolerante (v6.2)
   const filteredMatches = useMemo(() => {
     return allMatches.filter(m => (m.score || m.matchScore || 0) >= 40);
   }, [allMatches]);
 
-  const similarityOfTopMatch = useMemo(() => {
-    if (filteredMatches.length === 0) return 0;
-    const top = filteredMatches[0];
-    return Math.max(0, Math.floor(top.score || top.matchScore || 0));
-  }, [filteredMatches]);
-
   const narrativeText = useMemo(() => {
-    // 🔥 PRIORIDAD v6.5: eq.text (Firestore) contiene la lista multilínea de 5 matches
     const rawText = eq?.text;
     
     if (rawText) {
@@ -113,7 +99,6 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
       );
     }
 
-    // Fallback dinámico si no hay texto persistido
     if (filteredMatches.length > 0) {
       return (
         <div className="space-y-2">
@@ -137,7 +122,6 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
     </div>
   );
 
-  // Si no hay equivalencia guardada NI matches dinámicos filtrados, no mostramos nada
   if (!eq && filteredMatches.length === 0 && !isDynamicLoading) return null;
 
   return (
@@ -169,30 +153,21 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
         {filteredMatches.length > 0 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">
-              <span>Top Alternativas Detectadas (Min 60%)</span>
+              <span>Top Alternativas Detectadas</span>
               <div className="h-px flex-1 mx-6 bg-slate-100" />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {isDynamicLoading ? (
-                 Array(Math.min(3, filteredMatches.length || 3)).fill(0).map((_, i) => (
-                   <div key={i} className="aspect-[3/4] bg-slate-100 animate-pulse rounded-[2rem]" />
-                 ))
-              ) : (
-                filteredMatches.map((matchPanel: any) => {
-                  const similarity = Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0));
-                  return (
-                    <div key={matchPanel.id} className="relative group/card">
-                      <div className="absolute -top-3 -right-3 z-30">
-                        <Badge className="bg-indigo-600 text-white border-2 border-white shadow-xl h-12 w-12 rounded-full p-0 flex items-center justify-center font-bold text-sm ring-4 ring-indigo-50">
-                          {Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0))}
-                        </Badge>
-                      </div>
-                      <PanelCard panel={matchPanel} />
-                    </div>
-                  );
-                })
-              )}
+              {filteredMatches.map((matchPanel: any) => (
+                <div key={matchPanel.id} className="relative group/card">
+                  <div className="absolute -top-3 -right-3 z-30">
+                    <Badge className="bg-indigo-600 text-white border-2 border-white shadow-xl h-12 w-12 rounded-full p-0 flex items-center justify-center font-bold text-sm ring-4 ring-indigo-50">
+                      {Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0))}
+                    </Badge>
+                  </div>
+                  <PanelCard panel={matchPanel} />
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -224,7 +199,7 @@ export default function PanelDetailPage() {
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <p className="font-headline font-bold text-slate-700 animate-pulse text-xl">
-          Analizando ficha técnica...
+          Cargando panel...
         </p>
       </div>
     );
@@ -234,7 +209,6 @@ export default function PanelDetailPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 text-center">
         <h1 className="text-4xl font-headline font-bold">Producto no encontrado</h1>
-        <p className="text-muted-foreground max-w-sm">Es posible que este panel ya no esté disponible o el enlace sea incorrecto.</p>
         <Button onClick={() => router.push('/')}>Volver al Catálogo</Button>
       </div>
     );
@@ -256,12 +230,11 @@ export default function PanelDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-16 bg-white p-4 sm:p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] border shadow-xl shadow-slate-200/50 overflow-hidden ring-1 ring-slate-100">
           
-          {/* Gallery Section */}
           <div className="lg:col-span-7 space-y-6">
             <div className="relative aspect-[4/3] sm:aspect-video lg:aspect-[4/3] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border-4 border-slate-50 shadow-2xl shadow-slate-300/50 bg-slate-100 group ring-1 ring-slate-200/50">
               <Image 
                 src={activeImage || panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
-                alt={panel.name || "Vista principal del tablero"} 
+                alt={panel.name} 
                 fill 
                 priority
                 sizes="(max-width: 1024px) 100vw, 60vw"
@@ -276,94 +249,20 @@ export default function PanelDetailPage() {
                   onClick={() => setActiveImage(img)}
                   className={`relative w-20 sm:w-24 aspect-square rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === img ? 'border-primary ring-4 ring-primary/10 shadow-lg scale-95' : 'border-transparent opacity-60 hover:opacity-100'}`}
                 >
-                  <Image src={img} alt={`Vista secundaria ${idx + 1}`} fill sizes="100px" className="object-cover" />
+                  <Image src={img} alt={`Vista ${idx + 1}`} fill sizes="100px" className="object-cover" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Info Section */}
           <div className="lg:col-span-5 flex flex-col justify-center space-y-8">
             <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <Badge variant="outline" className="border-primary/30 text-primary font-bold uppercase tracking-widest px-4 py-1.5 rounded-full bg-primary/5">
-                  {panel.brand}
-                </Badge>
-                {panel.stock > 0 ? (
-                  <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 px-4 py-1.5 rounded-full font-bold">
-                    Stock en Depósito
-                  </Badge>
-                ) : (
-                  <Badge variant="destructive" className="px-4 py-1.5 rounded-full">Sin Stock</Badge>
-                )}
-              </div>
+              <Badge variant="outline" className="border-primary/30 text-primary font-bold uppercase tracking-widest px-4 py-1.5 rounded-full bg-primary/5 w-fit">
+                {panel.brand}
+              </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-slate-900 leading-[1.1] tracking-tight">
                 {panel.name}
               </h1>
-            </div>
-
-            <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-              {panel.description || "Tablero melamínico premium para diseño de interiores y mobiliario de alta gama."}
-            </p>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 flex flex-col">
-                <div className="flex items-center gap-2 text-primary text-[10px] font-bold uppercase mb-2 tracking-widest opacity-80">
-                  <Ruler className="h-4 w-4" /> Dimensiones
-                </div>
-                <p className="text-xl font-headline font-bold text-slate-800">
-                  {panel.width}x{panel.height} <span className="text-xs font-body font-normal text-muted-foreground">mm</span>
-                </p>
-              </div>
-              <div className="p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 flex flex-col">
-                <div className="flex items-center gap-2 text-primary text-[10px] font-bold uppercase mb-2 tracking-widest opacity-80">
-                  <Layers className="h-4 w-4" /> Espesor
-                </div>
-                <p className="text-xl font-headline font-bold text-slate-800">
-                  {panel.thickness} <span className="text-xs font-body font-normal text-muted-foreground">mm</span>
-                </p>
-              </div>
-              <div className="p-5 bg-slate-100/50 rounded-[1.5rem] border border-slate-200 flex flex-col">
-                <div className="flex items-center gap-2 text-primary text-[10px] font-bold uppercase mb-2 tracking-widest opacity-80">
-                  <Layers className="h-4 w-4" /> Textura
-                </div>
-                <p className="text-xl font-headline font-bold text-slate-800">
-                  {panel.surfaceTexture || 'Standard'} 
-                  <span className="text-[10px] block font-body font-normal text-muted-foreground uppercase tracking-tight">
-                    Acabado {panel.isSmooth ? 'Liso' : 'con Veta / Rugoso'}
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-white rounded-2xl border border-slate-100 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
-                  <Layers className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Tipo de Veta</p>
-                  <p className="text-sm font-bold text-slate-700">{panel.hasGrain ? 'Diseño con Veta' : 'Color Sólido / Liso'}</p>
-                </div>
-              </div>
-              <div className="p-4 bg-white rounded-2xl border border-slate-100 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
-                  <Layers className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Fingerprint</p>
-                  <p className="text-sm font-bold text-slate-700">{panel.antiFingerprint ? 'Protección Anti-huella' : 'Acabado Estándar'}</p>
-                </div>
-              </div>
-              <div className="p-4 bg-white rounded-2xl border border-slate-100 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
-                  <Layers className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Acabado Final</p>
-                  <p className="text-sm font-bold text-slate-700">{panel.finish || 'Mate / Natural'}</p>
-                </div>
-              </div>
             </div>
 
             {panel.applications && panel.applications.length > 0 && (
@@ -422,7 +321,6 @@ export default function PanelDetailPage() {
           </div>
         </div>
 
-        {/* Coincidencias CIELAB Section */}
         <EquivalenceSection panelId={id as string} targetPanel={panel} />
 
       </main>
