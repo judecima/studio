@@ -161,10 +161,10 @@ export default function PanelDetailPage() {
           <span className="font-bold uppercase tracking-widest text-xs">Catálogo</span>
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* LADO IZQUIERDO: Imagen Principal Cuadrada (4 columnas) */}
-          <div className="lg:col-span-4 space-y-6">
+          {/* LADO IZQUIERDO: Imagen Principal Cuadrada (4 columnas) - FIXED al scrollear */}
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
             <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl bg-white ring-1 ring-slate-200 group">
               <Image 
                 src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
