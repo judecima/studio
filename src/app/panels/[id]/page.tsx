@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useParams, useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
       
       try {
         const ids = baseMatches.map(m => m.id);
-        const q = query(collection(db, 'panels'), where(documentId(), 'in', ids.slice(0, 10)));
+        const q = query(collection(db, 'panels'), where(documentId(), 'in', ids.slice(0, 20))); // Aumentado a 20 para permitir más resultados
         const snap = await getDocs(q);
         
         const hydrated = snap.docs.map(doc => {
@@ -75,8 +76,8 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
   }, [panelId]);
 
   const filteredMatches = useMemo(() => {
-    // Filtrar coincidencias que superen el 70%
-    return allMatches.filter(m => (m.score || m.matchScore || 0) >= 70);
+    // 🔥 Se ajusta para mostrar desde el 60%, sin límite de cantidad
+    return allMatches.filter(m => (m.score || m.matchScore || 0) >= 60);
   }, [allMatches]);
 
   if (isDynamicLoading && !eq) return (
@@ -92,7 +93,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
           <Sparkles className="h-4 w-4" />
         </div>
         <h3 className="text-xl font-headline font-bold text-slate-900 tracking-tight">
-          Coincidencias de Diseño (+70%)
+          Coincidencias de Diseño (+60%)
         </h3>
       </div>
 
@@ -111,7 +112,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
         </div>
       ) : (
         <div className="p-8 border border-dashed rounded-3xl text-center text-muted-foreground text-sm">
-          No se han encontrado coincidencias con alta precisión técnica (70%+) para este diseño.
+          No se han encontrado coincidencias con precisión técnica superior al 60% para este diseño.
         </div>
       )}
     </div>
@@ -164,7 +165,7 @@ export default function PanelDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* LADO IZQUIERDO: Imagen Principal Cuadrada (4 columnas) - FIXED al scrollear */}
+          {/* LADO IZQUIERDO: Imagen y Nombre FIXED */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
             <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl bg-white ring-1 ring-slate-200 group">
               <Image 
@@ -198,7 +199,7 @@ export default function PanelDetailPage() {
             )}
           </div>
 
-          {/* LADO DERECHO: Recomendaciones (8 columnas) */}
+          {/* LADO DERECHO: Recomendaciones */}
           <div className="lg:col-span-8">
             <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30">
               <EquivalenceSection panelId={id as string} targetPanel={panel} />

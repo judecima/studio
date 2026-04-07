@@ -1,11 +1,8 @@
+
 import { NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
-/**
- * API ENDPOINT: /api/match?id={panelId}
- * v5.4 - Optimización para Latencia Cero y Alta Concurrencia
- */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -16,8 +13,6 @@ export async function GET(request: Request) {
     }
 
     const { firestore } = initializeFirebase();
-    
-    // 🚀 PRIORIDAD 1: Documento ya calculado y persistido (Latencia Cero)
     const eqRef = doc(firestore, 'equivalences', id);
     const eqSnap = await getDoc(eqRef);
 
@@ -32,20 +27,17 @@ export async function GET(request: Request) {
           code: data.panelCode,
           brand: data.panelBrand
         },
-        matches: data.matches || data.bestMatches || [], // Soporte para ambas nomenclaturas
+        // 🔥 Devolver todos los matches persistidos (ya filtrados en el engine)
+        matches: data.matches || data.bestMatches || [],
         text: data.text,
         lastSync: data.lastSync || data.updatedAt
       });
     }
 
-    // 🚀 PRIORIDAD 2: Recalculo bajo demanda (Solo si no existe en la DB)
     console.log(`📡 Recalculando match bajo demanda para: ${id}`);
-    
-    // Importación dinámica para no cargar el motor si no es necesario
     const { collection, getDocs } = await import('firebase/firestore');
     const { classify, calculateScore, generateExplanation } = await import('@/lib/equivalences/engine');
     
-    // 1. Obtener panel target
     const panelRef = doc(firestore, 'panels', id);
     const panelSnap = await getDoc(panelRef);
     if (!panelSnap.exists()) {
@@ -54,7 +46,6 @@ export async function GET(request: Request) {
     const target = { id: panelSnap.id, ...panelSnap.data() } as any;
     const targetClass = await classify(target);
 
-    // 2. Obtener candidatos (limitado para performance de API)
     const panelsSnap = await getDocs(collection(firestore, 'panels'));
     const allPanels = panelsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
 
@@ -67,9 +58,11 @@ export async function GET(request: Request) {
       })
     );
 
+    // 🔥 Aumentado el límite de retorno a 30 y filtrado a partir de 60%
     const top = scored
+      .filter(m => m.score >= 0.6)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
+      .slice(0, 30);
 
     const result = {
       target: { id: target.id, name: target.name, code: target.code, brand: target.brand },
@@ -81,9 +74,6 @@ export async function GET(request: Request) {
           brand: m.panel.brand,
           code: m.panel.code,
           mainImage: m.panel.mainImage,
-          width: m.panel.width,
-          height: m.panel.height,
-          thickness: m.panel.thickness,
           score: roundedScore,
           explanation: generateExplanation(targetClass, m.panel, roundedScore)
         };
@@ -97,7 +87,7 @@ export async function GET(request: Request) {
     });
 
   } catch (error: any) {
-    console.error('❌ Error en /api/match (v5.4):', error);
+    console.error('❌ Error en /api/match (v5.5):', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

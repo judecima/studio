@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import path from 'path';
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
@@ -25,11 +26,11 @@ function getDb() {
 const toLab = converter('lab');
 const de2000 = differenceCiede2000();
 
-// 🚀 SINGLETONS: Evitar fugas de memoria por imports dinámicos en HMR
+// 🚀 SINGLETONS
 let sharpInstance: any = null;
 let ncsInstance: any = null;
 
-// 🚀 CLUSTERING: Cache de centroides en memoria
+// 🚀 CLUSTERING
 let colorCentroids: { lab: { l: number; a: number; b: number }; name: string }[] | null = null;
 
 async function loadColorCentroids() {
@@ -48,9 +49,6 @@ async function loadColorCentroids() {
   }
 }
 
-/**
- * 🔥 OPTIMIZACIÓN: Cache de clasificación en memoria
- */
 const classificationCache = new Map<string, ClassifiedPanel>();
 
 async function getCachedClassifiedPanel(panel: Panel): Promise<ClassifiedPanel> {
@@ -60,21 +58,16 @@ async function getCachedClassifiedPanel(panel: Panel): Promise<ClassifiedPanel> 
   return classified;
 }
 
-// ----------------------------------------------------------------------
-// NCS → LAB con caché en Firestore
-// ----------------------------------------------------------------------
 async function getNcsLab(ncsCode: string): Promise<{ l: number; a: number; b: number } | null> {
   if (!ncsCode) return null;
   const cleanCode = ncsCode.replace(/\*/g, '').trim().toUpperCase();
   
-  // 1. Intentar con mapeo HEX (más rápido)
   const hex = ncsToHex(cleanCode);
   if (hex) {
     const lab = toLab(hex);
     if (lab) return { l: lab.l, a: lab.a, b: lab.b };
   }
 
-  // 2. Buscar en Firestore
   try {
     const db = getDb();
     const cacheRef = doc(db, 'ncs_cache', cleanCode);
@@ -87,7 +80,6 @@ async function getNcsLab(ncsCode: string): Promise<{ l: number; a: number; b: nu
     console.warn(`⚠️ Error leyendo cache NCS para ${cleanCode}:`, (e as Error).message);
   }
 
-  // 3. Calcular con ncs-color y guardar en caché
   try {
     if (!ncsInstance) {
       const ncsModule = await import('ncs-color');
@@ -103,16 +95,11 @@ async function getNcsLab(ncsCode: string): Promise<{ l: number; a: number; b: nu
         return result;
       }
     }
-  } catch (error) {
-    // Silencioso, usamos fallback
-  }
+  } catch (error) {}
 
   return null;
 }
 
-// ----------------------------------------------------------------------
-// Muestreo de imagen (Optimizado con Sharp v7.0)
-// ----------------------------------------------------------------------
 async function getAverageColor(imagePath: string): Promise<{ r: number; g: number; b: number } | undefined> {
   const fullPath = path.join(process.cwd(), 'public', imagePath);
   if (!fs.existsSync(fullPath)) return undefined;
@@ -126,7 +113,6 @@ async function getAverageColor(imagePath: string): Promise<{ r: number; g: numbe
     let pipeline = sharpInstance(fullPath);
     const metadata = await pipeline.metadata();
     
-    // 🔥 Redimensionar a 500px para análisis ultra-veloz si es muy grande
     if (metadata.width && metadata.height && (metadata.width > 500 || metadata.height > 500)) {
       pipeline = pipeline.resize(500, 500, { fit: 'inside' });
     }
@@ -138,7 +124,6 @@ async function getAverageColor(imagePath: string): Promise<{ r: number; g: numbe
     const pixelCount = info.width * info.height;
     let r = 0, g = 0, b = 0;
     
-    // Procesar buffer raw de forma eficiente
     const channels = info.channels || 3;
     for (let i = 0; i < pixelCount; i++) {
       const offset = i * channels;
@@ -158,16 +143,11 @@ async function getAverageColor(imagePath: string): Promise<{ r: number; g: numbe
   }
 }
 
-
-
 function rgbToLab(r: number, g: number, b: number) {
   const lab = toLab({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 });
   return { l: lab?.l ?? 0, a: lab?.a ?? 0, b: lab?.b ?? 0 };
 }
 
-// ----------------------------------------------------------------------
-// Clasificación principal
-// ----------------------------------------------------------------------
 async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   const panelId = panel.id.toLowerCase();
   const masterInfo = FAPLAC_MASTER_DATA[panelId] || EGGER_MASTER_DATA[panelId] || EGGER_MASTER_DATA[panel.code?.toLowerCase() || ''];
@@ -195,12 +175,10 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
 
   let needsSync = false;
 
-  // ✅ PRIORIDAD 1: SEMÁNTICA (Keywords como 'Safari' o 'Almendra' ganan)
   const ncsCode = panel.ncs || (panel as any).ncsCode || (panel as any).colorData?.ncs;
   let colorGroup: string | null = detectColor(panel.name, ncsCode);
   if (colorGroup === 'Otro') colorGroup = null;
 
-  // 🔥 BUG FIX: Ensure changes in group, texture or grain/smoothness trigger a sync
   if (
     colorGroup !== (panel as any).colorGroup || 
     classified.texture !== (panel as any).texture ||
@@ -210,7 +188,6 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
     needsSync = true;
   }
 
-  // ✅ PRIORIDAD 2: Centros Cromáticos (Fallback si no hay keyword clara)
   let lab = (panel as any).labColor || panel.labColor;
   if (!lab && (panel as any).hexColor) {
     lab = toLab((panel as any).hexColor);
@@ -236,13 +213,11 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   classified.tone = (panel.colorHue && panel.colorHue !== 'medium') ? panel.colorHue : detectTone(lab?.l || 50);
   classified.temperature = (panel as any).temperature || 'neutral';
   
-  // ✅ NUEVO: Jerarquía Objetiva (Parent/Sub) con Enfoque Híbrido
   if (lab) {
     classified.colorParent = getColorParent(lab, panel.name);
     classified.colorSub = getColorSub(lab.l);
   }
 
-  // Intentar obtener LAB desde NCS (caché o cálculo)
   if (!lab && ncsCode) {
     lab = await getNcsLab(ncsCode);
     if (lab) {
@@ -251,7 +226,6 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
     }
   }
 
-  // Si no, usar imagen
   if (!lab && panel.mainImage) {
     const avg = await getAverageColor(panel.mainImage);
     if (avg) {
@@ -264,14 +238,13 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   if (needsSync && lab) {
     try {
       const db = getDb();
-      console.log(`📡 Sincronizando DB para ${panel.id}: Group=${classified.colorGroup}, needsSync=${needsSync}`);
       await updateDoc(doc(db, 'panels', panel.id), {
         labColor: lab,
         colorGroup: classified.colorGroup,
         colorHue: classified.tone,
         colorParent: classified.colorParent,
         colorSub: classified.colorSub,
-        surfaceTexture: classified.texture, // PERSISTENCIA DE TEXTURA UNIFICADA
+        surfaceTexture: classified.texture,
         hasGrain: classified.hasGrain,
         isSmooth: classified.isSmooth,
         colorSource: classified.colorSource || 'analytical_v6.1',
@@ -286,9 +259,6 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   return classified as ClassifiedPanel;
 }
 
-// ----------------------------------------------------------------------
-// Cálculo de similitud
-// ----------------------------------------------------------------------
 function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   const labA = a.certifiedLab || (a as any).labColor;
   const labB = b.certifiedLab || (b as any).labColor;
@@ -296,7 +266,6 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   let colorScore = 0;
   if (labA && labB) {
     const dE = de2000(labA, labB);
-    // Tolerancia optimizada para comparaciones cromáticas puras
     colorScore = Math.max(0, 1 - (dE / 18));
   } else {
     colorScore = (a.colorGroup === b.colorGroup) ? 0.8 : 0.2;
@@ -306,7 +275,6 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   const textureBonus = (a.texture === b.texture || isMetalSmooth) ? 0.2 : 0.1;
   let finalScore = (colorScore * 0.8) + textureBonus;
 
-  // ✅ NUEVO: Bonificaciones jerárquicas (0.10 si coinciden grupo + sub)
   if (a.colorParent && b.colorParent) {
     if (a.colorParent === b.colorParent && a.colorSub === b.colorSub) {
       finalScore = Math.min(1, finalScore + 0.10);
@@ -315,12 +283,10 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
     }
   }
 
-  // 🛡️ BARRERA DE MATERIAL: Penalización crítica si uno es madera y el otro es sólido
   if (a.hasGrain !== b.hasGrain) {
     finalScore *= 0.3; 
   }
 
-  // 🛡️ BARRERA DE GRUPO: Penalización FUERTE si los grupos OBJECTIVOS no coinciden
   const parentA = a.colorParent || a.colorGroup;
   const parentB = b.colorParent || b.colorGroup;
   
@@ -331,36 +297,19 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   return Math.min(1, Math.max(0, finalScore));
 }
 
-/**
- * Genera una descripción textual de un panel para el usuario.
- */
 function describePanel(panel: ClassifiedPanel): string {
   const toneMap: any = { dark: 'oscuro', medium: 'medio', light: 'claro' };
-  const tempMap: any = { warm: 'cálida', cool: 'fría', neutral: 'neutra' };
-  const textureMap: any = {
-    madera: 'madera',
-    textil: 'textil',
-    concreto: 'concreto',
-    metal: 'metal',
-    liso: 'liso'
-  };
-  
+  const textureMap: any = { madera: 'madera', textil: 'textil', concreto: 'concreto', metal: 'metal', liso: 'liso' };
   const parentName = panel.colorParent || panel.colorGroup;
   const subName = panel.colorSub || toneMap[panel.tone] || 'medio';
   const texture = textureMap[panel.texture] || panel.texture;
-  
   return `${parentName} ${subName} (${texture})`;
 }
 
-/**
- * Genera una explicación legible de la equivalencia.
- */
 function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, score: number): string {
   const percentage = Math.round(score * 100);
   const targetDesc = describePanel(target);
   const matchDesc = describePanel(match);
-
-  // Razones de similitud de color
   let colorReason = '';
   if (target.certifiedLab && match.certifiedLab) {
     const dE = de2000(target.certifiedLab, match.certifiedLab);
@@ -372,51 +321,16 @@ function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, sc
     if (target.colorGroup === match.colorGroup) colorReason = `mismo grupo cromático (${target.colorGroup})`;
     else colorReason = `grupo cromático ${target.colorGroup} vs ${match.colorGroup}`;
   }
-
-  // Compatibilidad de material y textura
-  let groupMsg = '';
-  if (target.colorGroup !== match.colorGroup) {
-    groupMsg = ` [Grupo: ${target.colorGroup} vs ${match.colorGroup}]`;
-  }
-
-  let materialMsg = '';
-  if (target.hasGrain !== match.hasGrain) {
-    materialMsg = target.hasGrain ? 'discrepancia material (madera vs liso)' : 'discrepancia material (liso vs madera)';
-  }
-
-  let textureMsg = '';
-  if (target.texture === match.texture) {
-    textureMsg = `ambos tienen acabado ${target.texture}.`;
-  } else {
-    textureMsg = `acabados diferentes (${target.texture} vs ${match.texture}).`;
-  }
-
-  const visualMsg = materialMsg ? `${materialMsg} y ${textureMsg}` : textureMsg;
-
-  // Fuente de la equivalencia
-  const sourceNote = (match as any).colorSource === 'certified_master_list'
-    ? ' (datos maestro de color)'
-    : ((match as any).colorSource === 'ncs_objective' ? ' (datos NCS objetivos)' : ' (estimación visual)');
-
-  // Construir mensaje final
-  let conclusion = '';
-  if (percentage >= 85) conclusion = 'Coincidencia técnica excelente';
-  else if (percentage >= 70) conclusion = 'Equivalencia visual recomendada';
-  else conclusion = 'Alternativa técnica sugerida';
-
-  return `${match.name} (${match.brand}) es ${matchDesc}.${groupMsg} Su ${colorReason} con el panel objetivo (${targetDesc}) y ${visualMsg} ${conclusion} con un ${percentage}% de similitud${sourceNote}.`;
+  let textureMsg = target.texture === match.texture ? `ambos tienen acabado ${target.texture}.` : `acabados diferentes (${target.texture} vs ${match.texture}).`;
+  let conclusion = percentage >= 85 ? 'Coincidencia técnica excelente' : (percentage >= 70 ? 'Equivalencia visual recomendada' : 'Alternativa técnica sugerida');
+  return `${match.name} (${match.brand}) es ${matchDesc}. Su ${colorReason} con el panel objetivo (${targetDesc}) y ${textureMsg} ${conclusion} con un ${percentage}% de similitud.`;
 }
 
-// ----------------------------------------------------------------------
-// Procesamiento por lotes
-// ----------------------------------------------------------------------
 export async function runEquivalenceSync(allPanels: Panel[]) {
-  classificationCache.clear(); // 🔥 Limpiar caché antes de cada sincronización
+  classificationCache.clear();
   const db = getDb();
   const BATCH_SIZE = 5;
   const results = [];
-
-  console.log(`🚀 Motor v6.1: iniciando para ${allPanels.length} paneles...`);
 
   for (let i = 0; i < allPanels.length; i += BATCH_SIZE) {
     const batch = allPanels.slice(i, i + BATCH_SIZE);
@@ -431,10 +345,11 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
           return { panel: candClass, score };
         }));
 
+        // 🔥 Se aumenta el límite de persistencia a 30 para no truncar resultados válidos
         const topMatches = scored
-          .filter(m => m.score > 0.3) // Solo mostrar coincidencias razonables (>30%)
+          .filter(m => m.score >= 0.6) // Guardar todo lo que sea >= 60%
           .sort((a, b) => b.score - a.score)
-          .slice(0, 5);
+          .slice(0, 30);
 
         const result = {
           targetId: target.id,
@@ -460,14 +375,9 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
         return null;
       }
     }));
-
     results.push(...batchResults.filter(Boolean));
-    console.log(`⏳ Progreso: ${Math.min(i + BATCH_SIZE, allPanels.length)} / ${allPanels.length}`);
     await new Promise(resolve => setTimeout(resolve, 300));
   }
-
-  classificationCache.clear();
-  console.log("✅ Motor v6.1 finalizado.");
   return results;
 }
 
