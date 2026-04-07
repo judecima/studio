@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useMemo } from "react";
@@ -10,13 +9,11 @@ import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Loader2, PackageSearch } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { collection, query } from "firebase/firestore";
 
 export default function Home() {
   const db = useFirestore();
-  const [filters, setFilters] = useState<PanelFilters>({
-    thickness: [],
-  });
+  const [filters, setFilters] = useState<PanelFilters>({});
 
   const panelsQuery = useMemoFirebase(() => {
     if (!db) return null;
@@ -30,13 +27,12 @@ export default function Home() {
     return panels.filter(panel => {
       if (filters.brand && panel.brand !== filters.brand) return false;
       if (filters.search && !panel.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
-      if (filters.thickness && filters.thickness.length > 0 && !filters.thickness.includes(panel.thickness)) return false;
-      if (filters.hasGrain !== undefined && panel.hasGrain !== filters.hasGrain) return false;
+      if (filters.hasGrain !== undefined && filters.hasGrain !== false && panel.hasGrain !== filters.hasGrain) return false;
       return true;
     });
   }, [panels, filters]);
 
-  const resetFilters = () => setFilters({ thickness: [] });
+  const resetFilters = () => setFilters({});
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50/30">
@@ -63,7 +59,7 @@ export default function Home() {
               <SheetContent side="left" className="p-0 w-full sm:max-w-md">
                 <SheetHeader className="p-6 border-b">
                   <SheetTitle className="text-xl font-headline font-bold">Ajustar Filtros</SheetTitle>
-                  <SheetDescription>Filtra por marca, espesor o tipo de veta.</SheetDescription>
+                  <SheetDescription>Filtra por marca o tipo de veta.</SheetDescription>
                 </SheetHeader>
                 <div className="h-full overflow-y-auto">
                   <PanelFiltersSidebar filters={filters} onChange={setFilters} onReset={resetFilters} />

@@ -22,7 +22,6 @@ interface Props {
 
 export function PanelFiltersSidebar({ filters, onChange, onReset }: Props) {
   const brands = ["Arauco", "Egger", "Faplac", "Masisa", "Guillermina"];
-  const thicknesses = [3, 5.5, 9, 12, 15, 18, 25];
 
   return (
     <div className="space-y-6 bg-card p-6 rounded-lg border shadow-sm">
@@ -63,28 +62,6 @@ export function PanelFiltersSidebar({ filters, onChange, onReset }: Props) {
               ))}
             </SelectContent>
           </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Espesor (mm)</Label>
-          <div className="grid grid-cols-2 gap-2">
-            {thicknesses.map(t => (
-              <div key={t} className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`t-${t}`} 
-                  checked={filters.thickness?.includes(t)}
-                  onCheckedChange={(checked) => {
-                    const current = filters.thickness || [];
-                    const next = checked 
-                      ? [...current, t] 
-                      : current.filter(item => item !== t);
-                    onChange({ ...filters, thickness: next });
-                  }}
-                />
-                <Label htmlFor={`t-${t}`} className="text-sm font-normal">{t} mm</Label>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="pt-2">
