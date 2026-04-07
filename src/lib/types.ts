@@ -52,6 +52,7 @@ export interface SimilarProduct {
   mainImage: string;
   score: number;
   reason: string;
+  explanation?: string; // Añadido para el motor de equivalencias
   thickness: number;
   hasGrain: boolean;
 }

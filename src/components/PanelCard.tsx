@@ -1,14 +1,20 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Panel } from "@/lib/types";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 
-export function PanelCard({ panel }: { panel: Panel }) {
+interface Props {
+  panel: Panel;
+  explanation?: string;
+}
+
+export function PanelCard({ panel, explanation }: Props) {
   return (
     <Card className="overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 bg-white border-none shadow-sm flex flex-col h-full rounded-[2rem] relative ring-1 ring-slate-100">
       
-      {/* Image Wrapper - Refuerzo de bordes con ring-slate-200 para paneles claros */}
+      {/* Image Wrapper */}
       <Link href={`/panels/${panel.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-3 rounded-[1.5rem] shadow-md ring-1 ring-slate-200">
         <Image
           src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"}
@@ -28,6 +34,15 @@ export function PanelCard({ panel }: { panel: Panel }) {
           <h3 className="font-headline font-bold text-xl md:text-2xl leading-tight text-slate-900 group-hover:text-primary transition-colors line-clamp-2">
             {panel.name}
           </h3>
+          
+          {explanation && (
+            <div className="mt-4 p-3 bg-slate-50 rounded-2xl border border-slate-100 flex gap-2 items-start">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
+              <p className="text-[11px] leading-relaxed text-slate-600 font-medium italic">
+                {explanation}
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
 

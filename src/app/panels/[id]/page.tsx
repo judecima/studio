@@ -32,7 +32,8 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
       
       try {
         const ids = baseMatches.map(m => m.id);
-        const q = query(collection(db, 'panels'), where(documentId(), 'in', ids.slice(0, 20))); // Aumentado a 20 para permitir más resultados
+        // Traemos más resultados para asegurar que el 70%+ esté cubierto
+        const q = query(collection(db, 'panels'), where(documentId(), 'in', ids.slice(0, 30))); 
         const snap = await getDocs(q);
         
         const hydrated = snap.docs.map(doc => {
@@ -76,7 +77,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
   }, [panelId]);
 
   const filteredMatches = useMemo(() => {
-    // 🔥 Se ajusta para mostrar desde el 60%, sin límite de cantidad
+    // Mostrar desde el 60%, sin límite de cantidad para garantizar visibilidad del 70%+
     return allMatches.filter(m => (m.score || m.matchScore || 0) >= 60);
   }, [allMatches]);
 
@@ -88,31 +89,44 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-3">
-        <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
-          <Sparkles className="h-4 w-4" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
+            <Sparkles className="h-4 w-4" />
+          </div>
+          <h3 className="text-xl font-headline font-bold text-slate-900 tracking-tight">
+            Coincidencias de Diseño
+          </h3>
         </div>
-        <h3 className="text-xl font-headline font-bold text-slate-900 tracking-tight">
-          Coincidencias de Diseño (+60%)
-        </h3>
+        <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-400">
+          MOSTRANDO TODO +60%
+        </Badge>
       </div>
 
       {filteredMatches.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {filteredMatches.map((matchPanel: any) => (
-            <div key={matchPanel.id} className="relative group/card">
+            <div key={matchPanel.id} className="relative group/card flex flex-col h-full">
               <div className="absolute -top-2 -right-2 z-30">
-                <Badge className="bg-indigo-600 text-white border-2 border-white shadow-lg h-10 w-10 rounded-full p-0 flex items-center justify-center font-bold text-xs">
+                <Badge className="bg-indigo-600 text-white border-2 border-white shadow-lg h-12 w-12 rounded-full p-0 flex items-center justify-center font-bold text-sm">
                   {Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0))}%
                 </Badge>
               </div>
-              <PanelCard panel={matchPanel} />
+              <PanelCard 
+                panel={matchPanel} 
+                explanation={matchPanel.explanation} 
+              />
             </div>
           ))}
         </div>
       ) : (
-        <div className="p-8 border border-dashed rounded-3xl text-center text-muted-foreground text-sm">
-          No se han encontrado coincidencias con precisión técnica superior al 60% para este diseño.
+        <div className="p-12 border-2 border-dashed rounded-[2.5rem] text-center text-muted-foreground text-sm flex flex-col items-center gap-4">
+          <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-slate-200" />
+          </div>
+          <p className="max-w-xs">
+            No se han encontrado coincidencias con precisión técnica superior al 60% para este diseño en otras marcas.
+          </p>
         </div>
       )}
     </div>
@@ -135,7 +149,7 @@ export default function PanelDetailPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="font-headline font-bold text-slate-700 animate-pulse text-xl">Cargando...</p>
+        <p className="font-headline font-bold text-slate-700 animate-pulse text-xl">Analizando material...</p>
       </div>
     );
   }
@@ -144,7 +158,7 @@ export default function PanelDetailPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 text-center">
         <h1 className="text-4xl font-headline font-bold">No encontrado</h1>
-        <Button onClick={() => router.push('/')}>Volver</Button>
+        <Button onClick={() => router.push('/')}>Volver al Catálogo</Button>
       </div>
     );
   }
@@ -160,7 +174,7 @@ export default function PanelDetailPage() {
           className="mb-6 pl-0 gap-2 hover:bg-transparent hover:text-primary transition-all group"
         >
           <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> 
-          <span className="font-bold uppercase tracking-widest text-xs">Catálogo</span>
+          <span className="font-bold uppercase tracking-widest text-xs">Catálogo Completo</span>
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -173,22 +187,27 @@ export default function PanelDetailPage() {
                 alt={panel.name} 
                 fill 
                 priority
-                className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                className="object-cover" 
               />
             </div>
 
             {/* Identidad del Panel */}
-            <div className="px-2">
-              <Badge className="bg-primary text-white border-none mb-3 px-3 py-1 font-bold uppercase tracking-widest text-[10px]">
+            <div className="px-2 space-y-2">
+              <Badge className="bg-primary text-white border-none px-3 py-1 font-bold uppercase tracking-widest text-[10px]">
                 {panel.brand}
               </Badge>
               <h1 className="text-3xl md:text-4xl font-headline font-bold text-slate-900 leading-tight tracking-tight">
                 {panel.name}
               </h1>
+              {panel.code && (
+                <p className="text-sm font-mono text-slate-400 font-bold uppercase">
+                  Ref: {panel.code}
+                </p>
+              )}
             </div>
 
             {/* Miniaturas */}
-            {panel.images && panel.images.length > 0 && (
+            {panel.images && panel.images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
                 {panel.images.map((img, idx) => (
                   <div key={idx} className="relative w-20 h-20 rounded-2xl overflow-hidden ring-1 ring-slate-200 border-2 border-white shadow-sm shrink-0">
@@ -201,7 +220,7 @@ export default function PanelDetailPage() {
 
           {/* LADO DERECHO: Recomendaciones */}
           <div className="lg:col-span-8">
-            <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30">
+            <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/30">
               <EquivalenceSection panelId={id as string} targetPanel={panel} />
             </div>
           </div>
