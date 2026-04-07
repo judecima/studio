@@ -143,6 +143,11 @@ function rgbToLab(r: number, g: number, b: number) {
 async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   const panelId = panel.id.toLowerCase();
   const baseId = panelId.replace(/^(faplac|egger|arauco|masisa)-/, '');
+  
+  // 1. Respetar valores manuales si existen en el objeto panel recibido
+  const manualTexture = panel.surfaceTexture || (panel as any).texture;
+  const manualHasGrain = panel.hasGrain;
+
   const masterInfo = FAPLAC_MASTER_DATA[baseId] || EGGER_MASTER_DATA[baseId] || EGGER_MASTER_DATA[panel.code?.toLowerCase() || ''];
 
   if (masterInfo) {
@@ -154,16 +159,20 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
       colorSub: getColorSub(masterInfo.lab.l),
       tone: detectTone(masterInfo.lab.l),
       temperature: 'neutral',
-      texture: detectTexture(panel.name, (panel as any).surfaceTexture),
+      // Priorizar manual sobre detección automática incluso en Master Data
+      texture: manualTexture || detectTexture(panel.name, (panel as any).surfaceTexture),
+      hasGrain: manualHasGrain !== undefined ? manualHasGrain : (manualTexture === 'madera'),
+      isSmooth: manualTexture === 'liso' || manualTexture === 'mate',
       colorSource: 'certified_master_list'
     } as ClassifiedPanel;
   }
 
+  const detectedTextureValue = detectTexture(panel.name, (panel as any).surfaceTexture);
   const classified: any = {
     ...panel,
-    texture: detectTexture(panel.name, (panel as any).surfaceTexture),
-    hasGrain: detectTexture(panel.name, (panel as any).surfaceTexture) === 'madera',
-    isSmooth: detectTexture(panel.name, (panel as any).surfaceTexture) === 'liso'
+    texture: manualTexture || detectedTextureValue,
+    hasGrain: manualHasGrain !== undefined ? manualHasGrain : (detectedTextureValue === 'madera'),
+    isSmooth: manualTexture ? (manualTexture === 'liso' || manualTexture === 'mate') : (detectedTextureValue === 'liso')
   };
 
   let needsSync = false;
@@ -230,7 +239,7 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
         surfaceTexture: classified.texture,
         hasGrain: classified.hasGrain,
         isSmooth: classified.isSmooth,
-        colorSource: classified.colorSource || 'analytical_v6.5',
+        colorSource: classified.colorSource || 'analytical_v6.6',
         updatedAt: new Date().toISOString()
       });
     } catch (e) {}
@@ -259,7 +268,7 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   const normA = a.name.toLowerCase();
   const normB = b.name.toLowerCase();
   if (normA.includes('almendra') && normB.includes('almendra')) {
-    finalScore = Math.min(1, finalScore + 0.2);
+    finalScore = Math.min(1, finalScore + 0.15);
   }
 
   const parentA = (a.colorParent || a.colorGroup || 'otro').toLowerCase();
@@ -276,8 +285,9 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
     finalScore *= 0.6; 
   }
 
+  // 🛡️ CRÍTICO: La veta es un factor excluyente para el 100%
   if (a.hasGrain !== b.hasGrain) {
-    finalScore *= 0.35; 
+    finalScore *= 0.4; // Penalización masiva si uno tiene veta y el otro no
   }
 
   return Math.min(1, Math.max(0, finalScore));
@@ -305,9 +315,13 @@ function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, sc
     if (target.colorGroup.toLowerCase() === match.colorGroup.toLowerCase()) colorReason = `mismo grupo cromático (${target.colorGroup})`;
     else colorReason = `grupo cromático ${target.colorGroup} vs ${match.colorGroup}`;
   }
-  let textureMsg = target.texture === match.texture ? `ambos tienen acabado ${target.texture}.` : `acabados diferentes (${target.texture} vs ${match.texture}).`;
+  
+  let textureMsg = target.hasGrain === match.hasGrain 
+    ? (target.hasGrain ? 'ambos son diseños con veta.' : 'ambos son colores lisos.')
+    : (target.hasGrain ? 'el original tiene veta pero este es liso.' : 'el original es liso pero este tiene veta.');
+
   let conclusion = percentage >= 85 ? 'Coincidencia técnica excelente' : (percentage >= 70 ? 'Equivalencia visual recomendada' : 'Alternativa técnica sugerida');
-  return `${match.name} (${match.brand}) es ${matchDesc}. Su ${colorReason} con el panel objetivo (${targetDesc}) y ${textureMsg} ${conclusion} con un ${percentage}% de similitud.`;
+  return `${match.name} (${match.brand}) es ${matchDesc}. Su ${colorReason} y ${textureMsg} ${conclusion} con un ${percentage}% de similitud.`;
 }
 
 export async function runEquivalenceSync(allPanels: Panel[]) {
