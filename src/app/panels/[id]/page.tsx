@@ -165,8 +165,8 @@ export default function PanelDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* LADO IZQUIERDO: Imagen Principal (4 columnas) */}
-          <div className="lg:col-span-4 space-y-4">
-            <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden shadow-2xl bg-white border border-slate-100 group">
+          <div className="lg:col-span-4 space-y-6">
+            <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden shadow-xl bg-white border border-slate-100 group">
               <Image 
                 src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
                 alt={panel.name} 
@@ -174,23 +174,23 @@ export default function PanelDetailPage() {
                 priority
                 className="object-cover transition-transform duration-700 group-hover:scale-105" 
               />
-              
-              {/* Overlay: Marca y Nombre */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
-                <Badge className="bg-primary text-white border-none mb-2 w-fit px-3 py-1 font-bold uppercase tracking-widest text-[10px]">
-                  {panel.brand}
-                </Badge>
-                <h1 className="text-3xl md:text-4xl font-headline font-bold text-white leading-tight tracking-tight">
-                  {panel.name}
-                </h1>
-              </div>
             </div>
 
-            {/* Miniaturas (si existen) */}
+            {/* Identidad del Panel (Nombre y Marca) fuera de la imagen para no usar degradados */}
+            <div className="px-2">
+              <Badge className="bg-primary text-white border-none mb-3 px-3 py-1 font-bold uppercase tracking-widest text-[10px]">
+                {panel.brand}
+              </Badge>
+              <h1 className="text-3xl md:text-4xl font-headline font-bold text-slate-900 leading-tight tracking-tight">
+                {panel.name}
+              </h1>
+            </div>
+
+            {/* Miniaturas */}
             {panel.images && panel.images.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto py-2">
+              <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
                 {panel.images.map((img, idx) => (
-                  <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border-2 border-white shadow-sm shrink-0">
+                  <div key={idx} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-sm shrink-0">
                     <Image src={img} alt="" fill className="object-cover" />
                   </div>
                 ))}

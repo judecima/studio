@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Panel } from "@/lib/types";
@@ -9,7 +10,7 @@ export function PanelCard({ panel }: { panel: Panel }) {
   return (
     <Card className="overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 bg-white border-none shadow-sm flex flex-col h-full rounded-[2rem] relative ring-1 ring-slate-100">
       
-      {/* Image Wrapper */}
+      {/* Image Wrapper - Sin degradados sobre la textura */}
       <Link href={`/panels/${panel.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-3 rounded-[1.5rem] shadow-md ring-1 ring-slate-100">
         <Image
           src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"}
@@ -19,7 +20,6 @@ export function PanelCard({ panel }: { panel: Panel }) {
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           data-ai-hint="wood panel"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </Link>
 
       <CardContent className="px-6 py-4 flex-1 flex flex-col">
