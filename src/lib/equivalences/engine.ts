@@ -150,7 +150,9 @@ function rgbToLab(r: number, g: number, b: number) {
 
 async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   const panelId = panel.id.toLowerCase();
-  const masterInfo = FAPLAC_MASTER_DATA[panelId] || EGGER_MASTER_DATA[panelId] || EGGER_MASTER_DATA[panel.code?.toLowerCase() || ''];
+  // 🔥 FIX: Manejar IDs con prefijo de marca para búsqueda en Matriz Maestra
+  const baseId = panelId.replace(/^(faplac|egger|arauco|masisa)-/, '');
+  const masterInfo = FAPLAC_MASTER_DATA[baseId] || EGGER_MASTER_DATA[baseId] || EGGER_MASTER_DATA[panel.code?.toLowerCase() || ''];
 
   if (masterInfo) {
     return {
@@ -275,6 +277,13 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   const textureBonus = (a.texture === b.texture || isMetalSmooth) ? 0.2 : 0.1;
   let finalScore = (colorScore * 0.8) + textureBonus;
 
+  // 🔥 BOOST POR NOMBRE (Caso Almendra)
+  const normA = a.name.toLowerCase();
+  const normB = b.name.toLowerCase();
+  if (normA.includes('almendra') && normB.includes('almendra')) {
+    finalScore = Math.min(1, finalScore + 0.15);
+  }
+
   if (a.colorParent && b.colorParent) {
     if (a.colorParent === b.colorParent && a.colorSub === b.colorSub) {
       finalScore = Math.min(1, finalScore + 0.10);
@@ -345,9 +354,8 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
           return { panel: candClass, score };
         }));
 
-        // 🔥 Se aumenta el límite de persistencia a 30 para no truncar resultados válidos
         const topMatches = scored
-          .filter(m => m.score >= 0.6) // Guardar todo lo que sea >= 60%
+          .filter(m => m.score >= 0.6) 
           .sort((a, b) => b.score - a.score)
           .slice(0, 30);
 
