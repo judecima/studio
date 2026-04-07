@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useParams, useRouter } from "next/navigation";
@@ -164,9 +163,9 @@ export default function PanelDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* LADO IZQUIERDO: Imagen Principal (4 columnas) */}
+          {/* LADO IZQUIERDO: Imagen Principal Cuadrada (4 columnas) */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden shadow-xl bg-white border border-slate-100 group">
+            <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl bg-white ring-1 ring-slate-200 group">
               <Image 
                 src={panel.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
                 alt={panel.name} 
@@ -176,7 +175,7 @@ export default function PanelDetailPage() {
               />
             </div>
 
-            {/* Identidad del Panel (Nombre y Marca) fuera de la imagen para no usar degradados */}
+            {/* Identidad del Panel */}
             <div className="px-2">
               <Badge className="bg-primary text-white border-none mb-3 px-3 py-1 font-bold uppercase tracking-widest text-[10px]">
                 {panel.brand}
@@ -190,7 +189,7 @@ export default function PanelDetailPage() {
             {panel.images && panel.images.length > 0 && (
               <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
                 {panel.images.map((img, idx) => (
-                  <div key={idx} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-sm shrink-0">
+                  <div key={idx} className="relative w-20 h-20 rounded-2xl overflow-hidden ring-1 ring-slate-200 border-2 border-white shadow-sm shrink-0">
                     <Image src={img} alt="" fill className="object-cover" />
                   </div>
                 ))}

@@ -25,7 +25,8 @@ export function SimilarProductCard({ product }: Props) {
 
   return (
     <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-none bg-white group flex flex-col h-full rounded-[2rem] shadow-sm ring-1 ring-slate-100">
-      <Link href={`/panels/${product.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-2.5 rounded-[1.5rem]">
+      {/* Refuerzo de bordes con ring-slate-200 para paneles claros */}
+      <Link href={`/panels/${product.id}`} className="block relative aspect-[4/3] overflow-hidden shrink-0 m-2.5 rounded-[1.5rem] ring-1 ring-slate-200 shadow-sm">
         <Image 
           src={product.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
           alt={product.name} 
