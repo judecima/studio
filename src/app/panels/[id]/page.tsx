@@ -75,7 +75,8 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
   }, [panelId]);
 
   const filteredMatches = useMemo(() => {
-    return allMatches.filter(m => (m.score || m.matchScore || 0) >= 40);
+    // Filtrar coincidencias que superen el 70%
+    return allMatches.filter(m => (m.score || m.matchScore || 0) >= 70);
   }, [allMatches]);
 
   if (isDynamicLoading && !eq) return (
@@ -91,7 +92,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
           <Sparkles className="h-4 w-4" />
         </div>
         <h3 className="text-xl font-headline font-bold text-slate-900 tracking-tight">
-          Coincidencias de Diseño
+          Coincidencias de Diseño (+70%)
         </h3>
       </div>
 
@@ -101,7 +102,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
             <div key={matchPanel.id} className="relative group/card">
               <div className="absolute -top-2 -right-2 z-30">
                 <Badge className="bg-indigo-600 text-white border-2 border-white shadow-lg h-10 w-10 rounded-full p-0 flex items-center justify-center font-bold text-xs">
-                  {Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0))}
+                  {Math.max(0, Math.floor(matchPanel.score || matchPanel.matchScore || 0))}%
                 </Badge>
               </div>
               <PanelCard panel={matchPanel} />
@@ -110,7 +111,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
         </div>
       ) : (
         <div className="p-8 border border-dashed rounded-3xl text-center text-muted-foreground text-sm">
-          No se han encontrado coincidencias técnicas para este diseño.
+          No se han encontrado coincidencias con alta precisión técnica (70%+) para este diseño.
         </div>
       )}
     </div>
