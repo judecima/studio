@@ -23,7 +23,7 @@ export const COLOR_WORDS = [
   'blanco', 'beige', 'gris', 'negro', 'marron', 'rojo', 'verde', 'azul',
   'amarillo', 'naranja', 'violeta', 'rosa', 'cafe', 'almendra', 'crema',
   'arena', 'perla', 'carbon', 'gris oscuro', 'gris claro', 'verde oliva',
-  'safari', 'aluminio', 'plata', 'acero', 'metal'
+  'safari', 'aluminio', 'plata', 'acero', 'metal', 'madera'
 ];
 
 export const COLOR_WEIGHTS: Record<string, { weight: number, group?: string }> = {
@@ -50,6 +50,7 @@ export const COLOR_WEIGHTS: Record<string, { weight: number, group?: string }> =
   'rosa': { weight: 5, group: 'rosa' },
   'marron': { weight: 5, group: 'marron' },
   'cafe': { weight: 5, group: 'marron' },
+  'madera': { weight: 5, group: 'marron' },
   // Genéricos (Mínima prioridad)
   'blanco': { weight: 1, group: 'blanco' },
   'beige': { weight: 1, group: 'beige' },
@@ -155,7 +156,8 @@ export const COLOR_PARENTS = [
   { name: 'amarillo', lab: { l: 85, a: -10, b: 80 } },
   { name: 'naranja', lab: { l: 60, a: 40, b: 55 } },
   { name: 'violeta', lab: { l: 40, a: 45, b: -45 } },
-  { name: 'rosa', lab: { l: 70, a: 35, b: -10 } }
+  { name: 'rosa', lab: { l: 70, a: 35, b: -10 } },
+  { name: 'madera', lab: { l: 45, a: 15, b: 25 } } // Agregado madera como categoría padre
 ];
 
 export const SUB_LEVELS = [
@@ -170,6 +172,8 @@ export const SUB_LEVELS = [
 export function getColorParent(lab: { l: number; a: number; b: number }, name?: string): string {
   if (name) {
     const detected = getDominantColorName([name]);
+    // Mapear madera a marron para consistencia cromática si no se usa como categoría principal
+    if (detected === 'madera') return 'marron';
     if (detected && COLOR_PARENTS.some(p => p.name === detected.toLowerCase())) {
       return detected.toLowerCase();
     }

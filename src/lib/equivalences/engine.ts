@@ -144,24 +144,25 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   const panelId = panel.id.toLowerCase();
   const baseId = panelId.replace(/^(faplac|egger|arauco|masisa)-/, '');
   
-  // 1. Respetar valores manuales si existen en el objeto panel recibido
   const manualTexture = panel.surfaceTexture || (panel as any).texture;
   const manualHasGrain = panel.hasGrain;
 
   const masterInfo = FAPLAC_MASTER_DATA[baseId] || EGGER_MASTER_DATA[baseId] || EGGER_MASTER_DATA[panel.code?.toLowerCase() || ''];
 
   if (masterInfo) {
+    // Normalizar 'madera' a 'marron' para el motor si es necesario, pero mantener consistencia
+    const masterCat = masterInfo.cat === 'madera' ? 'marron' : masterInfo.cat.toLowerCase();
+    
     return {
       ...panel,
       certifiedLab: masterInfo.lab,
-      colorGroup: masterInfo.cat.toLowerCase(),
-      colorParent: masterInfo.cat.toLowerCase(),
+      colorGroup: masterCat,
+      colorParent: masterCat,
       colorSub: getColorSub(masterInfo.lab.l),
       tone: detectTone(masterInfo.lab.l),
       temperature: 'neutral',
-      // Priorizar manual sobre detección automática incluso en Master Data
       texture: manualTexture || detectTexture(panel.name, (panel as any).surfaceTexture),
-      hasGrain: manualHasGrain !== undefined ? manualHasGrain : (manualTexture === 'madera'),
+      hasGrain: manualHasGrain !== undefined ? manualHasGrain : true, // Paraíso y maderas maestras suelen tener veta
       isSmooth: manualTexture === 'liso' || manualTexture === 'mate',
       colorSource: 'certified_master_list'
     } as ClassifiedPanel;
@@ -179,6 +180,7 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
   const ncsCode = panel.ncs || (panel as any).ncsCode || (panel as any).colorData?.ncs;
   let colorGroup: string | null = detectColor(panel.name, ncsCode);
   if (colorGroup === 'otro') colorGroup = null;
+  if (colorGroup === 'madera') colorGroup = 'marron'; // Unificación para el motor
 
   let lab = (panel as any).labColor || panel.labColor;
   if (!lab && (panel as any).hexColor) {
@@ -239,7 +241,7 @@ async function classifyAndSync(panel: Panel): Promise<ClassifiedPanel> {
         surfaceTexture: classified.texture,
         hasGrain: classified.hasGrain,
         isSmooth: classified.isSmooth,
-        colorSource: classified.colorSource || 'analytical_v6.6',
+        colorSource: classified.colorSource || 'analytical_v6.7',
         updatedAt: new Date().toISOString()
       });
     } catch (e) {}
@@ -256,7 +258,8 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   let colorScore = 0;
   if (labA && labB) {
     const dE = de2000(labA, labB);
-    colorScore = Math.max(0, 1 - (dE / 18));
+    // Para maderas, Delta E de 22 es el límite de "cercanía"
+    colorScore = Math.max(0, 1 - (dE / 22));
   } else {
     colorScore = (a.colorGroup.toLowerCase() === b.colorGroup.toLowerCase()) ? 0.8 : 0.2;
   }
@@ -265,29 +268,23 @@ function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
   const textureBonus = (a.texture === b.texture || isMetalSmooth) ? 0.2 : 0.1;
   let finalScore = (colorScore * 0.8) + textureBonus;
 
-  const normA = a.name.toLowerCase();
-  const normB = b.name.toLowerCase();
-  if (normA.includes('almendra') && normB.includes('almendra')) {
-    finalScore = Math.min(1, finalScore + 0.15);
-  }
-
   const parentA = (a.colorParent || a.colorGroup || 'otro').toLowerCase();
   const parentB = (b.colorParent || b.colorGroup || 'otro').toLowerCase();
-  const subA = (a.colorSub || a.tone || 'medio').toLowerCase();
-  const subB = (b.colorSub || b.tone || 'medio').toLowerCase();
+  
+  // Normalizar madera/marron para evitar el castigo de 0.6
+  const normalizedParentA = parentA === 'madera' ? 'marron' : parentA;
+  const normalizedParentB = parentB === 'madera' ? 'marron' : parentB;
 
-  if (parentA === parentB) {
+  if (normalizedParentA === normalizedParentB) {
     finalScore = Math.min(1, finalScore + 0.05);
-    if (subA === subB) {
-      finalScore = Math.min(1, finalScore + 0.05);
-    }
-  } else if (parentA !== 'otro' && parentB !== 'otro') {
-    finalScore *= 0.6; 
+  } else if (normalizedParentA !== 'otro' && normalizedParentB !== 'otro') {
+    // Solo castigar si son realmente colores distintos (ej: rojo vs azul)
+    finalScore *= 0.7; 
   }
 
-  // 🛡️ CRÍTICO: La veta es un factor excluyente para el 100%
+  // 🛡️ Ajuste de Veta para Paraíso: Si ambos son maderas pero el score es alto, permitirlo
   if (a.hasGrain !== b.hasGrain) {
-    finalScore *= 0.4; // Penalización masiva si uno tiene veta y el otro no
+    finalScore *= 0.5; // Penalización suavizada del 50%
   }
 
   return Math.min(1, Math.max(0, finalScore));
