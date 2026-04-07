@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { Panel } from "@/lib/types";
@@ -20,15 +19,6 @@ export function PanelCard({ panel }: { panel: Panel }) {
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           data-ai-hint="wood panel"
         />
-        <div className="absolute top-4 right-4 z-10">
-          {panel.stock > 0 ? (
-            <Badge variant="secondary" className="bg-white/90 backdrop-blur-md text-slate-900 border-none font-bold px-3 py-1 shadow-sm">
-              STOCK: {panel.stock}
-            </Badge>
-          ) : (
-            <Badge variant="destructive" className="font-bold border-none shadow-sm">SIN STOCK</Badge>
-          )}
-        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </Link>
 
