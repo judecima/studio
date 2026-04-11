@@ -6,10 +6,8 @@ import { getStorage } from 'firebase/storage';
 
 /**
  * @fileOverview Inicialización universal de Firebase.
- * Se eliminó 'use client' para permitir el uso en Server Actions y Scrapers.
  */
 
-// 🛡️ Evitar avisos de MaxListeners en HMR (Next.js)
 if (typeof process !== 'undefined' && typeof process.setMaxListeners === 'function') {
   process.setMaxListeners(20);
 }

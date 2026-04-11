@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 
 interface Props {
   product: SimilarProduct;
@@ -29,7 +29,8 @@ export function SimilarProductCard({ product }: Props) {
         <Image 
           src={product.mainImage || "https://placehold.co/800x600?text=Sin+Imagen"} 
           alt={product.name} 
-          fill 
+          fill
+          sizes="(max-width: 768px) 100vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-110" 
         />
         <div className="absolute top-3 left-3 flex flex-col gap-2">

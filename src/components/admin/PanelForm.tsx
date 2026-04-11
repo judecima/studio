@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -32,53 +32,47 @@ import {
   CardTitle,
   CardDescription 
 } from "@/components/ui/card";
-import { Panel, ColorParent, ColorSub, SurfaceTexture, Finish } from "@/lib/types";
+import { Panel } from "@/lib/types";
 import { 
-  Sparkles, 
   Loader2, 
   Save, 
-  X, 
-  Image as ImageIcon, 
   Upload 
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 import { useFirestore, useStorage } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
-import { converter } from "culori";
 import { COLOR_PARENTS_LAB, SUB_LEVELS } from "@/lib/equivalences/classifier";
 
-const toLab = converter('lab');
-
+// 🛡️ Esquema robustecido para evitar fallos de validación con datos null/existentes
 const panelSchema = z.object({
-  name: z.string().min(3, "Mínimo 3 caracteres"),
+  name: z.string().min(2, "Mínimo 2 caracteres"),
   brand: z.string().min(1, "Marca requerida"),
-  width: z.coerce.number().positive(),
-  height: z.coerce.number().positive(),
-  thickness: z.coerce.number().positive(),
+  width: z.coerce.number().min(0),
+  height: z.coerce.number().min(0),
+  thickness: z.coerce.number().min(0),
   hasGrain: z.boolean(),
-  description: z.string().optional(),
+  description: z.string().optional().nullable(),
   stock: z.coerce.number().min(0),
   visible: z.boolean(),
   mainImage: z.string().min(1, "La imagen principal es requerida"),
-  colorParent: z.string(),
-  colorSub: z.string(),
-  surfaceTexture: z.string(),
-  finish: z.string(),
+  colorParent: z.string().default("otro"),
+  colorSub: z.string().default("medio claro"),
+  surfaceTexture: z.string().default("liso"),
+  finish: z.string().default("mate"),
   antiFingerprint: z.boolean().default(false),
-  code: z.string().optional(),
-  ncs: z.string().optional(),
-  launchYear: z.coerce.number().optional(),
-  hexColor: z.string().optional(),
+  code: z.string().optional().nullable(),
+  ncs: z.string().optional().nullable(),
+  launchYear: z.coerce.number().optional().nullable(),
+  hexColor: z.string().optional().nullable(),
   labColor: z.object({
     l: z.number(),
     a: z.number(),
     b: z.number(),
-  }).optional(),
+  }).optional().nullable(),
 });
 
 type FormValues = z.infer<typeof panelSchema>;
@@ -99,45 +93,27 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
 
   const form = useForm<FormValues>({
     resolver: zodResolver(panelSchema),
-    defaultValues: initialData ? {
-      name: initialData.name,
-      brand: initialData.brand,
-      width: initialData.width,
-      height: initialData.height,
-      thickness: initialData.thickness,
-      hasGrain: initialData.hasGrain,
-      description: initialData.description || "",
-      stock: initialData.stock,
-      visible: initialData.visible,
-      mainImage: initialData.mainImage,
-      colorParent: initialData.colorParent || "otro",
-      colorSub: initialData.colorSub || "medio claro",
-      surfaceTexture: initialData.surfaceTexture || "liso",
-      finish: initialData.finish || "mate",
-      antiFingerprint: initialData.antiFingerprint || false,
-      code: initialData.code || "",
-      ncs: initialData.ncs || "",
-      launchYear: initialData.launchYear,
-      hexColor: initialData.hexColor,
-      labColor: initialData.labColor,
-    } : {
-      name: "",
-      brand: "Faplac",
-      width: 1830,
-      height: 2750,
-      thickness: 18,
-      hasGrain: false,
-      description: "",
-      stock: 0,
-      visible: true,
-      mainImage: "https://placehold.co/800x600?text=Subir+Imagen",
-      colorParent: "otro",
-      colorSub: "medio claro",
-      surfaceTexture: "liso",
-      finish: "mate",
-      antiFingerprint: false,
-      code: "",
-      ncs: "",
+    defaultValues: {
+      name: initialData?.name || "",
+      brand: initialData?.brand || "Faplac",
+      width: initialData?.width || 1830,
+      height: initialData?.height || 2750,
+      thickness: initialData?.thickness || 18,
+      hasGrain: initialData?.hasGrain ?? false,
+      description: initialData?.description || "",
+      stock: initialData?.stock || 0,
+      visible: initialData?.visible ?? true,
+      mainImage: initialData?.mainImage || "https://placehold.co/800x600?text=Subir+Imagen",
+      colorParent: initialData?.colorParent || "otro",
+      colorSub: initialData?.colorSub || "medio claro",
+      surfaceTexture: initialData?.surfaceTexture || "liso",
+      finish: initialData?.finish || "mate",
+      antiFingerprint: initialData?.antiFingerprint || false,
+      code: initialData?.code || "",
+      ncs: initialData?.ncs || "",
+      launchYear: initialData?.launchYear || 2024,
+      hexColor: initialData?.hexColor || null,
+      labColor: initialData?.labColor || null,
     },
   });
 
@@ -152,7 +128,6 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
         const downloadURL = await getDownloadURL(snapshot.ref);
         form.setValue("mainImage", downloadURL);
         
-        // Auto-extract color from API
         const response = await fetch('/api/extract-colors', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -162,7 +137,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
         if (result.success) {
           form.setValue("hexColor", result.hex);
           form.setValue("labColor", result.lab);
-          toast({ title: "Imagen y Color vinculados", description: `Color detectado: ${result.hex}` });
+          toast({ title: "Color vinculado", description: `Detectado: ${result.hex}` });
         }
       } catch (error) {
         toast({ title: "Error", description: "Fallo al subir imagen.", variant: "destructive" });
@@ -172,39 +147,55 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = (values: FormValues) => {
+    if (!db) return;
     setIsSaving(true);
-    try {
-      const docId = initialData?.id || `${values.brand.toLowerCase()}-${values.name.toLowerCase().replace(/\s+/g, '-')}`;
-      const docRef = doc(db, collectionName, docId);
+    
+    const docId = initialData?.id || `${values.brand.toLowerCase()}-${values.name.toLowerCase().replace(/\s+/g, '-')}`;
+    const docRef = doc(db, collectionName, docId);
 
-      const panelData = {
-        ...values,
-        id: docId,
-        updatedAt: serverTimestamp(),
-        createdAt: initialData?.createdAt || serverTimestamp(),
-      };
+    const panelData = {
+      ...values,
+      id: docId,
+      updatedAt: serverTimestamp(),
+      createdAt: initialData?.createdAt || serverTimestamp(),
+    };
 
-      await setDoc(docRef, panelData, { merge: true });
-      toast({ title: "Panel Guardado", description: "Los cambios se han persistido en el catálogo." });
-      router.push('/admin/panels');
-    } catch (error: any) {
-      errorEmitter.emit('permission-error', new FirestorePermissionError({
-        path: collectionName,
-        operation: mode === 'create' ? 'create' : 'update',
-        requestResourceData: values
-      }));
-    } finally {
-      setIsSaving(false);
-    }
+    // ✅ PATRÓN NO BLOQUEANTE: Sin await directo
+    setDoc(docRef, panelData, { merge: true })
+      .then(() => {
+        toast({ title: "Panel Guardado", description: "Los cambios se han persistido con éxito." });
+        router.push('/admin/panels');
+        router.refresh();
+      })
+      .catch(async (error) => {
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+          path: docRef.path,
+          operation: mode === 'create' ? 'create' : 'update',
+          requestResourceData: values
+        }));
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
+  };
+
+  // 🔴 Captura errores de validación ocultos
+  const onInvalid = (errors: any) => {
+    console.error("Fallo de validación:", errors);
+    const fieldNames = Object.keys(errors).join(", ");
+    toast({
+      title: "Formulario Incompleto",
+      description: `Revisa los campos: ${fieldNames}`,
+      variant: "destructive"
+    });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-20">
+      <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Columna Izquierda: Identidad */}
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
@@ -235,9 +226,11 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             <SelectItem value="Egger">Egger</SelectItem>
                             <SelectItem value="Faplac">Faplac</SelectItem>
                             <SelectItem value="Arauco">Arauco</SelectItem>
+                            <SelectItem value="Masisa">Masisa</SelectItem>
                             <SelectItem value="Otro">Otro</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -249,7 +242,8 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Código Fabricante</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
+                        <FormControl><Input {...field} value={field.value || ""} /></FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -260,6 +254,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                       <FormItem>
                         <FormLabel>Stock (Unidades)</FormLabel>
                         <FormControl><Input type="number" {...field} /></FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -279,8 +274,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
 
             <Card>
               <CardHeader>
-                <CardTitle>Clasificación de Diseño (IA & Manual)</CardTitle>
-                <CardDescription>Estos valores definen la compatibilidad en el motor de búsqueda.</CardDescription>
+                <CardTitle>Atributos de Diseño</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
@@ -289,7 +283,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                     name="colorParent"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Familia Cromática (Padre)</FormLabel>
+                        <FormLabel>Familia Cromática</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                           <SelectContent>
@@ -299,6 +293,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             <SelectItem value="otro">OTRO</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -316,6 +311,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             ))}
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -338,6 +334,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             <SelectItem value="metal">METAL / ACERO</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -357,6 +354,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             <SelectItem value="soft">SOFT / SEDOSO</SelectItem>
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -388,11 +386,10 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
             </Card>
           </div>
 
-          {/* Columna Derecha: Multimedia y Técnicos */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Imagen Principal</CardTitle>
+                <CardTitle>Imagen</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="aspect-square relative rounded-2xl overflow-hidden border-2 border-slate-100 shadow-inner bg-slate-50 flex items-center justify-center">
@@ -410,7 +407,8 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                   name="mainImage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl><Input placeholder="URL externa..." {...field} /></FormControl>
+                      <FormControl><Input placeholder="URL..." {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
