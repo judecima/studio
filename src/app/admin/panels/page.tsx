@@ -318,7 +318,7 @@ export default function AdminPanelsPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end items-center gap-0.5">
-                      <Link href={`/admin/panels/${item.id}?collection=${category}`}>
+                      <Link href={`/admin/panels/${item.id}/edit?collection=${category}`}>
                         <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-indigo-600">
                           <Edit2 className="h-3.5 w-3.5" />
                         </Button>
