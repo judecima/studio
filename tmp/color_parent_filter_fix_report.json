@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-04-14T20:15:30Z",
+  "issue_identified": "Missing 'amarillo' in COLOR_PARENTS list in AdminPanelsPage and verified case-sensitive selector interaction.",
+  "files_modified": ["src/app/admin/panels/page.tsx"],
+  "changes_applied": [
+    "Added 'amarillo' to the constant COLOR_PARENTS in the admin list view.",
+    "Verified that SelectTrigger uses normalized lowercase values matching the Panel document structure.",
+    "Verified that filtering logic `p.colorParent !== filterColor` correctly matches simplified lowercase enums."
+  ],
+  "verification": {
+    "normalization_check": "Passed",
+    "filter_coverage": "13/13 Color Families now supported"
+  }
+}

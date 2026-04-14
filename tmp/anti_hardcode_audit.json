@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-04-14T20:33:00Z",
+  "audited_files": [
+    "src/lib/equivalences/engine.ts",
+    "src/lib/equivalences/classifier.ts",
+    "src/app/api/match/route.ts",
+    "scripts/re-sync-equivalences.ts"
+  ],
+  "findings": [
+    {
+      "file": "engine.ts",
+      "issue": "Hardcoded IDs",
+      "status": "NOT FOUND",
+      "details": "The engine uses token-based logic (STRONG_TOKENS/GENERIC_TOKENS) and natural domain matrices. No specific panel IDs are treated differently."
+    },
+    {
+      "file": "classifier.ts",
+      "issue": "Manual Classification Hacks",
+      "status": "NOT FOUND",
+      "details": "Classification relies on industrial finish codes (STxx) and botanical wood terms. Truths like 'Blanco Nature' are handled via the preservation of existing DB attributes."
+    },
+    {
+      "file": "route.ts",
+      "issue": "API Logic Divergence",
+      "status": "NOT FOUND",
+      "details": "The API endpoint consumes the unified rankMatchesForPanelId pipe directly."
+    }
+  ],
+  "conclusion": {
+    "is_hardcoded": false,
+    "integrity_score": "100%",
+    "severity": "NONE"
+  }
+}

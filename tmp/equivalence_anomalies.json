@@ -1,0 +1,141 @@
+[
+  {
+    "id": "amaranto",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Amaranto"
+  },
+  {
+    "id": "baltico",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Báltico"
+  },
+  {
+    "id": "blanco-nature",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Blanco Nature"
+  },
+  {
+    "id": "cedro-woodtext",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Cedro Woodtext"
+  },
+  {
+    "id": "helsinki",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Helsinki"
+  },
+  {
+    "id": "kiri",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Kiri"
+  },
+  {
+    "id": "mont-blanc",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Mont Blanc"
+  },
+  {
+    "id": "nogal-terracota",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Nogal Terracota"
+  },
+  {
+    "id": "olmo-finlandes",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Olmo Finlandés"
+  },
+  {
+    "id": "petiribi",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Petiribí"
+  },
+  {
+    "id": "pinot-gris",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Pinot Gris"
+  },
+  {
+    "id": "roble-americano-nature",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Roble Americano Nature"
+  },
+  {
+    "id": "roble-dakar-woodtext",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Roble Dakar Woodtext"
+  },
+  {
+    "id": "roble-escandinavo",
+    "type": "suspicious_combination",
+    "detail": "madera + brillo",
+    "name": "Roble Escandinavo"
+  },
+  {
+    "id": "amatista",
+    "type": "empty_equivalence",
+    "name": "Amatista"
+  },
+  {
+    "id": "egger-h1199-st12",
+    "type": "empty_equivalence",
+    "name": "H1199 ST12 Roble termo negro"
+  },
+  {
+    "id": "egger-h3430-st22",
+    "type": "empty_equivalence",
+    "name": "H3430 ST22 Pino Aland blanco"
+  },
+  {
+    "id": "egger-u323-st9",
+    "type": "empty_equivalence",
+    "name": "U323 ST9 Rojo cereza"
+  },
+  {
+    "id": "egger-u504-st9",
+    "type": "empty_equivalence",
+    "name": "U504 ST9 Azul cósmico"
+  },
+  {
+    "id": "egger-u599-pm",
+    "type": "empty_equivalence",
+    "name": "U599 PM Azul Indigo"
+  },
+  {
+    "id": "egger-u626-st9",
+    "type": "empty_equivalence",
+    "name": "U626 ST9 Verde kiwi"
+  },
+  {
+    "id": "egger-u665-pm",
+    "type": "empty_equivalence",
+    "name": "U665 PM Verde Mineral"
+  },
+  {
+    "id": "jade",
+    "type": "empty_equivalence",
+    "name": "Jade"
+  },
+  {
+    "id": "olmo-finlandes",
+    "type": "empty_equivalence",
+    "name": "Olmo Finlandés"
+  },
+  {
+    "id": "pinot-gris",
+    "type": "empty_equivalence",
+    "name": "Pinot Gris"
+  }
+]

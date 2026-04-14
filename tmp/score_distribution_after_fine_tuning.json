@@ -1,0 +1,10 @@
+{
+  "total_matches_evaluated": 68,
+  "bands": {
+    "weak_55_65": 36,
+    "acceptable_65_75": 30,
+    "good_75_85": 2,
+    "strong_85_plus": 0
+  },
+  "avg_score": 64.97058823529412
+}

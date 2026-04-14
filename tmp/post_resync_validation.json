@@ -1,0 +1,252 @@
+[
+  {
+    "targetId": "almendra",
+    "targetName": "Almendra",
+    "topMatch": {
+      "score": 81,
+      "code": "",
+      "name": "Almendra",
+      "brand": "Egger",
+      "breakdown": {
+        "semanticScore": 0.4,
+        "textureScore": 1,
+        "finishScore": 0.6,
+        "identityBoost": 0,
+        "total": 0.813407036101981,
+        "confidenceScore": 0.8,
+        "lightnessScore": 0.9169999999999999,
+        "colorScore": 0.9151175902549522,
+        "manualBoost": 0
+      },
+      "id": "egger-almendra",
+      "explanation": "Color casi idéntico, misma textura liso. "
+    },
+    "matchesCount": 1,
+    "commercialCoherence": true
+  },
+  {
+    "targetId": "egger-almendra",
+    "targetName": "Almendra",
+    "topMatch": {
+      "name": "Almendra",
+      "code": "almendra-180TXTMDF18",
+      "score": 81,
+      "explanation": "Color casi idéntico, misma textura liso. ",
+      "id": "almendra",
+      "breakdown": {
+        "textureScore": 1,
+        "semanticScore": 0.4,
+        "identityBoost": 0,
+        "finishScore": 0.6,
+        "total": 0.813407036101981,
+        "lightnessScore": 0.9169999999999999,
+        "confidenceScore": 0.8,
+        "colorScore": 0.9151175902549522,
+        "manualBoost": 0
+      },
+      "brand": "Faplac"
+    },
+    "matchesCount": 2,
+    "commercialCoherence": true
+  },
+  {
+    "targetId": "aluminio",
+    "targetName": "Aluminio",
+    "topMatch": {
+      "name": "Gris Caliza",
+      "score": 67,
+      "code": "gris-caliza-215MESMDF18",
+      "breakdown": {
+        "lightnessScore": 0.9468000000000001,
+        "confidenceScore": 0.7,
+        "colorScore": 0.8630473126038471,
+        "manualBoost": 0,
+        "textureScore": 0.92,
+        "semanticScore": 0,
+        "identityBoost": 0,
+        "finishScore": 1,
+        "total": 0.669162925041539
+      },
+      "id": "gris-caliza",
+      "explanation": "Color casi idéntico, mismo acabado. ",
+      "brand": "Faplac"
+    },
+    "matchesCount": 8,
+    "commercialCoherence": true
+  },
+  {
+    "targetId": "ceniza",
+    "targetName": "Ceniza",
+    "topMatch": {
+      "name": "Teka Artico",
+      "score": 71,
+      "code": "teka-artico-047NATMDF18",
+      "breakdown": {
+        "manualBoost": 0,
+        "lightnessScore": 0.9992000000000002,
+        "confidenceScore": 0.7,
+        "colorScore": 0.9127558351694953,
+        "total": 0.7060383340677981,
+        "semanticScore": 0,
+        "textureScore": 1,
+        "identityBoost": 0,
+        "finishScore": 1
+      },
+      "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+      "id": "teka-artico",
+      "brand": "Faplac"
+    },
+    "matchesCount": 8,
+    "commercialCoherence": false
+  },
+  {
+    "targetId": "blanco-nature",
+    "targetName": "Blanco Nature",
+    "topMatch": {
+      "breakdown": {
+        "total": 0.6878533302338367,
+        "identityBoost": 0,
+        "finishScore": 0.6,
+        "textureScore": 1,
+        "semanticScore": 0.1,
+        "manualBoost": 0,
+        "colorScore": 0.8995233255845912,
+        "lightnessScore": 0.9568000000000001,
+        "confidenceScore": 0.85
+      },
+      "id": "egger-w1100-pg",
+      "explanation": "Color casi idéntico, misma textura madera. ",
+      "brand": "Egger",
+      "name": "W1100 PG Blanco alpino",
+      "score": 69,
+      "code": "W1100 PG"
+    },
+    "matchesCount": 5,
+    "commercialCoherence": false
+  },
+  {
+    "targetId": "blanco-tundra",
+    "targetName": "Blanco Tundra",
+    "topMatch": {
+      "code": "lino-blanco-135HILMDF18",
+      "score": 70,
+      "name": "Lino Blanco",
+      "brand": "Faplac",
+      "explanation": "Color casi idéntico, misma textura textil. Incluye también mismo acabado.",
+      "id": "lino-blanco",
+      "breakdown": {
+        "total": 0.6951544065352423,
+        "textureScore": 1,
+        "semanticScore": 0.1,
+        "identityBoost": 0,
+        "finishScore": 1,
+        "manualBoost": 0,
+        "lightnessScore": 0.8926,
+        "confidenceScore": 0.7,
+        "colorScore": 0.8618660163381056
+      }
+    },
+    "matchesCount": 15,
+    "commercialCoherence": false
+  },
+  {
+    "targetId": "amaranto",
+    "targetName": "Amaranto",
+    "topMatch": {
+      "name": "Mont Blanc",
+      "code": "mont-blanc-072NATMDP18",
+      "score": 69,
+      "explanation": "Color casi idéntico, misma textura madera. Incluye también mismo acabado.",
+      "id": "mont-blanc",
+      "breakdown": {
+        "manualBoost": 0,
+        "lightnessScore": 0.9978,
+        "confidenceScore": 0.7,
+        "colorScore": 0.866981686396065,
+        "total": 0.687616674558426,
+        "textureScore": 1,
+        "semanticScore": 0,
+        "identityBoost": 0,
+        "finishScore": 1
+      },
+      "brand": "Faplac"
+    },
+    "matchesCount": 5,
+    "commercialCoherence": false
+  },
+  {
+    "targetId": "baltico",
+    "targetName": "Báltico",
+    "topMatch": {
+      "name": "H1399 ST10 Roble Denver marrón trufa",
+      "score": 67,
+      "code": "H1399 ST10",
+      "breakdown": {
+        "finishScore": 0.6,
+        "identityBoost": 0,
+        "semanticScore": 0.1,
+        "textureScore": 1,
+        "total": 0.6744641474182309,
+        "colorScore": 0.877540368545577,
+        "confidenceScore": 0.7,
+        "lightnessScore": 0.9556,
+        "manualBoost": 0
+      },
+      "explanation": "Color casi idéntico, misma textura madera. ",
+      "id": "egger-h1399-st10",
+      "brand": "Egger"
+    },
+    "matchesCount": 2,
+    "commercialCoherence": false
+  },
+  {
+    "targetId": "everest",
+    "targetName": "Everest",
+    "topMatch": {
+      "code": "W954 -",
+      "score": 70,
+      "name": "W954 - Blanco",
+      "brand": "Egger",
+      "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+      "id": "egger-w954",
+      "breakdown": {
+        "colorScore": 0.9043559300103968,
+        "confidenceScore": 0.85,
+        "lightnessScore": 0.9091999999999999,
+        "manualBoost": 0,
+        "finishScore": 1,
+        "identityBoost": 0,
+        "textureScore": 1,
+        "semanticScore": 0,
+        "total": 0.6999783720041587
+      }
+    },
+    "matchesCount": 8,
+    "commercialCoherence": false
+  },
+  {
+    "targetId": "litio",
+    "targetName": "Litio",
+    "topMatch": {
+      "score": 69,
+      "code": "home-025STUMDF18",
+      "name": "Home",
+      "brand": "Faplac",
+      "breakdown": {
+        "manualBoost": 0,
+        "colorScore": 0.898845639386611,
+        "confidenceScore": 0.7,
+        "lightnessScore": 0.9741999999999998,
+        "total": 0.6856742557546445,
+        "finishScore": 1,
+        "identityBoost": 0,
+        "textureScore": 0.92,
+        "semanticScore": 0
+      },
+      "id": "home",
+      "explanation": "Color casi idéntico, mismo acabado. "
+    },
+    "matchesCount": 14,
+    "commercialCoherence": false
+  }
+]

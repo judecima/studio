@@ -1,8 +1,37 @@
-
 export type ColorParent = 'blanco' | 'beige' | 'gris' | 'negro' | 'marron' | 'rojo' | 'verde' | 'azul' | 'amarillo' | 'naranja' | 'violeta' | 'rosa' | 'otro';
 export type ColorSub = 'muy claro' | 'claro' | 'medio claro' | 'medio oscuro' | 'oscuro' | 'muy oscuro';
-export type SurfaceTexture = 'liso' | 'madera' | 'concreto' | 'textil' | 'metal';
-export type Finish = 'mate' | 'brillo' | 'satinado' | 'texturado' | 'soft';
+export type SurfaceTexture = 'liso' | 'madera' | 'textil' | 'cementicio' | 'piedra' | 'metal' | 'otro';
+export type Finish = 'mate' | 'brillo' | 'satinado' | 'texturado' | 'supermate' | 'otro';
+
+export type ColorSource = 'ncs' | 'image_dominant' | 'image_clustered' | 'manual' | 'inferred';
+
+export type ClassifiedValue<T> = {
+  value: T;
+  confidence: number;
+  source: 'manual' | 'keyword' | 'lab' | 'fallback';
+};
+
+export type ScoreBreakdown = {
+  total: number;
+  colorScore: number;
+  semanticScore: number;
+  textureScore: number;
+  finishScore: number;
+  lightnessScore: number;
+  confidenceScore: number;
+  manualBoost: number;
+};
+
+export type PanelFilters = {
+  brand?: string;
+  minWidth?: number;
+  maxWidth?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  hasGrain?: boolean;
+  search?: string;
+  colorParent?: ColorParent;
+};
 
 export type Panel = {
   id: string;
@@ -38,6 +67,17 @@ export type Panel = {
   // Valores calculados
   hexColor?: string;
   labColor?: { l: number; a: number; b: number };
+  secondaryLabColor?: { l: number; a: number; b: number };
+  paletteVariance?: number;
+
+  // Metadata de calidad y origen
+  colorSource?: ColorSource;
+  dataConfidence?: number;
+
+  // Revisiones manuales
+  manualVerifiedMatches?: string[];
+  manualRejectedMatches?: string[];
+  manualAffinity?: Record<string, number>;
   
   // Legacy compatibility (to be removed in next cleanup)
   colorGroup?: string;
@@ -54,6 +94,7 @@ export interface EquivalenceMatch {
   code?: string;
   score: number;
   explanation?: string;
+  breakdown?: ScoreBreakdown;
 }
 
 export interface Equivalence {
@@ -68,4 +109,6 @@ export interface Equivalence {
 
 export type ClassifiedPanel = Panel & {
   certifiedLab?: { l: number; a: number; b: number };
+  textureConfidence?: number;
+  colorConfidence?: number;
 };

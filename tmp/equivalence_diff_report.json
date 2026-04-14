@@ -1,0 +1,596 @@
+{
+  "global_metrics": {
+    "total_panels": 144,
+    "top1_divergence": 54,
+    "top5_divergence": 0,
+    "missing_persisted": 3,
+    "missing_recalculated": 3,
+    "avg_score_diff": 2.9407407407407407
+  },
+  "divergences": [
+    {
+      "id": "aluminio",
+      "name": "Aluminio",
+      "persisted_count": 4,
+      "recalculated_count": 6,
+      "top1_persisted": "Gris Caliza",
+      "top1_recalculated": "Litio",
+      "top1_p_score": 78,
+      "top1_r_score": 70
+    },
+    {
+      "id": "amaranto",
+      "name": "Amaranto",
+      "persisted_count": 6,
+      "recalculated_count": 0,
+      "top1_persisted": "H1401 ST22 Pino Cascina",
+      "top1_recalculated": "N/A",
+      "top1_p_score": 80
+    },
+    {
+      "id": "amberes",
+      "name": "Amberes",
+      "persisted_count": 5,
+      "recalculated_count": 4,
+      "top1_persisted": "U999 PM Negro",
+      "top1_recalculated": "Sauco",
+      "top1_p_score": 78,
+      "top1_r_score": 76
+    },
+    {
+      "id": "baltico",
+      "name": "Báltico",
+      "persisted_count": 7,
+      "recalculated_count": 7,
+      "top1_persisted": "Seda Notte",
+      "top1_recalculated": "F424 ST10 Lino topo",
+      "top1_p_score": 78,
+      "top1_r_score": 76
+    },
+    {
+      "id": "camellia",
+      "name": "Camellia",
+      "persisted_count": 17,
+      "recalculated_count": 20,
+      "top1_persisted": "Cajú",
+      "top1_recalculated": "H1710 ST10 Castaño Kentucky arena",
+      "top1_p_score": 88,
+      "top1_r_score": 89
+    },
+    {
+      "id": "carvalho-mezzo",
+      "name": "Carvalho Mezzo",
+      "persisted_count": 1,
+      "recalculated_count": 0,
+      "top1_persisted": "Terracota",
+      "top1_recalculated": "N/A",
+      "top1_p_score": 72
+    },
+    {
+      "id": "egger-f416-st10",
+      "name": "F416 ST10 Textil beige",
+      "persisted_count": 12,
+      "recalculated_count": 14,
+      "top1_persisted": "H1710 ST10 Castaño Kentucky arena",
+      "top1_recalculated": "Helsinki",
+      "top1_p_score": 84,
+      "top1_r_score": 78
+    },
+    {
+      "id": "egger-f422-st10",
+      "name": "F422 ST10 Lino blanco",
+      "persisted_count": 17,
+      "recalculated_count": 15,
+      "top1_persisted": "Everest",
+      "top1_recalculated": "W954 - Blanco",
+      "top1_p_score": 79,
+      "top1_r_score": 78
+    },
+    {
+      "id": "egger-f424-st10",
+      "name": "F424 ST10 Lino topo",
+      "persisted_count": 10,
+      "recalculated_count": 10,
+      "top1_persisted": "Seda Notte",
+      "top1_recalculated": "F433 ST10 Lino antracita",
+      "top1_p_score": 85,
+      "top1_r_score": 77
+    },
+    {
+      "id": "egger-f433-st10",
+      "name": "F433 ST10 Lino antracita",
+      "persisted_count": 11,
+      "recalculated_count": 10,
+      "top1_persisted": "Seda Notte",
+      "top1_recalculated": "F500 ST20 Metallic inox",
+      "top1_p_score": 80,
+      "top1_r_score": 78
+    },
+    {
+      "id": "egger-f500-st20",
+      "name": "F500 ST20 Metallic inox",
+      "persisted_count": 11,
+      "recalculated_count": 11,
+      "top1_persisted": "Tribal",
+      "top1_recalculated": "F433 ST10 Lino antracita",
+      "top1_p_score": 79,
+      "top1_r_score": 78
+    },
+    {
+      "id": "egger-f527-st20",
+      "name": "F527 ST20 Metal cepillado oro",
+      "persisted_count": 5,
+      "recalculated_count": 9,
+      "top1_persisted": "U702 ST9 Gris Cachemira",
+      "top1_recalculated": "H3730 ST10 Hickory natural",
+      "top1_p_score": 68,
+      "top1_r_score": 88
+    },
+    {
+      "id": "egger-f528-st20",
+      "name": "F528 ST20 Metal cepillado bronce",
+      "persisted_count": 2,
+      "recalculated_count": 4,
+      "top1_persisted": "F187 ST9 Hormigón Chicago gris oscuro",
+      "top1_recalculated": "Nocce Milano",
+      "top1_p_score": 68,
+      "top1_r_score": 71
+    },
+    {
+      "id": "egger-h1145-st10",
+      "name": "H1145 ST10 Roble Bardolino natural",
+      "persisted_count": 14,
+      "recalculated_count": 15,
+      "top1_persisted": "H3331 ST10 Roble de Nebraska natural",
+      "top1_recalculated": "H3170 ST12 Roble Kendal natural",
+      "top1_p_score": 93,
+      "top1_r_score": 93
+    },
+    {
+      "id": "egger-h1199-st12",
+      "name": "H1199 ST12 Roble termo negro",
+      "persisted_count": 0,
+      "recalculated_count": 3,
+      "top1_persisted": "N/A",
+      "top1_recalculated": "H3190 ST19 Fineline Metallic antracita",
+      "top1_r_score": 64
+    },
+    {
+      "id": "egger-h1386-st40",
+      "name": "H1386 ST40 Roble Casella marrón",
+      "persisted_count": 7,
+      "recalculated_count": 9,
+      "top1_persisted": "H3398 ST12 Roble Kendal coñac",
+      "top1_recalculated": "H1181 ST37 Roble Halifax tabaco",
+      "top1_p_score": 89,
+      "top1_r_score": 92
+    },
+    {
+      "id": "egger-h1399-st10",
+      "name": "H1399 ST10 Roble Denver marrón trufa",
+      "persisted_count": 3,
+      "recalculated_count": 10,
+      "top1_persisted": "H3158 ST19 Roble Vicenza gris",
+      "top1_recalculated": "H3700 ST10 Nogal del Pacífico natural",
+      "top1_p_score": 91,
+      "top1_r_score": 75
+    },
+    {
+      "id": "egger-h1401-st22",
+      "name": "H1401 ST22 Pino Cascina",
+      "persisted_count": 6,
+      "recalculated_count": 5,
+      "top1_persisted": "Mont Blanc",
+      "top1_recalculated": "H3433 ST22 Pino Aland polar",
+      "top1_p_score": 86,
+      "top1_r_score": 86
+    },
+    {
+      "id": "egger-h1636-st12",
+      "name": "H1636 ST12 Cerezo Locarno",
+      "persisted_count": 1,
+      "recalculated_count": 2,
+      "top1_persisted": "H3171 ST12 Roble Kendal encerado",
+      "top1_recalculated": "H3398 ST12 Roble Kendal coñac",
+      "top1_p_score": 66,
+      "top1_r_score": 65
+    },
+    {
+      "id": "egger-h1710-st10",
+      "name": "H1710 ST10 Castaño Kentucky arena",
+      "persisted_count": 14,
+      "recalculated_count": 20,
+      "top1_persisted": "F416 ST10 Textil beige",
+      "top1_recalculated": "Camellia",
+      "top1_p_score": 84,
+      "top1_r_score": 89
+    },
+    {
+      "id": "egger-h3133-st12",
+      "name": "H3133 ST12 Roble Davos trufa marrón",
+      "persisted_count": 6,
+      "recalculated_count": 8,
+      "top1_persisted": "H1386 ST40 Roble Casella marrón",
+      "top1_recalculated": "H1181 ST37 Roble Halifax tabaco",
+      "top1_p_score": 84,
+      "top1_r_score": 88
+    },
+    {
+      "id": "egger-h3146-st19",
+      "name": "H3146 ST19 Roble Lorenzo arena",
+      "persisted_count": 13,
+      "recalculated_count": 10,
+      "top1_persisted": "H3170 ST12 Roble Kendal natural",
+      "top1_recalculated": "H1312 ST10 Roble Whiteriver beige arena",
+      "top1_p_score": 79,
+      "top1_r_score": 73
+    },
+    {
+      "id": "egger-h3171-st12",
+      "name": "H3171 ST12 Roble Kendal encerado",
+      "persisted_count": 1,
+      "recalculated_count": 11,
+      "top1_persisted": "H1636 ST12 Cerezo Locarno",
+      "top1_recalculated": "H3700 ST10 Nogal del Pacífico natural",
+      "top1_p_score": 66,
+      "top1_r_score": 92
+    },
+    {
+      "id": "egger-h3190-st19",
+      "name": "H3190 ST19 Fineline Metallic antracita",
+      "persisted_count": 4,
+      "recalculated_count": 2,
+      "top1_persisted": "U963 - Gris sombra",
+      "top1_recalculated": "H1199 ST12 Roble termo negro",
+      "top1_p_score": 68,
+      "top1_r_score": 64
+    },
+    {
+      "id": "egger-h3430-st22",
+      "name": "H3430 ST22 Pino Aland blanco",
+      "persisted_count": 0,
+      "recalculated_count": 4,
+      "top1_persisted": "N/A",
+      "top1_recalculated": "H1312 ST10 Roble Whiteriver beige arena",
+      "top1_r_score": 75
+    },
+    {
+      "id": "egger-h3730-st10",
+      "name": "H3730 ST10 Hickory natural",
+      "persisted_count": 14,
+      "recalculated_count": 10,
+      "top1_persisted": "H3331 ST10 Roble de Nebraska natural",
+      "top1_recalculated": "F527 ST20 Metal cepillado oro",
+      "top1_p_score": 89,
+      "top1_r_score": 88
+    },
+    {
+      "id": "egger-u114-st9",
+      "name": "U114 ST9 Amarillo girasol",
+      "persisted_count": 7,
+      "recalculated_count": 14,
+      "top1_persisted": "U250 PM Beige Caramelo",
+      "top1_recalculated": "U250 PM Beige Caramelo",
+      "top1_p_score": 60,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u250-pm",
+      "name": "U250 PM Beige Caramelo",
+      "persisted_count": 13,
+      "recalculated_count": 14,
+      "top1_persisted": "Camellia",
+      "top1_recalculated": "U114 ST9 Amarillo girasol",
+      "top1_p_score": 71,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u325-st9",
+      "name": "U325 ST9 Rosa antiguo",
+      "persisted_count": 7,
+      "recalculated_count": 14,
+      "top1_persisted": "U114 ST9 Amarillo girasol",
+      "top1_recalculated": "U114 ST9 Amarillo girasol",
+      "top1_p_score": 60,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u350-st9",
+      "name": "U350 ST9 Naranja de Siena",
+      "persisted_count": 7,
+      "recalculated_count": 14,
+      "top1_persisted": "U114 ST9 Amarillo girasol",
+      "top1_recalculated": "U114 ST9 Amarillo girasol",
+      "top1_p_score": 60,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u702-st9",
+      "name": "U702 ST9 Gris Cachemira",
+      "persisted_count": 9,
+      "recalculated_count": 8,
+      "top1_persisted": "U727 - Gris arcilla",
+      "top1_recalculated": "U702 PG Gris Cachemira",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u727",
+      "name": "U727 - Gris arcilla",
+      "persisted_count": 9,
+      "recalculated_count": 8,
+      "top1_persisted": "U702 ST9 Gris Cachemira",
+      "top1_recalculated": "U702 PG Gris Cachemira",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u727-st9",
+      "name": "U727 ST9 Gris arcilla",
+      "persisted_count": 9,
+      "recalculated_count": 8,
+      "top1_persisted": "U702 ST9 Gris Cachemira",
+      "top1_recalculated": "U702 PG Gris Cachemira",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u732",
+      "name": "U732 - Gris macadán",
+      "persisted_count": 9,
+      "recalculated_count": 9,
+      "top1_persisted": "U732 ST9 Gris macadán",
+      "top1_recalculated": "U732 PG Gris macadán",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u767-st9",
+      "name": "U767 ST9 Gris cubanita",
+      "persisted_count": 9,
+      "recalculated_count": 8,
+      "top1_persisted": "U702 ST9 Gris Cachemira",
+      "top1_recalculated": "U702 PG Gris Cachemira",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u999",
+      "name": "U999 - Negro",
+      "persisted_count": 10,
+      "recalculated_count": 10,
+      "top1_persisted": "U999 ST9 Negro",
+      "top1_recalculated": "U999 PG Negro",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-u999-st19",
+      "name": "U999 ST19 Negro",
+      "persisted_count": 9,
+      "recalculated_count": 6,
+      "top1_persisted": "U999 - Negro",
+      "top1_recalculated": "Ebano Negro",
+      "top1_p_score": 90,
+      "top1_r_score": 89
+    },
+    {
+      "id": "egger-w1100-pm",
+      "name": "W1100 PM Blanco alpino",
+      "persisted_count": 5,
+      "recalculated_count": 5,
+      "top1_persisted": "W1100 ST9 Blanco alpino",
+      "top1_recalculated": "W1100 PG Blanco alpino",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-w1100-st9",
+      "name": "W1100 ST9 Blanco alpino",
+      "persisted_count": 5,
+      "recalculated_count": 5,
+      "top1_persisted": "W1100 PM Blanco alpino",
+      "top1_recalculated": "W1100 PG Blanco alpino",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "egger-w1101-st9",
+      "name": "W1101 ST9 Blanco alpino sólido",
+      "persisted_count": 5,
+      "recalculated_count": 5,
+      "top1_persisted": "W1100 PM Blanco alpino",
+      "top1_recalculated": "W1100 PG Blanco alpino",
+      "top1_p_score": 100,
+      "top1_r_score": 100
+    },
+    {
+      "id": "everest",
+      "name": "Everest",
+      "persisted_count": 16,
+      "recalculated_count": 10,
+      "top1_persisted": "W954 - Blanco",
+      "top1_recalculated": "Blanco Tundra",
+      "top1_p_score": 90,
+      "top1_r_score": 86
+    },
+    {
+      "id": "gris-caliza",
+      "name": "Gris Caliza",
+      "persisted_count": 3,
+      "recalculated_count": 5,
+      "top1_persisted": "Aluminio",
+      "top1_recalculated": "U763 - Gris perla",
+      "top1_p_score": 78,
+      "top1_r_score": 79
+    },
+    {
+      "id": "gris-humo",
+      "name": "Gris Humo",
+      "persisted_count": 11,
+      "recalculated_count": 5,
+      "top1_persisted": "U763 - Gris perla",
+      "top1_recalculated": "U763 - Gris perla",
+      "top1_p_score": 83,
+      "top1_r_score": 83
+    },
+    {
+      "id": "himalaya",
+      "name": "Himalaya",
+      "persisted_count": 13,
+      "recalculated_count": 16,
+      "top1_persisted": "Sahara",
+      "top1_recalculated": "Camellia",
+      "top1_p_score": 80,
+      "top1_r_score": 80
+    },
+    {
+      "id": "lino-chiaro",
+      "name": "Lino Chiaro",
+      "persisted_count": 15,
+      "recalculated_count": 15,
+      "top1_persisted": "Teka Artico",
+      "top1_recalculated": "Venezia",
+      "top1_p_score": 82,
+      "top1_r_score": 81
+    },
+    {
+      "id": "lino-negro",
+      "name": "Lino Negro",
+      "persisted_count": 11,
+      "recalculated_count": 10,
+      "top1_persisted": "Ebano Negro",
+      "top1_recalculated": "U999 - Negro",
+      "top1_p_score": 81,
+      "top1_r_score": 75
+    },
+    {
+      "id": "mont-blanc",
+      "name": "Mont Blanc",
+      "persisted_count": 8,
+      "recalculated_count": 17,
+      "top1_persisted": "H1401 ST22 Pino Cascina",
+      "top1_recalculated": "Helsinki",
+      "top1_p_score": 86,
+      "top1_r_score": 79
+    },
+    {
+      "id": "negro-profundo",
+      "name": "Negro Profundo",
+      "persisted_count": 7,
+      "recalculated_count": 5,
+      "top1_persisted": "U999 PG Negro",
+      "top1_recalculated": "U999 - Negro",
+      "top1_p_score": 74,
+      "top1_r_score": 71
+    },
+    {
+      "id": "nocce-milano",
+      "name": "Nocce Milano",
+      "persisted_count": 5,
+      "recalculated_count": 4,
+      "top1_persisted": "Teka Oslo - Diseño discontinuo",
+      "top1_recalculated": "F528 ST20 Metal cepillado bronce",
+      "top1_p_score": 70,
+      "top1_r_score": 71
+    },
+    {
+      "id": "paraiso",
+      "name": "Paraíso",
+      "persisted_count": 20,
+      "recalculated_count": 13,
+      "top1_persisted": "Cajú",
+      "top1_recalculated": "H3012 ST22 Coco bolo",
+      "top1_p_score": 75,
+      "top1_r_score": 78
+    },
+    {
+      "id": "petiribi",
+      "name": "Petiribí",
+      "persisted_count": 6,
+      "recalculated_count": 7,
+      "top1_persisted": "H3398 ST12 Roble Kendal coñac",
+      "top1_recalculated": "H1181 ST37 Roble Halifax tabaco",
+      "top1_p_score": 78,
+      "top1_r_score": 78
+    },
+    {
+      "id": "pinot-gris",
+      "name": "Pinot Gris",
+      "persisted_count": 0,
+      "recalculated_count": 1,
+      "top1_persisted": "N/A",
+      "top1_recalculated": "H3430 ST22 Pino Aland blanco",
+      "top1_r_score": 65
+    },
+    {
+      "id": "roble-americano-nature",
+      "name": "Roble Americano Nature",
+      "persisted_count": 14,
+      "recalculated_count": 12,
+      "top1_persisted": "H3730 ST10 Hickory natural",
+      "top1_recalculated": "H3331 ST10 Roble de Nebraska natural",
+      "top1_p_score": 86,
+      "top1_r_score": 82
+    },
+    {
+      "id": "roble-escandinavo",
+      "name": "Roble Escandinavo",
+      "persisted_count": 18,
+      "recalculated_count": 10,
+      "top1_persisted": "H1312 ST10 Roble Whiteriver beige arena",
+      "top1_recalculated": "H1312 ST10 Roble Whiteriver beige arena",
+      "top1_p_score": 92,
+      "top1_r_score": 78
+    },
+    {
+      "id": "sahara",
+      "name": "Sahara",
+      "persisted_count": 17,
+      "recalculated_count": 16,
+      "top1_persisted": "Cajú",
+      "top1_recalculated": "H1710 ST10 Castaño Kentucky arena",
+      "top1_p_score": 82,
+      "top1_r_score": 85
+    },
+    {
+      "id": "seda-notte",
+      "name": "Seda Notte",
+      "persisted_count": 11,
+      "recalculated_count": 9,
+      "top1_persisted": "F424 ST10 Lino topo",
+      "top1_recalculated": "Tribal",
+      "top1_p_score": 85,
+      "top1_r_score": 75
+    },
+    {
+      "id": "teka-oslo-diseno-discontinuo",
+      "name": "Teka Oslo - Diseño discontinuo",
+      "persisted_count": 5,
+      "recalculated_count": 3,
+      "top1_persisted": "Nocce Milano",
+      "top1_recalculated": "Roble Dakar Woodtext",
+      "top1_p_score": 70,
+      "top1_r_score": 75
+    },
+    {
+      "id": "terracota",
+      "name": "Terracota",
+      "persisted_count": 2,
+      "recalculated_count": 0,
+      "top1_persisted": "Carvalho Mezzo",
+      "top1_recalculated": "N/A",
+      "top1_p_score": 72
+    },
+    {
+      "id": "tribal",
+      "name": "Tribal",
+      "persisted_count": 12,
+      "recalculated_count": 12,
+      "top1_persisted": "Seda Notte",
+      "top1_recalculated": "F500 ST20 Metallic inox",
+      "top1_p_score": 80,
+      "top1_r_score": 75
+    }
+  ]
+}

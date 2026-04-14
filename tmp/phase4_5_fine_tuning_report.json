@@ -1,0 +1,505 @@
+[
+  {
+    "target": {
+      "id": "almendra",
+      "name": "Almendra",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "Almendra",
+        "brand": "Egger",
+        "score": 81,
+        "explanation": "Color casi idéntico, misma textura liso. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "egger-almendra",
+      "name": "Almendra",
+      "brand": "Egger"
+    },
+    "topMatches": [
+      {
+        "name": "Almendra",
+        "brand": "Faplac",
+        "score": 81,
+        "explanation": "Color casi idéntico, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "F637 ST10 Chromix blanco",
+        "brand": "Egger",
+        "score": 62,
+        "explanation": "Tonalidad muy similar. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "aluminio",
+      "name": "Aluminio",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "Gris Caliza",
+        "brand": "Faplac",
+        "score": 67,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Viena",
+        "brand": "Faplac",
+        "score": 63,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Gris Tapir",
+        "brand": "Faplac",
+        "score": 62,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "U763 - Gris perla",
+        "brand": "Egger",
+        "score": 61,
+        "explanation": "Tonalidad muy similar. ",
+        "idBoost": 0
+      },
+      {
+        "name": "U763 ST9 Gris perla",
+        "brand": "Egger",
+        "score": 61,
+        "explanation": "Tonalidad muy similar. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Gris Humo",
+        "brand": "Faplac",
+        "score": 61,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Home",
+        "brand": "Faplac",
+        "score": 61,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Litio",
+        "brand": "Faplac",
+        "score": 61,
+        "explanation": "Misma textura metal, mismo acabado. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "ceniza",
+      "name": "Ceniza",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "Teka Artico",
+        "brand": "Faplac",
+        "score": 71,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "Venezia",
+        "brand": "Faplac",
+        "score": 70,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 - Blanco",
+        "brand": "Egger",
+        "score": 66,
+        "explanation": "Color casi idéntico, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 SM Blanco",
+        "brand": "Egger",
+        "score": 66,
+        "explanation": "Color casi idéntico, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 ST14 Blanco",
+        "brand": "Egger",
+        "score": 66,
+        "explanation": "Color casi idéntico, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Lino Chiaro",
+        "brand": "Faplac",
+        "score": 63,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Everest",
+        "brand": "Faplac",
+        "score": 62,
+        "explanation": "Tonalidad muy similar, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Lino Blanco",
+        "brand": "Faplac",
+        "score": 62,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "blanco-nature",
+      "name": "Blanco Nature",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "W1100 PG Blanco alpino",
+        "brand": "Egger",
+        "score": 69,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W1100 PM Blanco alpino",
+        "brand": "Egger",
+        "score": 69,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W1100 ST9 Blanco alpino",
+        "brand": "Egger",
+        "score": 69,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W1101 ST9 Blanco alpino sólido",
+        "brand": "Egger",
+        "score": 69,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Blanco Tundra",
+        "brand": "Faplac",
+        "score": 65,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "blanco-tundra",
+      "name": "Blanco Tundra",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "Lino Blanco",
+        "brand": "Faplac",
+        "score": 70,
+        "explanation": "Color casi idéntico, misma textura textil. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "F422 ST10 Lino blanco",
+        "brand": "Egger",
+        "score": 67,
+        "explanation": "Color casi idéntico, misma textura textil. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Everest",
+        "brand": "Faplac",
+        "score": 66,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Blanco Nature",
+        "brand": "Faplac",
+        "score": 65,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 - Blanco",
+        "brand": "Egger",
+        "score": 64,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 SM Blanco",
+        "brand": "Egger",
+        "score": 64,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 ST14 Blanco",
+        "brand": "Egger",
+        "score": 64,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Venezia",
+        "brand": "Faplac",
+        "score": 62,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Ceniza",
+        "brand": "Faplac",
+        "score": 61,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Lino Chiaro",
+        "brand": "Faplac",
+        "score": 61,
+        "explanation": "Tonalidad muy similar, misma textura textil. Incluye también mismo acabado.",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "amaranto",
+      "name": "Amaranto",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "Mont Blanc",
+        "brand": "Faplac",
+        "score": 69,
+        "explanation": "Color casi idéntico, misma textura madera. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "Roble Escandinavo",
+        "brand": "Faplac",
+        "score": 69,
+        "explanation": "Tonalidad muy similar, misma textura madera. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "H1401 ST22 Pino Cascina",
+        "brand": "Egger",
+        "score": 68,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Helsinki",
+        "brand": "Faplac",
+        "score": 66,
+        "explanation": "Tonalidad muy similar, misma textura madera. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "H1312 ST10 Roble Whiteriver beige arena",
+        "brand": "Egger",
+        "score": 65,
+        "explanation": "Tonalidad muy similar, misma textura madera. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "baltico",
+      "name": "Báltico",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "H1399 ST10 Roble Denver marrón trufa",
+        "brand": "Egger",
+        "score": 67,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      },
+      {
+        "name": "H3158 ST19 Roble Vicenza gris",
+        "brand": "Egger",
+        "score": 67,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "everest",
+      "name": "Everest",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "W954 - Blanco",
+        "brand": "Egger",
+        "score": 70,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 SM Blanco",
+        "brand": "Egger",
+        "score": 70,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "W954 ST14 Blanco",
+        "brand": "Egger",
+        "score": 70,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+        "idBoost": 0
+      },
+      {
+        "name": "Blanco Tundra",
+        "brand": "Faplac",
+        "score": 66,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "F422 ST10 Lino blanco",
+        "brand": "Egger",
+        "score": 64,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Venezia",
+        "brand": "Faplac",
+        "score": 63,
+        "explanation": "Tonalidad muy similar, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Ceniza",
+        "brand": "Faplac",
+        "score": 62,
+        "explanation": "Tonalidad muy similar, misma textura liso. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Teka Artico",
+        "brand": "Faplac",
+        "score": 62,
+        "explanation": "Tonalidad muy similar, misma textura liso. ",
+        "idBoost": 0
+      }
+    ]
+  },
+  {
+    "target": {
+      "id": "litio",
+      "name": "Litio",
+      "brand": "Faplac"
+    },
+    "topMatches": [
+      {
+        "name": "Home",
+        "brand": "Faplac",
+        "score": 69,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Viena",
+        "brand": "Faplac",
+        "score": 67,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Gris Caliza",
+        "brand": "Faplac",
+        "score": 65,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Sahara",
+        "brand": "Faplac",
+        "score": 65,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Camellia",
+        "brand": "Faplac",
+        "score": 64,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Seda Giorno",
+        "brand": "Faplac",
+        "score": 64,
+        "explanation": "Color casi idéntico, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "Cajú",
+        "brand": "Faplac",
+        "score": 63,
+        "explanation": "Tonalidad muy similar, mismo acabado. ",
+        "idBoost": 0
+      },
+      {
+        "name": "F417 ST10 Textil gris",
+        "brand": "Egger",
+        "score": 63,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "F416 ST10 Textil beige",
+        "brand": "Egger",
+        "score": 62,
+        "explanation": "Color casi idéntico. ",
+        "idBoost": 0
+      },
+      {
+        "name": "H1710 ST10 Castaño Kentucky arena",
+        "brand": "Egger",
+        "score": 62,
+        "explanation": "Tonalidad muy similar. ",
+        "idBoost": 0
+      }
+    ]
+  }
+]

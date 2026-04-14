@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-04-14T20:34:09.870Z",
+  "total_panels": 144,
+  "duration_seconds": 40.192,
+  "total_equivalences_generated": 144,
+  "avg_matches_per_panel": 8.402777777777779,
+  "panels_without_matches": [
+    "Amatista",
+    "F187 ST9 Hormigón Chicago gris oscuro",
+    "H1636 ST12 Cerezo Locarno",
+    "U323 ST9 Rojo cereza",
+    "U504 ST9 Azul cósmico",
+    "U626 ST9 Verde kiwi",
+    "Verde Oliva",
+    "Jade",
+    "Safari",
+    "Terracota"
+  ],
+  "high_confidence_cases": 19,
+  "borderline_cases": 44
+}

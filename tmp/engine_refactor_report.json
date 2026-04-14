@@ -1,0 +1,272 @@
+{
+  "timestamp": "2026-04-14T19:50:04.234Z",
+  "total_panels": 144,
+  "matches_found": 132,
+  "avg_matches_per_panel": 8.61111111111111,
+  "score_distribution": {
+    "90-100": 246,
+    "80-89": 677,
+    "70-79": 317,
+    "60-69": 0,
+    "below-60": 0
+  },
+  "texture_breakdown": {
+    "liso": 74,
+    "metal": 8,
+    "madera": 48,
+    "textil": 13,
+    "otro": 1
+  },
+  "examples": [
+    {
+      "target": {
+        "id": "almendra",
+        "name": "Almendra",
+        "texture": "liso"
+      },
+      "top_match": {
+        "id": "ceniza",
+        "name": "Ceniza",
+        "brand": "Faplac",
+        "code": "ceniza-105TXTMDF18",
+        "score": 83,
+        "explanation": "Misma textura liso, diseño semánticamente relacionado. Incluye también mismo acabado.",
+        "breakdown": {
+          "total": 0.8343487378504958,
+          "colorScore": 0.6621650996065676,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 1,
+          "lightnessScore": 0.8818,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "aluminio",
+        "name": "Aluminio",
+        "texture": "metal"
+      },
+      "top_match": {
+        "id": "litio",
+        "name": "Litio",
+        "brand": "Faplac",
+        "code": "litio-205TXTMDF18",
+        "score": 85,
+        "explanation": "Misma textura metal, diseño semánticamente relacionado. Incluye también mismo acabado.",
+        "breakdown": {
+          "total": 0.8516709892220763,
+          "colorScore": 0.6995710242686219,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 1,
+          "lightnessScore": 0.9262,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "amaranto",
+        "name": "Amaranto",
+        "texture": "madera"
+      },
+      "top_match": {
+        "id": "egger-h3433-st22",
+        "name": "H3433 ST22 Pino Aland polar",
+        "brand": "Egger",
+        "code": "H3433 ST22",
+        "score": 85,
+        "explanation": "Tonalidad muy similar, misma textura madera. Incluye también diseño semánticamente relacionado.",
+        "breakdown": {
+          "total": 0.8528344075535133,
+          "colorScore": 0.813827388298719,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 0.5,
+          "lightnessScore": 0.894,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "amberes",
+        "name": "Amberes",
+        "texture": "liso"
+      },
+      "top_match": {
+        "id": "egger-f206-st9",
+        "name": "F206 ST9 Pietra Grigia negro",
+        "brand": "Egger",
+        "code": "F206 ST9",
+        "score": 91,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también diseño semánticamente relacionado.",
+        "breakdown": {
+          "total": 0.9091864986013264,
+          "colorScore": 0.85177499631928,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 1,
+          "lightnessScore": 0.9216,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "baltico",
+        "name": "Báltico",
+        "texture": "madera"
+      },
+      "top_match": {
+        "id": "egger-h1399-st10",
+        "name": "H1399 ST10 Roble Denver marrón trufa",
+        "brand": "Egger",
+        "code": "H1399 ST10",
+        "score": 88,
+        "explanation": "Color casi idéntico, misma textura madera. Incluye también diseño semánticamente relacionado.",
+        "breakdown": {
+          "total": 0.8813573400473192,
+          "colorScore": 0.877540368545577,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 0.5,
+          "lightnessScore": 0.9556,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "blanco-nature",
+        "name": "Blanco Nature",
+        "texture": "madera"
+      },
+      "top_match": {
+        "id": "egger-w1100-pg",
+        "name": "W1100 PG Blanco alpino",
+        "brand": "Egger",
+        "code": "W1100 PG",
+        "score": 76,
+        "explanation": "Color casi idéntico, misma textura madera. ",
+        "breakdown": {
+          "total": 0.7622948637221447,
+          "colorScore": 0.8995233255845912,
+          "semanticScore": 0.4,
+          "textureScore": 1,
+          "finishScore": 0.5,
+          "lightnessScore": 0.9568000000000001,
+          "confidenceScore": 0.85,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "blanco-tundra",
+        "name": "Blanco Tundra",
+        "texture": "textil"
+      },
+      "top_match": {
+        "id": "gris-humo",
+        "name": "Gris Humo",
+        "brand": "Faplac",
+        "code": "gris-humo-108TXTMDF18",
+        "score": 80,
+        "explanation": "Misma textura textil, diseño semánticamente relacionado. Incluye también mismo acabado.",
+        "breakdown": {
+          "total": 0.7991088559149949,
+          "colorScore": 0.6153338313552498,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 1,
+          "lightnessScore": 0.6325999999999998,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "caju",
+        "name": "Cajú",
+        "texture": "liso"
+      },
+      "top_match": {
+        "id": "egger-h1710-st10",
+        "name": "H1710 ST10 Castaño Kentucky arena",
+        "brand": "Egger",
+        "code": "H1710 ST10",
+        "score": 90,
+        "explanation": "Color casi idéntico, misma textura liso. Incluye también diseño semánticamente relacionado.",
+        "breakdown": {
+          "total": 0.8998829573609203,
+          "colorScore": 0.9267709404234743,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 0.5,
+          "lightnessScore": 0.9529999999999998,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "camellia",
+        "name": "Camellia",
+        "texture": "liso"
+      },
+      "top_match": {
+        "id": "paraiso",
+        "name": "Paraíso",
+        "brand": "Faplac",
+        "code": "paraiso-218MESMDF18",
+        "score": 90,
+        "explanation": "Tonalidad muy similar, misma textura liso. Incluye también diseño semánticamente relacionado.",
+        "breakdown": {
+          "total": 0.8980236530071343,
+          "colorScore": 0.8272622447556167,
+          "semanticScore": 1,
+          "textureScore": 1,
+          "finishScore": 1,
+          "lightnessScore": 0.8951999999999998,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    },
+    {
+      "target": {
+        "id": "cedro-woodtext",
+        "name": "Cedro Woodtext",
+        "texture": "madera"
+      },
+      "top_match": {
+        "id": "nogal-terracota",
+        "name": "Nogal Terracota",
+        "brand": "Faplac",
+        "code": "nogal-terracota-046NATMDF18",
+        "score": 76,
+        "explanation": "Tonalidad muy similar, misma textura madera. Incluye también mismo acabado.",
+        "breakdown": {
+          "total": 0.7581414861013704,
+          "colorScore": 0.7985986476351855,
+          "semanticScore": 0.4,
+          "textureScore": 1,
+          "finishScore": 1,
+          "lightnessScore": 0.9382,
+          "confidenceScore": 0.7,
+          "manualBoost": 0
+        }
+      }
+    }
+  ]
+}

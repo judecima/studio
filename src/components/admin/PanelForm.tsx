@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
@@ -32,11 +31,13 @@ import {
   CardTitle,
   CardDescription 
 } from "@/components/ui/card";
-import { Panel } from "@/lib/types";
+import { Panel, ColorParent, ColorSub, SurfaceTexture, Finish } from "@/lib/types";
 import { 
   Loader2, 
   Save, 
-  Upload 
+  Upload,
+  AlertTriangle,
+  CheckCircle2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore, useStorage } from "@/firebase";
@@ -47,7 +48,26 @@ import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
 import { COLOR_PARENTS_LAB, SUB_LEVELS } from "@/lib/equivalences/classifier";
 
-// 🛡️ Esquema robustecido para evitar fallos de validación con datos null/existentes
+// ENUMS ACTUALIZADOS (v6.6)
+const COLOR_PARENTS = ['blanco', 'beige', 'gris', 'negro', 'marron', 'rojo', 'verde', 'azul', 'naranja', 'rosa', 'violeta', 'otro'] as const;
+const COLOR_SUBS = ['muy claro', 'claro', 'medio claro', 'medio oscuro', 'oscuro', 'muy oscuro'] as const;
+const TEXTURES = ['liso', 'madera', 'textil', 'cementicio', 'piedra', 'metal', 'otro'] as const;
+const FINISHES = ['mate', 'brillo', 'satinado', 'texturado', 'supermate'] as const;
+
+// MAPEO DE LEGACY A NORMALIZADO
+const LEGACY_MAP: Record<string, string> = {
+  'bark': 'madera',
+  'nature': 'madera',
+  'nórdico': 'madera',
+  'nordico': 'madera',
+  'wood': 'madera',
+  'textura': 'textil',
+  'hilado': 'textil',
+  'linen': 'textil',
+  'soft': 'mate',
+  'perfectmatt': 'supermate'
+};
+
 const panelSchema = z.object({
   name: z.string().min(2, "Mínimo 2 caracteres"),
   brand: z.string().min(1, "Marca requerida"),
@@ -59,10 +79,10 @@ const panelSchema = z.object({
   stock: z.coerce.number().min(0),
   visible: z.boolean(),
   mainImage: z.string().min(1, "La imagen principal es requerida"),
-  colorParent: z.string().default("otro"),
-  colorSub: z.string().default("medio claro"),
-  surfaceTexture: z.string().default("liso"),
-  finish: z.string().default("mate"),
+  colorParent: z.enum(COLOR_PARENTS as any).default("otro"),
+  colorSub: z.enum(COLOR_SUBS as any).default("medio claro"),
+  surfaceTexture: z.enum(TEXTURES as any).default("liso"),
+  finish: z.enum(FINISHES as any).default("mate"),
   antiFingerprint: z.boolean().default(false),
   code: z.string().optional().nullable(),
   ncs: z.string().optional().nullable(),
@@ -73,6 +93,7 @@ const panelSchema = z.object({
     a: z.number(),
     b: z.number(),
   }).optional().nullable(),
+  colorSource: z.enum(['ncs', 'analytical_v6.1', 'image', 'fallback']).default('fallback')
 });
 
 type FormValues = z.infer<typeof panelSchema>;
@@ -91,31 +112,53 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
+  // Normalizar datos iniciales si vienen de legacy
+  const normalizedInitial = initialData ? {
+    ...initialData,
+    colorParent: (initialData.colorParent?.toLowerCase() || 'otro') as any,
+    colorSub: (initialData.colorSub?.toLowerCase() || 'medio claro') as any,
+    surfaceTexture: (LEGACY_MAP[initialData.surfaceTexture?.toLowerCase()] || initialData.surfaceTexture?.toLowerCase() || 'liso') as any,
+    finish: (LEGACY_MAP[initialData.finish?.toLowerCase()] || initialData.finish?.toLowerCase() || 'mate') as any,
+  } : undefined;
+
   const form = useForm<FormValues>({
     resolver: zodResolver(panelSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      brand: initialData?.brand || "Faplac",
-      width: initialData?.width || 1830,
-      height: initialData?.height || 2750,
-      thickness: initialData?.thickness || 18,
-      hasGrain: initialData?.hasGrain ?? false,
-      description: initialData?.description || "",
-      stock: initialData?.stock || 0,
-      visible: initialData?.visible ?? true,
-      mainImage: initialData?.mainImage || "https://placehold.co/800x600?text=Subir+Imagen",
-      colorParent: initialData?.colorParent || "otro",
-      colorSub: initialData?.colorSub || "medio claro",
-      surfaceTexture: initialData?.surfaceTexture || "liso",
-      finish: initialData?.finish || "mate",
-      antiFingerprint: initialData?.antiFingerprint || false,
-      code: initialData?.code || "",
-      ncs: initialData?.ncs || "",
-      launchYear: initialData?.launchYear || 2024,
-      hexColor: initialData?.hexColor || null,
-      labColor: initialData?.labColor || null,
+      name: normalizedInitial?.name || "",
+      brand: normalizedInitial?.brand || "Faplac",
+      width: normalizedInitial?.width || 1830,
+      height: normalizedInitial?.height || 2750,
+      thickness: normalizedInitial?.thickness || 18,
+      hasGrain: normalizedInitial?.hasGrain ?? false,
+      description: normalizedInitial?.description || "",
+      stock: normalizedInitial?.stock || 0,
+      visible: normalizedInitial?.visible ?? true,
+      mainImage: normalizedInitial?.mainImage || "https://placehold.co/800x600?text=Subir+Imagen",
+      colorParent: normalizedInitial?.colorParent || "otro",
+      colorSub: normalizedInitial?.colorSub || "medio claro",
+      surfaceTexture: normalizedInitial?.surfaceTexture || "liso",
+      finish: normalizedInitial?.finish || "mate",
+      antiFingerprint: normalizedInitial?.antiFingerprint || false,
+      code: normalizedInitial?.code || "",
+      ncs: normalizedInitial?.ncs || "",
+      launchYear: normalizedInitial?.launchYear || 2024,
+      hexColor: normalizedInitial?.hexColor || null,
+      labColor: normalizedInitial?.labColor || null,
+      colorSource: normalizedInitial?.colorSource || 'fallback'
     },
   });
+
+  // FASE 3.6 — VALIDACIONES Dinámicas
+  const watchTexture = form.watch("surfaceTexture");
+  const watchHasGrain = form.watch("hasGrain");
+  const watchFinish = form.watch("finish");
+
+  useEffect(() => {
+    if (watchTexture === 'madera' && !watchHasGrain) {
+      // Warning o sugerencia automática
+      console.warn("Sugerencia: Un panel de madera suele tener veta activa.");
+    }
+  }, [watchTexture, watchHasGrain]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -127,6 +170,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
         const snapshot = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(snapshot.ref);
         form.setValue("mainImage", downloadURL);
+        form.setValue("colorSource", "image");
         
         const response = await fetch('/api/extract-colors', {
           method: 'POST',
@@ -149,8 +193,17 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
 
   const onSubmit = (values: FormValues) => {
     if (!db) return;
-    setIsSaving(true);
     
+    // FASE 3.1.2 — Validaciones de integridad antes de guardar
+    if (values.surfaceTexture === 'madera' && !values.hasGrain) {
+      if (!confirm("Has marcado Madera pero SIN veta. ¿Es correcto?")) return;
+    }
+    if (values.surfaceTexture === 'metal' && values.hasGrain) {
+      toast({ title: "Error de consistencia", description: "Un metal no puede tener veta de madera.", variant: "destructive" });
+      return;
+    }
+
+    setIsSaving(true);
     const docId = initialData?.id || `${values.brand.toLowerCase()}-${values.name.toLowerCase().replace(/\s+/g, '-')}`;
     const docRef = doc(db, collectionName, docId);
 
@@ -161,7 +214,6 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
       createdAt: initialData?.createdAt || serverTimestamp(),
     };
 
-    // ✅ PATRÓN NO BLOQUEANTE: Sin await directo
     setDoc(docRef, panelData, { merge: true })
       .then(() => {
         toast({ title: "Panel Guardado", description: "Los cambios se han persistido con éxito." });
@@ -180,13 +232,11 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
       });
   };
 
-  // 🔴 Captura errores de validación ocultos
   const onInvalid = (errors: any) => {
     console.error("Fallo de validación:", errors);
-    const fieldNames = Object.keys(errors).join(", ");
     toast({
-      title: "Formulario Incompleto",
-      description: `Revisa los campos: ${fieldNames}`,
+      title: "Revisa el formulario",
+      description: "Hay campos obligatorios con valores no permitidos.",
       variant: "destructive"
     });
   };
@@ -197,11 +247,14 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Identidad del Producto</CardTitle>
+            <Card className="border-indigo-100 shadow-sm">
+              <CardHeader className="bg-indigo-50/30 rounded-t-xl">
+                <CardTitle className="text-indigo-900 flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-indigo-500" />
+                  Identidad del Producto
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pt-6">
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -226,7 +279,6 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             <SelectItem value="Egger">Egger</SelectItem>
                             <SelectItem value="Faplac">Faplac</SelectItem>
                             <SelectItem value="Arauco">Arauco</SelectItem>
-                            <SelectItem value="Masisa">Masisa</SelectItem>
                             <SelectItem value="Otro">Otro</SelectItem>
                           </SelectContent>
                         </Select>
@@ -272,11 +324,12 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Atributos de Diseño</CardTitle>
+            <Card className="border-slate-100">
+              <CardHeader className="bg-slate-50/50">
+                <CardTitle className="text-slate-800">Atributos Normalizados (Motor v6.6)</CardTitle>
+                <CardDescription>Estos campos definen el ranking de equivalencias.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 pt-6">
                 <div className="grid grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
@@ -287,10 +340,9 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                           <SelectContent>
-                            {COLOR_PARENTS_LAB.map(p => (
-                              <SelectItem key={p.name} value={p.name}>{p.name.toUpperCase()}</SelectItem>
+                            {COLOR_PARENTS.map(p => (
+                              <SelectItem key={p} value={p}>{p.toUpperCase()}</SelectItem>
                             ))}
-                            <SelectItem value="otro">OTRO</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -306,8 +358,8 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                           <SelectContent>
-                            {SUB_LEVELS.map(s => (
-                              <SelectItem key={s.name} value={s.name}>{s.name.toUpperCase()}</SelectItem>
+                            {COLOR_SUBS.map(s => (
+                              <SelectItem key={s} value={s}>{s.toUpperCase()}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -323,15 +375,16 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                     name="surfaceTexture"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Tipo de Material</FormLabel>
+                        <FormLabel>Tipo de Material (Capa A)</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="liso">LISO / UNICOLOR</SelectItem>
                             <SelectItem value="madera">MADERA (VETA)</SelectItem>
-                            <SelectItem value="concreto">CONCRETO / PIEDRA</SelectItem>
+                            <SelectItem value="cementicio">CEMENTO / PIEDRA</SelectItem>
                             <SelectItem value="textil">TEXTIL / TRAMA</SelectItem>
                             <SelectItem value="metal">METAL / ACERO</SelectItem>
+                            <SelectItem value="otro">OTRO (GENERAL)</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -351,7 +404,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                             <SelectItem value="brillo">BRILLO / GLOSS</SelectItem>
                             <SelectItem value="satinado">SATINADO</SelectItem>
                             <SelectItem value="texturado">TEXTURADO</SelectItem>
-                            <SelectItem value="soft">SOFT / SEDOSO</SelectItem>
+                            <SelectItem value="supermate">SUPERMATE / PM</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -360,27 +413,36 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                   />
                 </div>
 
-                <div className="flex gap-8 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                  <FormField
-                    control={form.control}
-                    name="hasGrain"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center gap-3 space-y-0">
-                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                        <FormLabel className="font-bold">TIENE VETA</FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="antiFingerprint"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center gap-3 space-y-0">
-                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                        <FormLabel className="font-bold">ANTI-HUELLA</FormLabel>
-                      </FormItem>
-                    )}
-                  />
+                <div className="flex gap-8 p-4 bg-slate-50 rounded-xl border border-slate-100 items-center justify-between">
+                  <div className="flex gap-8">
+                    <FormField
+                      control={form.control}
+                      name="hasGrain"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-3 space-y-0">
+                          <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                          <FormLabel className="font-bold">TIENE VETA</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="antiFingerprint"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center gap-3 space-y-0">
+                          <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                          <FormLabel className="font-bold">ANTI-HUELLA</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  {watchTexture === 'madera' && !watchHasGrain && (
+                    <div className="flex items-center gap-2 text-amber-600 animate-pulse">
+                      <AlertTriangle className="h-4 w-4" />
+                      <span className="text-[10px] font-bold uppercase">Madera sin veta: ¿Estás seguro?</span>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -389,7 +451,7 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Imagen</CardTitle>
+                <CardTitle>Imagen y Fuente</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="aspect-square relative rounded-2xl overflow-hidden border-2 border-slate-100 shadow-inner bg-slate-50 flex items-center justify-center">
@@ -404,11 +466,19 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
                 </div>
                 <FormField
                   control={form.control}
-                  name="mainImage"
+                  name="colorSource"
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl><Input placeholder="URL..." {...field} /></FormControl>
-                      <FormMessage />
+                      <FormLabel>Origen del Dato</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="ncs">Carta NCS (Altísima Confianza)</SelectItem>
+                          <SelectItem value="image">Extracción de Imagen (Manual)</SelectItem>
+                          <SelectItem value="analytical_v6.1">Análisis IA (Estimado)</SelectItem>
+                          <SelectItem value="fallback">Sin origen claro (Baja)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormItem>
                   )}
                 />
@@ -417,24 +487,24 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
 
             <Card>
               <CardHeader>
-                <CardTitle>Medidas (mm)</CardTitle>
+                <CardTitle>Dimensiones Industriales</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-4">
+              <CardContent className="grid grid-cols-1 gap-4 text-sm font-medium">
                 <FormField control={form.control} name="width" render={({ field }) => (
                   <FormItem className="flex items-center justify-between">
-                    <FormLabel>Ancho</FormLabel>
+                    <FormLabel>Ancho (mm)</FormLabel>
                     <FormControl><Input type="number" className="w-24 h-8" {...field} /></FormControl>
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="height" render={({ field }) => (
                   <FormItem className="flex items-center justify-between">
-                    <FormLabel>Alto</FormLabel>
+                    <FormLabel>Alto (mm)</FormLabel>
                     <FormControl><Input type="number" className="w-24 h-8" {...field} /></FormControl>
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="thickness" render={({ field }) => (
                   <FormItem className="flex items-center justify-between">
-                    <FormLabel>Espesor</FormLabel>
+                    <FormLabel>Espesor (mm)</FormLabel>
                     <FormControl><Input type="number" className="w-24 h-8" {...field} /></FormControl>
                   </FormItem>
                 )} />
@@ -445,9 +515,9 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
 
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t flex justify-end gap-4 shadow-2xl z-50">
           <Button type="button" variant="ghost" onClick={() => router.back()}>Cancelar</Button>
-          <Button type="submit" size="lg" className="px-12 font-bold" disabled={isSaving}>
+          <Button type="submit" size="lg" className="px-12 font-bold shadow-indigo-100 shadow-xl" disabled={isSaving}>
             {isSaving ? <Loader2 className="mr-2 animate-spin" /> : <Save className="mr-2" />}
-            GUARDAR PANEL
+            {mode === 'create' ? 'CREAR PRODUCTO' : 'GUARDAR CAMBIOS'}
           </Button>
         </div>
       </form>

@@ -1,0 +1,97 @@
+{
+  "timestamp": "2026-04-14T20:34:57.713Z",
+  "casesEvaluated": 10,
+  "globalParity": true,
+  "findings": [
+    {
+      "id": "almendra",
+      "name": "Almendra",
+      "persistedTop": "Almendra",
+      "dynamicTop": "Almendra",
+      "persistedScore": 81,
+      "dynamicScore": 81,
+      "parity": true
+    },
+    {
+      "id": "egger-almendra",
+      "name": "Almendra",
+      "persistedTop": "Almendra",
+      "dynamicTop": "Almendra",
+      "persistedScore": 81,
+      "dynamicScore": 81,
+      "parity": true
+    },
+    {
+      "id": "aluminio",
+      "name": "Aluminio",
+      "persistedTop": "Gris Caliza",
+      "dynamicTop": "Gris Caliza",
+      "persistedScore": 67,
+      "dynamicScore": 67,
+      "parity": true
+    },
+    {
+      "id": "ceniza",
+      "name": "Ceniza",
+      "persistedTop": "Teka Artico",
+      "dynamicTop": "Teka Artico",
+      "persistedScore": 71,
+      "dynamicScore": 71,
+      "parity": true
+    },
+    {
+      "id": "blanco-nature",
+      "name": "Blanco Nature",
+      "persistedTop": "W1100 PG Blanco alpino",
+      "dynamicTop": "W1100 PG Blanco alpino",
+      "persistedScore": 69,
+      "dynamicScore": 69,
+      "parity": true
+    },
+    {
+      "id": "blanco-tundra",
+      "name": "Blanco Tundra",
+      "persistedTop": "Lino Blanco",
+      "dynamicTop": "Lino Blanco",
+      "persistedScore": 70,
+      "dynamicScore": 70,
+      "parity": true
+    },
+    {
+      "id": "amaranto",
+      "name": "Amaranto",
+      "persistedTop": "Mont Blanc",
+      "dynamicTop": "Mont Blanc",
+      "persistedScore": 69,
+      "dynamicScore": 69,
+      "parity": true
+    },
+    {
+      "id": "baltico",
+      "name": "Báltico",
+      "persistedTop": "H1399 ST10 Roble Denver marrón trufa",
+      "dynamicTop": "H1399 ST10 Roble Denver marrón trufa",
+      "persistedScore": 67,
+      "dynamicScore": 67,
+      "parity": true
+    },
+    {
+      "id": "everest",
+      "name": "Everest",
+      "persistedTop": "W954 - Blanco",
+      "dynamicTop": "W954 - Blanco",
+      "persistedScore": 70,
+      "dynamicScore": 70,
+      "parity": true
+    },
+    {
+      "id": "litio",
+      "name": "Litio",
+      "persistedTop": "Home",
+      "dynamicTop": "Home",
+      "persistedScore": 69,
+      "dynamicScore": 69,
+      "parity": true
+    }
+  ]
+}

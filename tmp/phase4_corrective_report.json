@@ -1,0 +1,465 @@
+{
+  "timestamp": "2026-04-14T20:14:53.070Z",
+  "validationCount": 10,
+  "results": [
+    {
+      "target": {
+        "id": "almendra",
+        "name": "Almendra",
+        "brand": "Faplac",
+        "texture": "liso",
+        "colorParent": "beige"
+      },
+      "topMatches": [
+        {
+          "name": "Ceniza",
+          "brand": "Faplac",
+          "score": 83,
+          "explanation": "Misma textura liso, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "Blanco Tundra",
+          "brand": "Faplac",
+          "score": 78,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.72
+        },
+        {
+          "name": "Almendra",
+          "brand": "Egger",
+          "score": 77,
+          "explanation": "Color casi idéntico, misma textura liso. ",
+          "texture": 1
+        },
+        {
+          "name": "Litio",
+          "brand": "Faplac",
+          "score": 74,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.92
+        },
+        {
+          "name": "Blanco Nature",
+          "brand": "Faplac",
+          "score": 72,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.35
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "egger-almendra",
+        "name": "Almendra",
+        "brand": "Egger",
+        "texture": "liso",
+        "colorParent": "beige"
+      },
+      "topMatches": [
+        {
+          "name": "Almendra",
+          "brand": "Faplac",
+          "score": 77,
+          "explanation": "Color casi idéntico, misma textura liso. ",
+          "texture": 1
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "aluminio",
+        "name": "Aluminio",
+        "brand": "Faplac",
+        "texture": "metal",
+        "colorParent": "beige"
+      },
+      "topMatches": [
+        {
+          "name": "Gris Humo",
+          "brand": "Faplac",
+          "score": 85,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.68
+        },
+        {
+          "name": "Litio",
+          "brand": "Faplac",
+          "score": 85,
+          "explanation": "Misma textura metal, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "Ceniza",
+          "brand": "Faplac",
+          "score": 77,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.92
+        },
+        {
+          "name": "Gris Caliza",
+          "brand": "Faplac",
+          "score": 69,
+          "explanation": "Color casi idéntico, mismo acabado. ",
+          "texture": 0.92
+        },
+        {
+          "name": "Almendra",
+          "brand": "Faplac",
+          "score": 66,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.92
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "ceniza",
+        "name": "Ceniza",
+        "brand": "Faplac",
+        "texture": "liso",
+        "colorParent": "blanco"
+      },
+      "topMatches": [
+        {
+          "name": "Blanco Tundra",
+          "brand": "Faplac",
+          "score": 85,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.72
+        },
+        {
+          "name": "Almendra",
+          "brand": "Faplac",
+          "score": 83,
+          "explanation": "Misma textura liso, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "Gris Humo",
+          "brand": "Faplac",
+          "score": 82,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.72
+        },
+        {
+          "name": "Blanco Nature",
+          "brand": "Faplac",
+          "score": 80,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.35
+        },
+        {
+          "name": "Litio",
+          "brand": "Faplac",
+          "score": 78,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.92
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "blanco-nature",
+        "name": "Blanco Nature",
+        "brand": "Faplac",
+        "texture": "madera",
+        "colorParent": "blanco"
+      },
+      "topMatches": [
+        {
+          "name": "Blanco Tundra",
+          "brand": "Faplac",
+          "score": 87,
+          "explanation": "Color casi idéntico, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.4
+        },
+        {
+          "name": "Ceniza",
+          "brand": "Faplac",
+          "score": 80,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.35
+        },
+        {
+          "name": "W1100 PG Blanco alpino",
+          "brand": "Egger",
+          "score": 77,
+          "explanation": "Color casi idéntico, misma textura madera. ",
+          "texture": 1
+        },
+        {
+          "name": "W1100 PM Blanco alpino",
+          "brand": "Egger",
+          "score": 77,
+          "explanation": "Color casi idéntico, misma textura madera. ",
+          "texture": 1
+        },
+        {
+          "name": "W1100 ST9 Blanco alpino",
+          "brand": "Egger",
+          "score": 77,
+          "explanation": "Color casi idéntico, misma textura madera. ",
+          "texture": 1
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "blanco-tundra",
+        "name": "Blanco Tundra",
+        "brand": "Faplac",
+        "texture": "textil",
+        "colorParent": "blanco"
+      },
+      "topMatches": [
+        {
+          "name": "Blanco Nature",
+          "brand": "Faplac",
+          "score": 87,
+          "explanation": "Color casi idéntico, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.4
+        },
+        {
+          "name": "Ceniza",
+          "brand": "Faplac",
+          "score": 85,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.72
+        },
+        {
+          "name": "Gris Humo",
+          "brand": "Faplac",
+          "score": 79,
+          "explanation": "Misma textura textil, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "Almendra",
+          "brand": "Faplac",
+          "score": 78,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.72
+        },
+        {
+          "name": "Lino Blanco",
+          "brand": "Faplac",
+          "score": 78,
+          "explanation": "Color casi idéntico, misma textura textil. Incluye también mismo acabado.",
+          "texture": 1
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "amaranto",
+        "name": "Amaranto",
+        "brand": "Faplac",
+        "texture": "madera",
+        "colorParent": "rojo"
+      },
+      "topMatches": [
+        {
+          "name": "H3433 ST22 Pino Aland polar",
+          "brand": "Egger",
+          "score": 85,
+          "explanation": "Tonalidad muy similar, misma textura madera. Incluye también diseño semánticamente relacionado.",
+          "texture": 1
+        },
+        {
+          "name": "Roble Escandinavo",
+          "brand": "Faplac",
+          "score": 85,
+          "explanation": "Tonalidad muy similar, misma textura madera. Incluye también diseño semánticamente relacionado.",
+          "texture": 1
+        },
+        {
+          "name": "Kiri",
+          "brand": "Faplac",
+          "score": 84,
+          "explanation": "Misma textura madera, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "H1312 ST10 Roble Whiteriver beige arena",
+          "brand": "Egger",
+          "score": 81,
+          "explanation": "Tonalidad muy similar, misma textura madera. Incluye también diseño semánticamente relacionado.",
+          "texture": 1
+        },
+        {
+          "name": "Mont Blanc",
+          "brand": "Faplac",
+          "score": 79,
+          "explanation": "Color casi idéntico, misma textura madera. Incluye también mismo acabado.",
+          "texture": 1
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "baltico",
+        "name": "Báltico",
+        "brand": "Faplac",
+        "texture": "madera",
+        "colorParent": "gris"
+      },
+      "topMatches": [
+        {
+          "name": "H1399 ST10 Roble Denver marrón trufa",
+          "brand": "Egger",
+          "score": 89,
+          "explanation": "Color casi idéntico, misma textura madera. Incluye también diseño semánticamente relacionado.",
+          "texture": 1
+        },
+        {
+          "name": "H3158 ST19 Roble Vicenza gris",
+          "brand": "Egger",
+          "score": 89,
+          "explanation": "Color casi idéntico, misma textura madera. Incluye también diseño semánticamente relacionado.",
+          "texture": 1
+        },
+        {
+          "name": "Olmo Finlandés",
+          "brand": "Faplac",
+          "score": 80,
+          "explanation": "Misma textura madera, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "Praga",
+          "brand": "Faplac",
+          "score": 80,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.35
+        },
+        {
+          "name": "H1180 ST37 Roble Halifax natural",
+          "brand": "Egger",
+          "score": 79,
+          "explanation": "Misma textura madera, diseño semánticamente relacionado. ",
+          "texture": 1
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "everest",
+        "name": "Everest",
+        "brand": "Faplac",
+        "texture": "liso",
+        "colorParent": "blanco"
+      },
+      "topMatches": [
+        {
+          "name": "W954 - Blanco",
+          "brand": "Egger",
+          "score": 81,
+          "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "W954 SM Blanco",
+          "brand": "Egger",
+          "score": 81,
+          "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "W954 ST14 Blanco",
+          "brand": "Egger",
+          "score": 81,
+          "explanation": "Color casi idéntico, misma textura liso. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "F422 ST10 Lino blanco",
+          "brand": "Egger",
+          "score": 74,
+          "explanation": "Color casi idéntico, mismo acabado. ",
+          "texture": 0.72
+        },
+        {
+          "name": "Venezia",
+          "brand": "Faplac",
+          "score": 73,
+          "explanation": "Tonalidad muy similar, misma textura liso. ",
+          "texture": 1
+        }
+      ]
+    },
+    {
+      "target": {
+        "id": "litio",
+        "name": "Litio",
+        "brand": "Faplac",
+        "texture": "metal",
+        "colorParent": "beige"
+      },
+      "topMatches": [
+        {
+          "name": "Aluminio",
+          "brand": "Faplac",
+          "score": 85,
+          "explanation": "Misma textura metal, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 1
+        },
+        {
+          "name": "Gris Humo",
+          "brand": "Faplac",
+          "score": 80,
+          "explanation": "Tonalidad muy similar, diseño semánticamente relacionado. Incluye también mismo acabado.",
+          "texture": 0.68
+        },
+        {
+          "name": "Ceniza",
+          "brand": "Faplac",
+          "score": 78,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.92
+        },
+        {
+          "name": "Almendra",
+          "brand": "Faplac",
+          "score": 74,
+          "explanation": "Diseño semánticamente relacionado, mismo acabado. ",
+          "texture": 0.92
+        },
+        {
+          "name": "Home",
+          "brand": "Faplac",
+          "score": 70,
+          "explanation": "Color casi idéntico, mismo acabado. ",
+          "texture": 0.92
+        }
+      ]
+    }
+  ],
+  "businessTruths": [
+    {
+      "name": "Blanco Nature",
+      "expected": "madera",
+      "actual": "madera",
+      "success": true
+    },
+    {
+      "name": "Blanco Tundra",
+      "expected": "textil",
+      "actual": "textil",
+      "success": true
+    },
+    {
+      "name": "Amaranto",
+      "expected": "madera",
+      "actual": "madera",
+      "success": true
+    },
+    {
+      "name": "Báltico",
+      "expected": "madera",
+      "actual": "madera",
+      "success": true
+    }
+  ],
+  "success": true
+}

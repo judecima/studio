@@ -1,16 +1,58 @@
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { initializeFirebase } from '@/firebase';
 import { converter, differenceCiede2000 } from 'culori';
-import { Panel, ClassifiedPanel, ColorParent, ColorSub, SurfaceTexture, Finish } from '@/lib/types';
 import { 
-  detectColorParent, 
-  detectColorSub, 
-  detectSurfaceTexture, 
-  detectFinish 
+  Panel, 
+  ClassifiedPanel, 
+  ColorParent, 
+  ColorSub, 
+  SurfaceTexture, 
+  Finish, 
+  ScoreBreakdown,
+  EquivalenceMatch
+} from '@/lib/types';
+import { 
+  detectColorParentDetailed, 
+  detectColorSubDetailed, 
+  detectSurfaceTextureDetailed, 
+  detectFinishDetailed,
+  normalizeText
 } from './classifier';
 
 const toLab = converter('lab');
 const de2000 = differenceCiede2000();
+
+/**
+ * Matriz de Relación Sensorial (v6.7)
+ * Define qué tan compatibles son dos texturas de forma gradual (0.0 a 1.0).
+ */
+const TEXTURE_RELATION: Record<string, Record<string, number>> = {
+  liso: { liso: 1.0, metal: 0.92, textil: 0.72, cementicio: 0.58, piedra: 0.55, madera: 0.35, otro: 0.50 },
+  metal: { metal: 1.0, liso: 0.92, textil: 0.68, cementicio: 0.55, piedra: 0.52, madera: 0.30, otro: 0.45 },
+  textil: { textil: 1.0, liso: 0.72, metal: 0.68, cementicio: 0.50, piedra: 0.48, madera: 0.40, otro: 0.45 },
+  cementicio: { cementicio: 1.0, piedra: 0.90, liso: 0.58, metal: 0.55, textil: 0.50, madera: 0.32, otro: 0.45 },
+  piedra: { piedra: 1.0, cementicio: 0.90, liso: 0.55, metal: 0.52, textil: 0.48, madera: 0.30, otro: 0.40 },
+  madera: { madera: 1.0, textil: 0.40, liso: 0.35, metal: 0.30, cementicio: 0.32, piedra: 0.30, otro: 0.35 },
+  otro: { otro: 1.0, liso: 0.50, metal: 0.45, textil: 0.45, cementicio: 0.45, piedra: 0.40, madera: 0.35 }
+};
+
+/**
+ * Clasificación de Tokens (v6.8)
+ * Permite distinguir entre identidad comercial y descriptores genéricos.
+ */
+const STRONG_TOKENS = [
+  'almendra', 'roble', 'nogal', 'cedro', 'olmo', 'pino',
+  'lino', 'textil', 'aluminio', 'inox', 'bronce',
+  'cemento', 'concreto', 'marmol', 'granito',
+  'tundra', 'nature', 'everest', 'ceniza', 'litio',
+  'gris caliza', 'henna', 'carvalho', 'hickory'
+];
+
+const GENERIC_TOKENS = [
+  'blanco', 'beige', 'gris', 'negro', 'marron',
+  'claro', 'oscuro', 'natural', 'mate', 'brillo',
+  'medio', 'suave', 'nieve', 'tiza'
+];
 
 function getDb() {
   const sdk = initializeFirebase();
@@ -18,164 +60,259 @@ function getDb() {
 }
 
 /**
- * Calcula el puntaje de similitud entre dos paneles con un enfoque más flexible y balanceado.
+ * Calcula el Boost de Identidad Comercial (Fase 4.5)
  */
-export function calculateScore(a: ClassifiedPanel, b: ClassifiedPanel): number {
-  if (a.id === b.id) return 1;
-
-  let score = 1.0;
-
-  // 1. COMPARACIÓN CROMÁTICA (Base del match)
-  const labA = a.labColor;
-  const labB = b.labColor;
-
-  if (labA && labB) {
-    const dE = de2000(labA as any, labB as any);
-    // Delta E de 30 como límite para "alguna similitud visual" en melaminas
-    const colorMatch = Math.max(0, 1 - (dE / 30));
-    score = colorMatch;
-  } else {
-    // Si no hay LAB, usamos categorías con penalidad fija
-    if (a.colorParent !== b.colorParent) score *= 0.65;
-    if (a.colorSub !== b.colorSub) score *= 0.9;
-  }
-
-  // 2. PENALIZACIONES POR ESTRUCTURA (FLEXIBILIZADAS)
+function calculateIdentityBoost(a: ClassifiedPanel, b: ClassifiedPanel): number {
+  const nameA = normalizeText(a.name);
+  const nameB = normalizeText(b.name);
   
-  // DIFERENCIA DE VETA: Reducida de 60% a 25% para permitir cruces liso/madera cercanos
-  if (a.hasGrain !== b.hasGrain) {
-    score *= 0.75; 
-  }
+  // 1. Coincidencia exacta de nombre normalizado
+  if (nameA === nameB) return 1.0; // Recibirá el 0.07 full
 
-  // DIFERENCIA DE FAMILIA CROMÁTICA (Sistema de Vecinos)
-  if (a.colorParent !== b.colorParent) {
-    const neighbors: Record<string, string[]> = {
-      'blanco': ['beige', 'gris'],
-      'beige': ['blanco', 'marron', 'naranja'],
-      'marron': ['beige', 'naranja', 'negro'],
-      'gris': ['negro', 'azul', 'blanco'],
-      'negro': ['gris', 'marron'],
-      'azul': ['gris', 'verde', 'violeta'],
-      'verde': ['azul', 'amarillo'],
-      'amarillo': ['naranja', 'verde'],
-      'naranja': ['amarillo', 'rojo', 'beige'],
-      'rojo': ['naranja', 'rosa', 'violeta'],
-      'violeta': ['rojo', 'azul', 'rosa'],
-      'rosa': ['rojo', 'violeta', 'blanco']
-    };
+  // 2. Overlap de Tokens Fuertes
+  const tokensA = nameA.split(' ');
+  const tokensB = nameB.split(' ');
+  const strongA = tokensA.filter(t => STRONG_TOKENS.includes(t));
+  const strongB = tokensB.filter(t => STRONG_TOKENS.includes(t));
+  
+  const commonStrong = strongA.filter(t => strongB.includes(t));
+  if (commonStrong.length > 0) return 0.6; // Boost medio
 
-    const isNeighbor = neighbors[a.colorParent]?.includes(b.colorParent) || 
-                      neighbors[b.colorParent]?.includes(a.colorParent);
-    
-    if (isNeighbor) {
-      score *= 0.85; // Penalidad leve (15%) para familias cercanas
-    } else {
-      score *= 0.60; // Penalidad mayor (40%) para familias opuestas
-    }
-  }
-
-  // 3. ATRIBUTOS DE SUPERFICIE
-  // Textura (Concreto vs Madera, etc)
-  if (a.surfaceTexture !== b.surfaceTexture) {
-    score *= 0.9;
-  }
-
-  // Acabado (Mate vs Brillo)
-  if (a.finish !== b.finish) {
-    score *= 0.95;
-  }
-
-  return Math.min(1, Math.max(0, score));
+  return 0;
 }
 
 /**
- * Clasifica un panel asegurando que los valores manuales de Firestore tengan prioridad.
+ * Fase A: Filtros Duros (v6.8)
+ * Decide si el candidato entra al proceso de scoring. Solo veta casos extremos.
  */
-export async function classify(panel: Panel): Promise<ClassifiedPanel> {
+export function passesHardFilters(a: ClassifiedPanel, b: ClassifiedPanel): boolean {
+  if (a.id === b.id) return false;
+  
+  const relation = TEXTURE_RELATION[a.surfaceTexture]?.[b.surfaceTexture] || 0.35;
+  if (relation < 0.30) return false;
+
+  if (!isCompatibleColorFamily(a.colorParent, b.colorParent)) return false;
+
+  if (a.manualRejectedMatches?.includes(b.id)) return false;
+
+  return true;
+}
+
+function isCompatibleColorFamily(a: string, b: string): boolean {
+  if (a === b) return true;
+  
+  const neutrals = ['blanco', 'beige', 'gris', 'negro', 'marron', 'otro'];
+  if (neutrals.includes(a) && neutrals.includes(b)) return true;
+
+  const opposites: Record<string, string[]> = {
+    rojo: ['verde', 'azul'],
+    verde: ['rojo', 'violeta', 'rosa'],
+    azul: ['rojo', 'naranja', 'amarillo'],
+    naranja: ['azul', 'violeta'],
+    amarillo: ['azul', 'violeta']
+  };
+
+  if (opposites[a]?.includes(b) || opposites[b]?.includes(a)) return false;
+
+  return true;
+}
+
+/**
+ * Fase B: Score Multicapa (v6.8 - Fine Tuning)
+ */
+export function calculateScoreBreakdown(a: ClassifiedPanel, b: ClassifiedPanel): ScoreBreakdown {
+  const breakdown: ScoreBreakdown = {
+    total: 0,
+    colorScore: 0,
+    semanticScore: 0,
+    textureScore: 0,
+    finishScore: 0,
+    lightnessScore: 0,
+    confidenceScore: 0,
+    manualBoost: 0,
+    identityBoost: 0 // Extendiendo vía tipo local o retorno
+  };
+
+  // 1. Color Score (LAB)
+  if (a.labColor && b.labColor) {
+    const dE = de2000(a.labColor as any, b.labColor as any);
+    breakdown.colorScore = Math.max(0, 1 - (dE / 30));
+  } else {
+    breakdown.colorScore = a.colorParent === b.colorParent ? 0.7 : 0.3;
+  }
+
+  // 2. Semantic Score (Diferenciado e Deflactado)
+  const tokensA = normalizeText(a.name + ' ' + (a.description || '')).split(' ');
+  const tokensB = normalizeText(b.name + ' ' + (b.description || '')).split(' ');
+  
+  const commonStrong = tokensA.filter(t => STRONG_TOKENS.includes(t) && tokensB.includes(t));
+  const commonGeneric = tokensA.filter(t => GENERIC_TOKENS.includes(t) && tokensB.includes(t));
+  
+  // Scorer deflactado: strong tokens valen mucho más, genéricos valen poco
+  breakdown.semanticScore = (commonStrong.length * 0.4) + (commonGeneric.length * 0.1);
+  breakdown.semanticScore = Math.min(1.0, breakdown.semanticScore);
+
+  // 3. Texture Score (BASADO EN MATRIZ GRADUAL)
+  breakdown.textureScore = TEXTURE_RELATION[a.surfaceTexture]?.[b.surfaceTexture] || 0.35;
+
+  // 4. Finish Score (Deflactado)
+  breakdown.finishScore = a.finish === b.finish ? 1.0 : 0.6; // Sube de 0.5 para no penalizar tanto si no hay match
+
+  // 5. Lightness Score
+  if (a.labColor && b.labColor) {
+    const diffL = Math.abs(a.labColor.l - b.labColor.l);
+    breakdown.lightnessScore = Math.max(0, 1 - (diffL / 50));
+  } else {
+    breakdown.lightnessScore = a.colorSub === b.colorSub ? 1.0 : 0.5;
+  }
+
+  // 6. Confidence Score
+  const getConf = (source?: string) => {
+    if (source === 'ncs') return 1.0;
+    if (source === 'analytical_v6.1') return 0.9;
+    if (source === 'image_clustered') return 0.8;
+    return 0.7;
+  };
+  breakdown.confidenceScore = (getConf(a.colorSource) + getConf(b.colorSource)) / 2;
+
+  // 7. Identity Boost (Nuevo factor Fase 4.5)
+  const identityFactor = calculateIdentityBoost(a, b);
+  const identityScore = identityFactor; // 0 a 1.0
+
+  // 8. Manual Boost
+  if (a.manualAffinity?.[b.id]) {
+    breakdown.manualBoost = a.manualAffinity[b.id] / 100;
+  } else if (a.manualVerifiedMatches?.includes(b.id)) {
+    breakdown.manualBoost = 1.0;
+  }
+
+  // Ponderación Final (FINE TUNING v6.8)
+  breakdown.total = 
+    breakdown.colorScore * 0.40 +       // Base sólida
+    breakdown.semanticScore * 0.18 +    // Baja de 0.22 (Deflactado)
+    breakdown.textureScore * 0.16 +     // Mantiene
+    breakdown.finishScore * 0.08 +      // Mantiene
+    breakdown.lightnessScore * 0.08 +   // Mantiene
+    breakdown.confidenceScore * 0.03 +  // Mantiene
+    identityScore * 0.07;               // Factor identidad exacto
+
+  breakdown.total = Math.max(0, Math.min(1, breakdown.total));
+  return breakdown;
+}
+
+export function getThresholdByTexture(texture: string): number {
+  const thresholds: Record<string, number> = {
+    liso: 0.62,      // Ajustado para distribución deflactada
+    metal: 0.60,
+    textil: 0.60,
+    cementicio: 0.58,
+    piedra: 0.58,
+    madera: 0.64,    // Bajado de 0.70 para recuperar casos comerciales
+    otro: 0.60
+  };
+  return thresholds[texture] || 0.60;
+}
+
+export async function classifyPanel(panel: Panel): Promise<ClassifiedPanel> {
   const lab = panel.labColor || (panel.hexColor ? toLab(panel.hexColor) : undefined);
   
-  // Solo auto-detectamos si el campo está vacío o es 'otro'/'liso' por defecto
-  const colorParent = (panel.colorParent && panel.colorParent !== 'otro') 
-    ? panel.colorParent 
-    : detectColorParent(panel.name, lab as any);
-    
-  const colorSub = (panel.colorSub) 
-    ? panel.colorSub 
-    : (lab ? detectColorSub(lab.l) : 'medio claro');
-
-  const surfaceTexture = (panel.surfaceTexture && panel.surfaceTexture !== 'liso')
-    ? panel.surfaceTexture as SurfaceTexture
-    : detectSurfaceTexture(panel.name, panel.code);
-
-  const finish = (panel.finish)
-    ? panel.finish as Finish
-    : detectFinish(panel.name, panel.code);
+  const parentD = detectColorParentDetailed(panel.name, lab as any);
+  const subD = detectColorSubDetailed(lab?.l);
+  const textureD = detectSurfaceTextureDetailed(panel.name, panel.code);
+  const finishD = detectFinishDetailed(panel.name, panel.code);
 
   return {
     ...panel,
-    colorParent,
-    colorSub,
-    surfaceTexture,
-    finish,
-    hasGrain: panel.hasGrain !== undefined ? panel.hasGrain : (surfaceTexture === 'madera'),
+    colorParent: panel.colorParent || parentD.value,
+    colorSub: panel.colorSub || subD.value,
+    surfaceTexture: panel.surfaceTexture || textureD.value,
+    finish: panel.finish || finishD.value,
+    hasGrain: panel.hasGrain !== undefined ? panel.hasGrain : (textureD.value === 'madera'),
     labColor: lab as any,
-    certifiedLab: lab as any
+    textureConfidence: textureD.confidence,
+    colorConfidence: parentD.confidence
   } as ClassifiedPanel;
 }
 
-export function generateExplanation(target: ClassifiedPanel, match: ClassifiedPanel, score: number): string {
-  const percentage = Math.round(score * 100);
-  const isDiffGrain = target.hasGrain !== match.hasGrain;
-  const isDiffFamily = target.colorParent !== match.colorParent;
-
-  if (percentage > 90) return `Coincidencia técnica excelente. El tono y acabado son prácticamente idénticos entre marcas.`;
+export function generateExplanation(breakdown: ScoreBreakdown, target: ClassifiedPanel, match: ClassifiedPanel): string {
+  const reasons: string[] = [];
   
-  if (isDiffGrain && percentage > 70) {
-    return `Similitud cromática muy alta (${percentage}%). Es una gran alternativa si el diseño con veta no es un requisito excluyente.`;
-  }
+  if (breakdown.colorScore > 0.85) reasons.push("color casi idéntico");
+  else if (breakdown.colorScore > 0.7) reasons.push("tonalidad muy similar");
 
-  if (isDiffFamily && percentage > 65) {
-    return `Aunque pertenecen a familias distintas (${target.colorParent} vs ${match.colorParent}), visualmente mantienen una armonía tonal muy equilibrada.`;
-  }
+  if (target.surfaceTexture === match.surfaceTexture) reasons.push(`misma textura ${target.surfaceTexture}`);
+  
+  if (breakdown.semanticScore > 0.5) reasons.push("diseño semánticamente relacionado");
 
-  return `Alternativa visual aceptable. Recomendado por proximidad en el espectro cromático industrial.`;
+  if (target.finish === match.finish) reasons.push("mismo acabado");
+
+  if (reasons.length === 0) return "Recomendado por proximidad cromática general.";
+  
+  const main = reasons.slice(0, 2).join(", ");
+  const cap = main.charAt(0).toUpperCase() + main.slice(1);
+  return `${cap}. ${reasons.length > 2 ? `Incluye también ${reasons[2]}.` : ""}`;
+}
+
+export async function rankMatches(target: Panel, allPanels: Panel[]): Promise<EquivalenceMatch[]> {
+  const targetClass = await classifyPanel(target);
+  const threshold = getThresholdByTexture(targetClass.surfaceTexture);
+  
+  const scored = await Promise.all(allPanels
+    .map(async p => {
+      const candidateClass = await classifyPanel(p);
+      if (!passesHardFilters(targetClass, candidateClass)) return null;
+      
+      const breakdown = calculateScoreBreakdown(targetClass, candidateClass);
+      
+      if (breakdown.total < threshold) return null;
+
+      return {
+        id: p.id,
+        name: p.name,
+        brand: p.brand,
+        code: p.code,
+        score: Math.round(breakdown.total * 100),
+        explanation: generateExplanation(breakdown, targetClass, candidateClass),
+        breakdown
+      } as EquivalenceMatch;
+    })
+  );
+
+  return scored
+    .filter((m): m is EquivalenceMatch => m !== null)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20);
+}
+
+export async function rankMatchesForPanelId(id: string): Promise<EquivalenceMatch[]> {
+  const db = getDb();
+  const panelRef = doc(db, 'panels', id);
+  const panelSnap = await getDoc(panelRef);
+  
+  if (!panelSnap.exists()) return [];
+  const target = { id: panelSnap.id, ...panelSnap.data() } as Panel;
+
+  const panelsSnap = await getDocs(collection(db, 'panels'));
+  const allPanels = panelsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as Panel[];
+
+  return rankMatches(target, allPanels);
 }
 
 export async function runEquivalenceSync(allPanels: Panel[]) {
   const db = getDb();
   const results = [];
 
-  // Clasificar todos primero para tener una base limpia
-  const classifiedAll = await Promise.all(allPanels.map(p => classify(p)));
-
-  for (const target of classifiedAll) {
+  for (const target of allPanels) {
     try {
-      const candidates = classifiedAll.filter(p => p.id !== target.id);
+      const matches = await rankMatches(target, allPanels);
       
-      const scored = candidates.map(candidate => {
-        const score = calculateScore(target, candidate);
-        return { panel: candidate, score };
-      });
-
-      const topMatches = scored
-        .filter(m => m.score >= 0.6) 
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 30);
-
       const result = {
         targetId: target.id,
         targetCode: target.code || target.id,
         targetName: target.name,
         targetBrand: target.brand,
-        matches: topMatches.map(m => ({
-          id: m.panel.id,
-          name: m.panel.name,
-          brand: m.panel.brand,
-          code: m.panel.code,
-          score: Math.round(m.score * 100),
-          explanation: generateExplanation(target, m.panel, m.score)
-        })),
-        text: topMatches.map(m => generateExplanation(target, m.panel, m.score)).join('\n'),
+        matches,
+        text: matches.map(m => m.explanation).join('\n'),
         lastSync: new Date().toISOString()
       };
 

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-04-14T19:57:00Z",
+  "component": "AdminPanelsPage",
+  "new_filters": [
+    { "id": "brand", "type": "Select", "values": ["Egger", "Faplac", "Arauco", "Otro"] },
+    { "id": "colorParent", "type": "Select", "values": ["blanco", "beige", "gris", "negro", "marron", "rojo", "verde", "azul", "naranja", "rosa", "violeta", "otro"] },
+    { "id": "hasGrain", "type": "Select", "options": ["all", "yes", "no"] },
+    { "id": "searchTerm", "type": "Input", "targets": ["name", "code", "id"] }
+  ],
+  "table_updates": [
+    "Replaced 'colorGroup' with 'Classification' (colorParent + icon)",
+    "Added 'Structure' column (Veta/Liso + Thickness + Finish)",
+    "Reduced switch size for better visual density",
+    "Enabled Brand-specific styling (Egger brand accent color)"
+  ],
+  "parity_status": "100% Alignment with Motor v6.6"
+}

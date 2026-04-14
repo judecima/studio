@@ -1,0 +1,57 @@
+{
+  "total_panels": 144,
+  "total_equivalences": 144,
+  "by_brand": {
+    "Faplac": 62,
+    "Egger": 82
+  },
+  "by_texture": {
+    "liso": 74,
+    "metal": 8,
+    "madera": 48,
+    "textil": 13,
+    "otro": 1
+  },
+  "by_finish": {
+    "brillo": 52,
+    "mate": 85,
+    "undefined": 1,
+    "satinado": 6
+  },
+  "by_color_parent": {
+    "beige": 34,
+    "rojo": 3,
+    "rosa": 1,
+    "negro": 17,
+    "gris": 32,
+    "blanco": 18,
+    "marron": 31,
+    "naranja": 2,
+    "azul": 2,
+    "verde": 4
+  },
+  "by_color_sub": {
+    "muy claro": 27,
+    "claro": 43,
+    "oscuro": 19,
+    "medio claro": 24,
+    "medio oscuro": 19,
+    "muy oscuro": 12
+  },
+  "by_color_source": {
+    "image": 106,
+    "analytical_v6.1": 2,
+    "ncs": 36
+  },
+  "missing_lab": 0,
+  "missing_hex": 0,
+  "missing_image": 0,
+  "casing_anomalies": [],
+  "inconsistent_color_parent": [],
+  "invalid_enums": [],
+  "dangerous_defaults": {
+    "liso_texture": 74,
+    "mate_finish": 85,
+    "otro_color": 0
+  }
+}
