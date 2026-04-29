@@ -24,7 +24,7 @@ export function PanelFiltersSidebar({ filters, onChange, onReset }: Props) {
   const brands = ["Egger", "Faplac", "Arauco", "Otro"];
   const colorParents: ColorParent[] = [
     'blanco', 'beige', 'gris', 'negro', 'marron', 
-    'rojo', 'verde', 'azul', 'naranja', 'rosa', 
+    'rojo', 'verde', 'azul', 'amarillo', 'naranja', 'rosa', 
     'violeta', 'otro'
   ];
 
@@ -67,6 +67,26 @@ export function PanelFiltersSidebar({ filters, onChange, onReset }: Props) {
               {brands.map(b => (
                 <SelectItem key={b} value={b}>{b}</SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Tipo de Diseño</Label>
+          <Select 
+            value={filters.surfaceTexture || "all"} 
+            onValueChange={(val) => onChange({ ...filters, surfaceTexture: val === "all" ? undefined : val as any })}
+          >
+            <SelectTrigger className="h-11 bg-slate-50 border-none rounded-xl capitalize">
+              <SelectValue placeholder="Liso, Madera, etc." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los diseños</SelectItem>
+              <SelectItem value="liso">Liso / Unicolor</SelectItem>
+              <SelectItem value="madera">Maderas</SelectItem>
+              <SelectItem value="textil">Textiles</SelectItem>
+              <SelectItem value="cementicio">Cementicios / Piedra</SelectItem>
+              <SelectItem value="metal">Metálicos</SelectItem>
             </SelectContent>
           </Select>
         </div>

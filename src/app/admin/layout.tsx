@@ -8,13 +8,17 @@ import {
   ChevronRight,
   Home,
   FileUp,
-  Menu
+  Menu,
+  Users,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useUser } from "@/firebase";
 
 function SidebarContent({ pathname, navigation }: { pathname: string, navigation: any[] }) {
+  const { logout } = useUser();
   return (
     <div className="border-r bg-white h-full p-6 flex flex-col">
       <div className="flex items-center gap-2 mb-10 px-2">
@@ -53,6 +57,13 @@ function SidebarContent({ pathname, navigation }: { pathname: string, navigation
             <Home className="h-4 w-4" /> Ver Web Pública
           </Button>
         </Link>
+        <Button 
+          variant="ghost" 
+          onClick={() => logout()}
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+        >
+          <LogOut className="h-4 w-4" /> Cerrar Sesión
+        </Button>
       </div>
     </div>
   );
@@ -65,6 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { label: "Tableros", icon: Package, href: "/admin/panels" },
     { label: "Importadores", icon: FileUp, href: "/admin/import" },
+    { label: "Seguimiento", icon: Users, href: "/admin/users" },
   ];
 
   return (

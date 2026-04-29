@@ -2,14 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Menu, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/firebase";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, role, logout } = useUser();
+
+  const isAdmin = role === 'administrador';
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -34,33 +40,19 @@ export function Navbar() {
             >
               Catálogo
             </Link>
-            <Link 
-              href="/customizer" 
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === "/customizer" ? "text-primary" : "text-muted-foreground"
-              )}
-            >
-              Personalizador 3D
-            </Link>
-            <Link 
-              href="/customizer" 
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === "/customizer" ? "text-primary" : "text-muted-foreground"
-              )}
-            >
-              Personalizador 3D
-            </Link>
-            <Link 
-              href="/admin" 
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname.startsWith("/admin") ? "text-primary" : "text-muted-foreground"
-              )}
-            >
-              Administración
-            </Link>
+            {isAdmin && (
+              <>
+                <Link 
+                  href="/admin" 
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname.startsWith("/admin") ? "text-primary" : "text-muted-foreground"
+                  )}
+                >
+                  Administración
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -69,13 +61,46 @@ export function Navbar() {
             {isMenuOpen ? <X /> : <Menu />}
           </Button>
           
-          <div className="hidden md:flex items-center gap-2">
-            <Link href="/admin">
-              <Button variant="outline" size="sm" className="gap-2">
-                <LayoutDashboard className="h-4 w-4" />
-                Panel Admin
-              </Button>
-            </Link>
+          <div className="flex items-center gap-4">
+            {isAdmin && (
+              <div className="hidden md:flex items-center gap-2">
+                <Link href="/admin">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                    Panel Admin
+                  </Button>
+                </Link>
+              </div>
+            )}
+
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10 border border-slate-200">
+                      <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
+                        {user.username?.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.username}</p>
+                      <p className="text-xs leading-none text-muted-foreground capitalize">
+                        Rol: {role}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Cerrar Sesión</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>
@@ -91,33 +116,27 @@ export function Navbar() {
             >
               Catálogo
             </Link>
-            <Link 
-              href="/customizer" 
-              onClick={() => setIsMenuOpen(false)}
-              className="text-sm font-medium p-2 rounded-md hover:bg-accent"
-            >
-              Personalizador 3D
-            </Link>
-            <Link 
-              href="/customizer" 
-              onClick={() => setIsMenuOpen(false)}
-              className="text-sm font-medium p-2 rounded-md hover:bg-accent"
-            >
-              Personalizador 3D
-            </Link>
-            <Link 
-              href="/admin" 
-              onClick={() => setIsMenuOpen(false)}
-              className="text-sm font-medium p-2 rounded-md hover:bg-accent"
-            >
-              Administración
-            </Link>
-            <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full gap-2">
-                <LayoutDashboard className="h-4 w-4" />
-                Panel Admin
-              </Button>
-            </Link>
+            {isAdmin && (
+              <>
+                <Link 
+                  href="/admin" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-sm font-medium p-2 rounded-md hover:bg-accent"
+                >
+                  Administración
+                </Link>
+                <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                    Panel Admin
+                  </Button>
+                </Link>
+              </>
+            )}
+            <Button variant="ghost" onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full justify-start gap-2 text-destructive">
+              <LogOut className="h-4 w-4" />
+              Cerrar Sesión
+            </Button>
           </div>
         </div>
       )}

@@ -48,6 +48,7 @@ import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
 
 const BRANDS = ["Egger", "Faplac", "Arauco", "Otro"];
+const MATERIALS = ["MDF", "MDP"];
 const COLOR_PARENTS = ['blanco', 'beige', 'gris', 'negro', 'marron', 'rojo', 'verde', 'azul', 'amarillo', 'naranja', 'rosa', 'violeta', 'otro'];
 
 export default function AdminPanelsPage() {
@@ -58,6 +59,7 @@ export default function AdminPanelsPage() {
   // Filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [filterBrand, setFilterBrand] = useState("all");
+  const [filterSurfaceTexture, setFilterSurfaceTexture] = useState("all");
   const [filterColor, setFilterColor] = useState("all");
   const [filterGrain, setFilterGrain] = useState("all"); // 'all', 'yes', 'no'
   const [showOnlyMissingImages, setShowOnlyMissingImages] = useState(false);
@@ -85,14 +87,17 @@ export default function AdminPanelsPage() {
       // 2. Filtro de Marca
       if (filterBrand !== "all" && p.brand !== filterBrand) return false;
 
-      // 3. Filtro de Color Padre (Normalizado)
+      // 3. Filtro de Diseño (Madera, Textil, etc)
+      if (filterSurfaceTexture !== "all" && p.surfaceTexture !== filterSurfaceTexture) return false;
+
+      // 4. Filtro de Color Padre (Normalizado)
       if (filterColor !== "all" && p.colorParent !== filterColor) return false;
 
-      // 4. Filtro de Veta (hasGrain)
+      // 5. Filtro de Veta (hasGrain)
       if (filterGrain === "yes" && !p.hasGrain) return false;
       if (filterGrain === "no" && p.hasGrain) return false;
       
-      // 5. Filtro de Imágenes faltantes
+      // 6. Filtro de Imágenes faltantes
       if (showOnlyMissingImages) {
         const isMissing = !p.mainImage || p.mainImage.includes('placehold.co') || p.mainImage.includes('Subir+Imagen');
         if (!isMissing) return false;
@@ -100,7 +105,7 @@ export default function AdminPanelsPage() {
       
       return true;
     });
-  }, [items, searchTerm, filterBrand, filterColor, filterGrain, showOnlyMissingImages]);
+  }, [items, searchTerm, filterBrand, filterSurfaceTexture, filterColor, filterGrain, showOnlyMissingImages]);
 
   const toggleVisibility = async (panelId: string, currentStatus: boolean) => {
     if (!db) return;
@@ -164,6 +169,20 @@ export default function AdminPanelsPage() {
             <SelectContent>
               <SelectItem value="all">Todas las Marcas</SelectItem>
               {BRANDS.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          
+          <Select value={filterSurfaceTexture} onValueChange={setFilterSurfaceTexture}>
+            <SelectTrigger className="w-[130px] h-10">
+              <SelectValue placeholder="Diseño" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todo Diseño</SelectItem>
+              <SelectItem value="liso">Lisos</SelectItem>
+              <SelectItem value="madera">Maderas</SelectItem>
+              <SelectItem value="textil">Textiles</SelectItem>
+              <SelectItem value="cementicio">Cemento/Piedra</SelectItem>
+              <SelectItem value="metal">Metales</SelectItem>
             </SelectContent>
           </Select>
 

@@ -12,20 +12,24 @@ if (typeof process !== 'undefined' && typeof process.setMaxListeners === 'functi
   process.setMaxListeners(20);
 }
 
-export function initializeFirebase() {
-  if (!getApps().length) {
-    let firebaseApp;
-    try {
-      firebaseApp = initializeApp(firebaseConfig);
-    } catch (e) {
-      console.error('Firebase initialization error', e);
-      throw e;
-    }
+let cachedApp: FirebaseApp | null = null;
 
-    return getSdks(firebaseApp);
+export function initializeFirebase() {
+  if (cachedApp) return getSdks(cachedApp);
+
+  const apps = getApps();
+  if (apps.length > 0) {
+    cachedApp = apps[0];
+    return getSdks(cachedApp);
   }
 
-  return getSdks(getApp());
+  try {
+    cachedApp = initializeApp(firebaseConfig);
+    return getSdks(cachedApp);
+  } catch (e) {
+    console.error('Firebase initialization error', e);
+    throw e;
+  }
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {

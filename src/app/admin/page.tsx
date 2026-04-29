@@ -2,12 +2,14 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, Eye, AlertCircle, ShoppingBag, Loader2, TrendingUp, History } from "lucide-react";
+import { Package, Eye, AlertCircle, ShoppingBag, Loader2, TrendingUp, History, Users } from "lucide-react";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, limit, orderBy } from "firebase/firestore";
 import { Panel } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { getUserStats, getTopPanels } from "@/lib/activity-actions";
 
 export default function AdminDashboard() {
   const db = useFirestore();
@@ -22,10 +24,30 @@ export default function AdminDashboard() {
     return query(collection(db, 'panels'), orderBy('updatedAt', 'desc'), limit(5));
   }, [db]);
 
-  const { data: allPanels, isLoading } = useCollection<Panel>(panelsQuery);
-  const { data: recentPanels } = useCollection<Panel>(recentPanelsQuery);
+  const { data: allPanels, isLoading: isPanelsLoading } = useCollection<Panel>(panelsQuery);
+  const [activityData, setActivityData] = useState<{ users: any[], activities: any[] } | null>(null);
+  const [topPanels, setTopPanels] = useState<any[]>([]);
+  const [isActivityLoading, setIsActivityLoading] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    async function loadActivity() {
+      try {
+        const [stats, top] = await Promise.all([
+          getUserStats(),
+          getTopPanels()
+        ]);
+        setActivityData(stats as any);
+        setTopPanels(top);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsActivityLoading(false);
+      }
+    }
+    loadActivity();
+  }, []);
+
+  if (isPanelsLoading || isActivityLoading) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -36,11 +58,28 @@ export default function AdminDashboard() {
 
   const panels = allPanels || [];
 
+  // Agrupar última actividad por usuario
+  const userSummaries = activityData?.users.map(user => {
+    const lastView = activityData.activities.find(a => a.username === user.username);
+    return {
+      username: user.username,
+      lastLogin: user.lastLogin,
+      lastPanel: lastView?.panelName || 'Ninguno'
+    };
+  }).sort((a, b) => {
+    const timeA = a.lastLogin?.seconds || 0;
+    const timeB = b.lastLogin?.seconds || 0;
+    return timeB - timeA;
+  }) || [];
+
   const stats = [
     { title: "Total Paneles", value: panels.length, icon: Package, color: "text-blue-600", bg: "bg-blue-50" },
     { title: "Visibles en Web", value: panels.filter(p => p.visible).length, icon: Eye, color: "text-green-600", bg: "bg-green-50" },
     { title: "Stock Crítico", value: panels.filter(p => p.stock < 10).length, icon: AlertCircle, color: "text-red-600", bg: "bg-red-50" },
-    { title: "Marcas Activas", value: new Set(panels.map(p => p.brand)).size, icon: ShoppingBag, color: "text-purple-600", bg: "bg-purple-50" },
+    { title: "Activos Hoy", value: userSummaries.filter(u => {
+        const todayKey = new Date().toISOString().split('T')[0];
+        return u.lastLogin && new Date(u.lastLogin.seconds * 1000).toISOString().split('T')[0] === todayKey;
+      }).length, icon: Users, color: "text-indigo-600", bg: "bg-indigo-50" },
   ];
 
   return (
@@ -76,24 +115,41 @@ export default function AdminDashboard() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="flex items-center gap-2">
               <History className="h-5 w-5 text-slate-400" />
-              <CardTitle className="text-lg">Actualizaciones Recientes</CardTitle>
+              <CardTitle className="text-lg">Actividad de Usuarios</CardTitle>
             </div>
-            <Link href="/admin/panels" className="text-xs font-bold text-primary hover:underline">Ver todos</Link>
+            <Link href="/admin/users" className="text-xs font-bold text-primary hover:underline">Ver detalle</Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-1">
-              {(recentPanels || []).length === 0 ? (
-                <p className="text-center py-10 text-muted-foreground text-sm">No hay actividad reciente.</p>
+              {userSummaries.length === 0 ? (
+                <p className="text-center py-10 text-muted-foreground text-sm">Sin actividad de usuarios registrada.</p>
               ) : (
-                (recentPanels || []).map(panel => (
-                  <div key={panel.id} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors border-b border-slate-50 last:border-0">
-                    <div className="flex flex-col">
-                      <span className="font-bold text-sm text-slate-800">{panel.name}</span>
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-widest">{panel.brand} • {panel.thickness}mm</span>
+                userSummaries.map(user => {
+                  const todayKey = new Date().toISOString().split('T')[0];
+                  const loggedToday = user.lastLogin && new Date(user.lastLogin.seconds * 1000).toISOString().split('T')[0] === todayKey;
+                  
+                  return (
+                    <div key={user.username} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors border-b border-slate-50 last:border-0">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-slate-800">{user.username}</span>
+                          {loggedToday && (
+                            <Badge className="bg-green-500/10 text-green-600 border-none text-[8px] h-4 font-bold px-1.5">HOY</Badge>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
+                          Último: {user.lastPanel}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase">Conexión</p>
+                        <p className="text-[10px] font-medium">
+                          {user.lastLogin ? new Date(user.lastLogin.seconds * 1000).toLocaleDateString() : 'N/A'}
+                        </p>
+                      </div>
                     </div>
-                    <Badge variant="secondary" className="text-[10px] font-bold">Sincronizado</Badge>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </CardContent>
@@ -130,6 +186,54 @@ export default function AdminDashboard() {
               )}
             </div>
           </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <Card className="border-none shadow-sm lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-indigo-400" />
+              <CardTitle className="text-lg">Top 10 Más Visitados</CardTitle>
+            </div>
+            <Badge variant="outline" className="text-[10px] uppercase font-bold">Ranking Global</Badge>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {topPanels.length === 0 ? (
+                <p className="text-center py-10 text-muted-foreground text-sm col-span-2">Esperando datos de visitas...</p>
+              ) : (
+                topPanels.map((item, index) => (
+                  <div key={item.id} className="flex items-center gap-4 p-3 bg-slate-50 rounded-xl">
+                    <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center font-bold text-xs text-indigo-600 shadow-sm">
+                      #{index + 1}
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="font-bold text-sm truncate">{item.name}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase">{item.views} visitas únicas diarias</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-none shadow-sm bg-indigo-600 text-white overflow-hidden relative">
+          <CardHeader>
+            <CardTitle className="text-white">Tips de Gestión</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-white/10 p-4 rounded-xl border border-white/10">
+              <p className="text-xs font-bold uppercase mb-1 opacity-70">Tendencias</p>
+              <p className="text-sm font-medium">Observa los tableros más visitados para ajustar tus promociones de stock.</p>
+            </div>
+            <div className="bg-white/10 p-4 rounded-xl border border-white/10">
+              <p className="text-xs font-bold uppercase mb-1 opacity-70">Optimización</p>
+              <p className="text-sm font-medium">Los datos se actualizan cada vez que un usuario nuevo consulta un tablero cada día.</p>
+            </div>
+          </CardContent>
+          <TrendingUp className="absolute bottom-[-20px] right-[-20px] h-40 w-40 opacity-10" />
         </Card>
       </div>
     </div>

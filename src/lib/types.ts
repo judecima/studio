@@ -24,6 +24,8 @@ export type ScoreBreakdown = {
 
 export type PanelFilters = {
   brand?: string;
+  material?: string;
+  surfaceTexture?: SurfaceTexture;
   minWidth?: number;
   maxWidth?: number;
   minHeight?: number;
@@ -37,6 +39,7 @@ export type Panel = {
   id: string;
   name: string;
   brand: string;
+  material: string; // MDF, MDP, etc.
   width: number;
   height: number;
   thickness: number;

@@ -11,11 +11,14 @@ type FirebaseContextType = {
   db: any | null;
   
   // Mocks para evitar crasheos en componentes que leían el AuthState
-  user: null;
-  role: 'admin'; 
+  user: any | null;
+  role: 'administrador' | 'usuario' | null; 
   isUserLoading: boolean; 
   userError: Error | null;
   areServicesAvailable: boolean;
+  logout: () => Promise<void>;
+  checkSession: () => Promise<void>;
+  setSession: (user: any, role: any) => void;
 };
 
 const FirebaseContext = createContext<FirebaseContextType>({
@@ -25,10 +28,13 @@ const FirebaseContext = createContext<FirebaseContextType>({
   auth: null,
   db: null,
   user: null,
-  role: 'admin',
+  role: null,
   isUserLoading: true,
   userError: null,
-  areServicesAvailable: false
+  areServicesAvailable: false,
+  logout: async () => {},
+  checkSession: async () => {},
+  setSession: () => {}
 });
 
 export const useFirebase = () => useContext(FirebaseContext);
@@ -41,7 +47,8 @@ export const useUser = () => {
     user: context.user,
     role: context.role,
     isUserLoading: context.isUserLoading,
-    userError: context.userError
+    userError: context.userError,
+    logout: context.logout
   };
 };
 
@@ -69,36 +76,64 @@ export function useMemoFirebase<T>(factory: () => T, deps: any[]): T & {__memo?:
   return result;
 }
 
+import { getSession, logout as serverLogout } from '@/lib/auth-actions';
+
 export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   const [contextState, setContextState] = useState<Partial<FirebaseContextType>>({
     isUserLoading: true,
-    role: 'admin'
+    role: null
   });
 
-  useEffect(() => {
-    let app, fs;
-    try {
-      const initResult = initializeFirebase();
-      app = initResult.firebaseApp;
-      fs = initResult.firestore;
-      
-      setContextState({
-        firebaseApp: app,
-        firestore: fs,
-        db: fs,
-        storage: initResult.storage,
-        auth: null,
-        user: null,
-        role: 'admin',
-        isUserLoading: false,
-        userError: null,
-        areServicesAvailable: true
-      });
+  const logout = async () => {
+    await serverLogout();
+    setContextState(prev => ({ ...prev, user: null, role: null }));
+    window.location.href = '/login';
+  };
 
-    } catch (error: any) {
-      console.error("Firebase Initialization Error:", error);
-      setContextState(prev => ({ ...prev, isUserLoading: false, userError: error, areServicesAvailable: false }));
-    }
+  const checkSession = async () => {
+    const session = await getSession();
+    setContextState(prev => ({
+      ...prev,
+      user: session ? { username: session.username } : null,
+      role: session?.role || null,
+      isUserLoading: false
+    }));
+  };
+
+  const setSession = (user: any, role: any) => {
+    setContextState(prev => ({
+      ...prev,
+      user,
+      role,
+      isUserLoading: false
+    }));
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const initResult = initializeFirebase();
+        const session = await getSession();
+        
+        setContextState({
+          firebaseApp: initResult.firebaseApp,
+          firestore: initResult.firestore,
+          db: initResult.firestore,
+          storage: initResult.storage,
+          user: session ? { username: session.username } : null,
+          role: session?.role || null,
+          isUserLoading: false,
+          userError: null,
+          areServicesAvailable: true
+        });
+
+      } catch (error: any) {
+        console.error("Firebase Initialization Error:", error);
+        setContextState(prev => ({ ...prev, isUserLoading: false, userError: error, areServicesAvailable: false }));
+      }
+    };
+
+    init();
   }, []);
 
   return (
@@ -109,11 +144,14 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
         storage: contextState.storage || null,
         db: contextState.firestore || null,
         auth: null,
-        user: null,
-        role: contextState.role || 'admin',
+        user: contextState.user || null,
+        role: contextState.role || null,
         isUserLoading: contextState.isUserLoading ?? false,
         userError: contextState.userError || null,
-        areServicesAvailable: contextState.areServicesAvailable ?? false
+        areServicesAvailable: contextState.areServicesAvailable ?? false,
+        logout,
+        checkSession,
+        setSession
       }}
     >
       {children}

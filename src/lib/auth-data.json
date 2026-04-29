@@ -1,0 +1,37 @@
+[
+  {
+    "username": "ch_arquimax",
+    "password": "Onf2T0OUh9YO",
+    "role": "usuario"
+  },
+  {
+    "username": "sp_arquimax",
+    "password": "OYXLeuT3XK_!",
+    "role": "usuario"
+  },
+  {
+    "username": "lb_arquimax",
+    "password": "IG+0)1ddGHZO",
+    "role": "usuario"
+  },
+  {
+    "username": "rs_arquimax",
+    "password": "_athy5wFcaYe",
+    "role": "usuario"
+  },
+  {
+    "username": "edu_arquimax",
+    "password": "BC)VC^aX*Llb",
+    "role": "administrador"
+  },
+  {
+    "username": "lucas_arquimax",
+    "password": "OZPXN5_nmO1h",
+    "role": "administrador"
+  },
+  {
+    "username": "ju_admin",
+    "password": "S%@93ybXQ9zB",
+    "role": "administrador"
+  }
+]

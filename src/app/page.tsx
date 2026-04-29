@@ -26,6 +26,7 @@ export default function Home() {
     if (!panels) return [];
     return panels.filter(panel => {
       if (filters.brand && panel.brand !== filters.brand) return false;
+      if (filters.surfaceTexture && panel.surfaceTexture !== filters.surfaceTexture) return false;
       if (filters.search && !panel.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
       if (filters.hasGrain !== undefined && panel.hasGrain !== filters.hasGrain) return false;
       if (filters.colorParent && panel.colorParent !== filters.colorParent) return false;

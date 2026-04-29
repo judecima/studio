@@ -49,7 +49,7 @@ import { useRouter } from "next/navigation";
 import { COLOR_PARENTS_LAB, SUB_LEVELS } from "@/lib/equivalences/classifier";
 
 // ENUMS ACTUALIZADOS (v6.6)
-const COLOR_PARENTS = ['blanco', 'beige', 'gris', 'negro', 'marron', 'rojo', 'verde', 'azul', 'naranja', 'rosa', 'violeta', 'otro'] as const;
+const COLOR_PARENTS = ['blanco', 'beige', 'gris', 'negro', 'marron', 'rojo', 'verde', 'azul', 'amarillo', 'naranja', 'rosa', 'violeta', 'otro'] as const;
 const COLOR_SUBS = ['muy claro', 'claro', 'medio claro', 'medio oscuro', 'oscuro', 'muy oscuro'] as const;
 const TEXTURES = ['liso', 'madera', 'textil', 'cementicio', 'piedra', 'metal', 'otro'] as const;
 const FINISHES = ['mate', 'brillo', 'satinado', 'texturado', 'supermate'] as const;

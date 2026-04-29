@@ -12,6 +12,8 @@ import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
 import { doc, query, collection, where, documentId, getDocs } from "firebase/firestore";
 import { Panel, Equivalence } from "@/lib/types";
 import { PanelCard } from "@/components/PanelCard";
+import { useUser } from "@/firebase";
+import { logActivity } from "@/lib/activity-actions";
 
 function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetPanel: any }) {
   const [allMatches, setAllMatches] = useState<any[]>([]);
@@ -144,6 +146,23 @@ export default function PanelDetailPage() {
   }, [db, id]);
 
   const { data: panel, isLoading: isPanelLoading } = useDoc<Panel>(panelRef);
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (panel && user?.username && id) {
+      // Evitar múltiples logs del mismo panel en la misma sesión/navegación
+      const sessionKey = `view_log_${user.username}_${id}`;
+      const hasLogged = sessionStorage.getItem(sessionKey);
+      
+      if (!hasLogged) {
+        logActivity(user.username, 'view_panel', {
+          panelId: id as string,
+          panelName: panel.name
+        });
+        sessionStorage.setItem(sessionKey, 'true');
+      }
+    }
+  }, [panel, user?.username, id]);
 
   if (isPanelLoading) {
     return (
