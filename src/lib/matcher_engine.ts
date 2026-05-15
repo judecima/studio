@@ -10,8 +10,8 @@ export function findTopMatches(target: ClassifiedPanel, library: ClassifiedPanel
   return library
     .filter(p => p.id !== target.id) // No compararse consigo mismo
     .map(panel => {
-      const score = calculateScore(target, panel);
-      return { ...panel, matchScore: score };
+      const breakdown = calculateScore(target, panel);
+      return { ...panel, matchScore: breakdown.total };
     })
     .sort((a, b) => b.matchScore - a.matchScore) // Mayor score = mejor match
     .slice(0, limit);

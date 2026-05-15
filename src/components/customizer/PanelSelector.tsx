@@ -51,7 +51,7 @@ export default function PanelSelector({ label, selectedPanel, onSelect, zone }: 
     <div className="space-y-2">
       <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{label}</label>
       
-      <Dialog open={open} onSetOpen={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <div 
             className={`

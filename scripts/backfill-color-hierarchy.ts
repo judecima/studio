@@ -66,7 +66,7 @@ async function backfill() {
         let bestParent = COLOR_PARENTS[0];
         let minDE = Infinity;
         for (const parent of COLOR_PARENTS) {
-          const dE = de2000(lab, parent.lab);
+          const dE = de2000({ mode: 'lab', ...lab }, { mode: 'lab', ...parent.lab });
           if (dE < minDE) {
             minDE = dE;
             bestParent = parent;

@@ -51,9 +51,9 @@ export async function extractColorFromImage(buffer: Buffer): Promise<{ hex: stri
     return {
       hex,
       lab: { 
-        l: Math.round(lab.l * 100) / 100, 
-        a: Math.round(lab.a * 100) / 100, 
-        b: Math.round(lab.b * 100) / 100 
+        l: Math.round((lab.l || 0) * 100) / 100, 
+        a: Math.round((lab.a || 0) * 100) / 100, 
+        b: Math.round((lab.b || 0) * 100) / 100 
       }
     };
   } catch (error) {
@@ -76,9 +76,9 @@ export async function getColorFromNcs(ncsCode: string): Promise<{ hex: string; l
       return {
         hex: masterHex,
         lab: { 
-          l: Math.round(lab.l * 100) / 100, 
-          a: Math.round(lab.a * 100) / 100, 
-          b: Math.round(lab.b * 100) / 100 
+          l: Math.round((lab.l || 0) * 100) / 100, 
+          a: Math.round((lab.a || 0) * 100) / 100, 
+          b: Math.round((lab.b || 0) * 100) / 100 
         }
       };
     }
@@ -93,9 +93,9 @@ export async function getColorFromNcs(ncsCode: string): Promise<{ hex: string; l
         return {
           hex,
           lab: { 
-            l: Math.round(lab.l * 100) / 100, 
-            a: Math.round(lab.a * 100) / 100, 
-            b: Math.round(lab.b * 100) / 100 
+            l: Math.round((lab.l || 0) * 100) / 100, 
+            a: Math.round((lab.a || 0) * 100) / 100, 
+            b: Math.round((lab.b || 0) * 100) / 100 
           }
         };
       }

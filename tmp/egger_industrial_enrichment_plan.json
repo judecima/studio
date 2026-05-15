@@ -1,0 +1,5075 @@
+{
+  "summary": {
+    "totalPanels": 144,
+    "eggerPanels": 82,
+    "autoFixActions": 153,
+    "reviewRequiredActions": 160,
+    "manualReviewRequiredActions": 0,
+    "blockedByManualSource": 0
+  },
+  "actions": [
+    {
+      "panelId": "egger-f187-st9",
+      "panelName": "F187 ST9 Hormigón Chicago gris oscuro",
+      "panelCode": "F187 ST9",
+      "field": "materialType",
+      "proposedValue": "cemento",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token cemento",
+      "evidence": [
+        "Code: F187 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f187-st9",
+      "panelName": "F187 ST9 Hormigón Chicago gris oscuro",
+      "panelCode": "F187 ST9",
+      "field": "surfaceTexture",
+      "currentValue": "otro",
+      "proposedValue": "cementicio",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token cemento",
+      "evidence": [
+        "Code: F187 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f187-st9",
+      "panelName": "F187 ST9 Hormigón Chicago gris oscuro",
+      "panelCode": "F187 ST9",
+      "field": "finish",
+      "proposedValue": "mate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textura ST9 es mate",
+      "evidence": [
+        "Code: F187 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f187-st9",
+      "panelName": "F187 ST9 Hormigón Chicago gris oscuro",
+      "panelCode": "F187 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F187 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f187-st9",
+      "panelName": "F187 ST9 Hormigón Chicago gris oscuro",
+      "panelCode": "F187 ST9",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F187 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f206-st9",
+      "panelName": "F206 ST9 Pietra Grigia negro",
+      "panelCode": "F206 ST9",
+      "field": "materialType",
+      "proposedValue": "piedra",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token piedra",
+      "evidence": [
+        "Code: F206 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f206-st9",
+      "panelName": "F206 ST9 Pietra Grigia negro",
+      "panelCode": "F206 ST9",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "piedra",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token piedra",
+      "evidence": [
+        "Code: F206 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f206-st9",
+      "panelName": "F206 ST9 Pietra Grigia negro",
+      "panelCode": "F206 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F206 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f206-st9",
+      "panelName": "F206 ST9 Pietra Grigia negro",
+      "panelCode": "F206 ST9",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F206 ST9",
+        "Prefix: F",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-f416-st10",
+      "panelName": "F416 ST10 Textil beige",
+      "panelCode": "F416 ST10",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token textil",
+      "evidence": [
+        "Code: F416 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f416-st10",
+      "panelName": "F416 ST10 Textil beige",
+      "panelCode": "F416 ST10",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "Code: F416 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f416-st10",
+      "panelName": "F416 ST10 Textil beige",
+      "panelCode": "F416 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F416 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f416-st10",
+      "panelName": "F416 ST10 Textil beige",
+      "panelCode": "F416 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F416 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f416-st10",
+      "panelName": "F416 ST10 Textil beige",
+      "panelCode": "F416 ST10",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F416 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f417-st10",
+      "panelName": "F417 ST10 Textil gris",
+      "panelCode": "F417 ST10",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token textil",
+      "evidence": [
+        "Code: F417 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f417-st10",
+      "panelName": "F417 ST10 Textil gris",
+      "panelCode": "F417 ST10",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "Code: F417 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f417-st10",
+      "panelName": "F417 ST10 Textil gris",
+      "panelCode": "F417 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F417 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f417-st10",
+      "panelName": "F417 ST10 Textil gris",
+      "panelCode": "F417 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F417 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f417-st10",
+      "panelName": "F417 ST10 Textil gris",
+      "panelCode": "F417 ST10",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F417 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f422-st10",
+      "panelName": "F422 ST10 Lino blanco",
+      "panelCode": "F422 ST10",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token textil",
+      "evidence": [
+        "Code: F422 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f422-st10",
+      "panelName": "F422 ST10 Lino blanco",
+      "panelCode": "F422 ST10",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "Code: F422 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f422-st10",
+      "panelName": "F422 ST10 Lino blanco",
+      "panelCode": "F422 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F422 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f422-st10",
+      "panelName": "F422 ST10 Lino blanco",
+      "panelCode": "F422 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F422 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f422-st10",
+      "panelName": "F422 ST10 Lino blanco",
+      "panelCode": "F422 ST10",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F422 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f424-st10",
+      "panelName": "F424 ST10 Lino topo",
+      "panelCode": "F424 ST10",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token textil",
+      "evidence": [
+        "Code: F424 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f424-st10",
+      "panelName": "F424 ST10 Lino topo",
+      "panelCode": "F424 ST10",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "Code: F424 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f424-st10",
+      "panelName": "F424 ST10 Lino topo",
+      "panelCode": "F424 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F424 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f424-st10",
+      "panelName": "F424 ST10 Lino topo",
+      "panelCode": "F424 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F424 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f424-st10",
+      "panelName": "F424 ST10 Lino topo",
+      "panelCode": "F424 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F424 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f433-st10",
+      "panelName": "F433 ST10 Lino antracita",
+      "panelCode": "F433 ST10",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token textil",
+      "evidence": [
+        "Code: F433 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f433-st10",
+      "panelName": "F433 ST10 Lino antracita",
+      "panelCode": "F433 ST10",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "Code: F433 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f433-st10",
+      "panelName": "F433 ST10 Lino antracita",
+      "panelCode": "F433 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F433 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f433-st10",
+      "panelName": "F433 ST10 Lino antracita",
+      "panelCode": "F433 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F433 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f433-st10",
+      "panelName": "F433 ST10 Lino antracita",
+      "panelCode": "F433 ST10",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F433 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f500-st20",
+      "panelName": "F500 ST20 Metallic inox",
+      "panelCode": "F500 ST20",
+      "field": "materialType",
+      "proposedValue": "metal",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token metal",
+      "evidence": [
+        "Code: F500 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f500-st20",
+      "panelName": "F500 ST20 Metallic inox",
+      "panelCode": "F500 ST20",
+      "field": "directionality",
+      "proposedValue": "vertical",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Metal suele tener dirección",
+      "evidence": [
+        "Code: F500 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f500-st20",
+      "panelName": "F500 ST20 Metallic inox",
+      "panelCode": "F500 ST20",
+      "field": "finish",
+      "currentValue": "satinado",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F500 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f500-st20",
+      "panelName": "F500 ST20 Metallic inox",
+      "panelCode": "F500 ST20",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F500 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f500-st20",
+      "panelName": "F500 ST20 Metallic inox",
+      "panelCode": "F500 ST20",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F500 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f527-st20",
+      "panelName": "F527 ST20 Metal cepillado oro",
+      "panelCode": "F527 ST20",
+      "field": "materialType",
+      "proposedValue": "metal",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token metal",
+      "evidence": [
+        "Code: F527 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f527-st20",
+      "panelName": "F527 ST20 Metal cepillado oro",
+      "panelCode": "F527 ST20",
+      "field": "directionality",
+      "proposedValue": "vertical",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Metal suele tener dirección",
+      "evidence": [
+        "Code: F527 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f527-st20",
+      "panelName": "F527 ST20 Metal cepillado oro",
+      "panelCode": "F527 ST20",
+      "field": "finish",
+      "currentValue": "satinado",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F527 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f527-st20",
+      "panelName": "F527 ST20 Metal cepillado oro",
+      "panelCode": "F527 ST20",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F527 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f527-st20",
+      "panelName": "F527 ST20 Metal cepillado oro",
+      "panelCode": "F527 ST20",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F527 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f528-st20",
+      "panelName": "F528 ST20 Metal cepillado bronce",
+      "panelCode": "F528 ST20",
+      "field": "materialType",
+      "proposedValue": "metal",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token metal",
+      "evidence": [
+        "Code: F528 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f528-st20",
+      "panelName": "F528 ST20 Metal cepillado bronce",
+      "panelCode": "F528 ST20",
+      "field": "directionality",
+      "proposedValue": "vertical",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Metal suele tener dirección",
+      "evidence": [
+        "Code: F528 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f528-st20",
+      "panelName": "F528 ST20 Metal cepillado bronce",
+      "panelCode": "F528 ST20",
+      "field": "finish",
+      "currentValue": "satinado",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F528 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f528-st20",
+      "panelName": "F528 ST20 Metal cepillado bronce",
+      "panelCode": "F528 ST20",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F528 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f528-st20",
+      "panelName": "F528 ST20 Metal cepillado bronce",
+      "panelCode": "F528 ST20",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F528 ST20",
+        "Prefix: F",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-f637-st10",
+      "panelName": "F637 ST10 Chromix blanco",
+      "panelCode": "F637 ST10",
+      "field": "materialType",
+      "proposedValue": "metal",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token metal",
+      "evidence": [
+        "Code: F637 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f637-st10",
+      "panelName": "F637 ST10 Chromix blanco",
+      "panelCode": "F637 ST10",
+      "field": "directionality",
+      "proposedValue": "vertical",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Metal suele tener dirección",
+      "evidence": [
+        "Code: F637 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f637-st10",
+      "panelName": "F637 ST10 Chromix blanco",
+      "panelCode": "F637 ST10",
+      "field": "finish",
+      "currentValue": "satinado",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F637 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f637-st10",
+      "panelName": "F637 ST10 Chromix blanco",
+      "panelCode": "F637 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F637 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f637-st10",
+      "panelName": "F637 ST10 Chromix blanco",
+      "panelCode": "F637 ST10",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F637 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f638-st10",
+      "panelName": "F638 ST10 Chromix plata",
+      "panelCode": "F638 ST10",
+      "field": "materialType",
+      "proposedValue": "metal",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo F con token metal",
+      "evidence": [
+        "Code: F638 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f638-st10",
+      "panelName": "F638 ST10 Chromix plata",
+      "panelCode": "F638 ST10",
+      "field": "directionality",
+      "proposedValue": "vertical",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Metal suele tener dirección",
+      "evidence": [
+        "Code: F638 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f638-st10",
+      "panelName": "F638 ST10 Chromix plata",
+      "panelCode": "F638 ST10",
+      "field": "finish",
+      "currentValue": "satinado",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: F638 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f638-st10",
+      "panelName": "F638 ST10 Chromix plata",
+      "panelCode": "F638 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F638 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-f638-st10",
+      "panelName": "F638 ST10 Chromix plata",
+      "panelCode": "F638 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: F638 ST10",
+        "Prefix: F",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1145-st10",
+      "panelName": "H1145 ST10 Roble Bardolino natural",
+      "panelCode": "H1145 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1145 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1145-st10",
+      "panelName": "H1145 ST10 Roble Bardolino natural",
+      "panelCode": "H1145 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1145 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1145-st10",
+      "panelName": "H1145 ST10 Roble Bardolino natural",
+      "panelCode": "H1145 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1145 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1145-st10",
+      "panelName": "H1145 ST10 Roble Bardolino natural",
+      "panelCode": "H1145 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1145 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1180-st37",
+      "panelName": "H1180 ST37 Roble Halifax natural",
+      "panelCode": "H1180 ST37",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1180 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1180-st37",
+      "panelName": "H1180 ST37 Roble Halifax natural",
+      "panelCode": "H1180 ST37",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "poro_madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST profundas en H indican poro madera",
+      "evidence": [
+        "Code: H1180 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1180-st37",
+      "panelName": "H1180 ST37 Roble Halifax natural",
+      "panelCode": "H1180 ST37",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1180 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1180-st37",
+      "panelName": "H1180 ST37 Roble Halifax natural",
+      "panelCode": "H1180 ST37",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1180 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1181-st37",
+      "panelName": "H1181 ST37 Roble Halifax tabaco",
+      "panelCode": "H1181 ST37",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1181 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1181-st37",
+      "panelName": "H1181 ST37 Roble Halifax tabaco",
+      "panelCode": "H1181 ST37",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "poro_madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST profundas en H indican poro madera",
+      "evidence": [
+        "Code: H1181 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1181-st37",
+      "panelName": "H1181 ST37 Roble Halifax tabaco",
+      "panelCode": "H1181 ST37",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1181 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1181-st37",
+      "panelName": "H1181 ST37 Roble Halifax tabaco",
+      "panelCode": "H1181 ST37",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1181 ST37",
+        "Prefix: H",
+        "ST: ST37"
+      ]
+    },
+    {
+      "panelId": "egger-h1199-st12",
+      "panelName": "H1199 ST12 Roble termo negro",
+      "panelCode": "H1199 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1199 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1199-st12",
+      "panelName": "H1199 ST12 Roble termo negro",
+      "panelCode": "H1199 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1199 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1199-st12",
+      "panelName": "H1199 ST12 Roble termo negro",
+      "panelCode": "H1199 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1199 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1199-st12",
+      "panelName": "H1199 ST12 Roble termo negro",
+      "panelCode": "H1199 ST12",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1199 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1307-st19",
+      "panelName": "H1307 ST19 Nogal Warmia marrón",
+      "panelCode": "H1307 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1307 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1307-st19",
+      "panelName": "H1307 ST19 Nogal Warmia marrón",
+      "panelCode": "H1307 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1307 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1307-st19",
+      "panelName": "H1307 ST19 Nogal Warmia marrón",
+      "panelCode": "H1307 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1307 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1307-st19",
+      "panelName": "H1307 ST19 Nogal Warmia marrón",
+      "panelCode": "H1307 ST19",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1307 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1312-st10",
+      "panelName": "H1312 ST10 Roble Whiteriver beige arena",
+      "panelCode": "H1312 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1312 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1312-st10",
+      "panelName": "H1312 ST10 Roble Whiteriver beige arena",
+      "panelCode": "H1312 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1312 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1312-st10",
+      "panelName": "H1312 ST10 Roble Whiteriver beige arena",
+      "panelCode": "H1312 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1312 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1312-st10",
+      "panelName": "H1312 ST10 Roble Whiteriver beige arena",
+      "panelCode": "H1312 ST10",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1312 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1313-st10",
+      "panelName": "H1313 ST10 Roble Whiteriver gris marrón",
+      "panelCode": "H1313 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1313 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1313-st10",
+      "panelName": "H1313 ST10 Roble Whiteriver gris marrón",
+      "panelCode": "H1313 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1313 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1313-st10",
+      "panelName": "H1313 ST10 Roble Whiteriver gris marrón",
+      "panelCode": "H1313 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1313 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1313-st10",
+      "panelName": "H1313 ST10 Roble Whiteriver gris marrón",
+      "panelCode": "H1313 ST10",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1313 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1367-st40",
+      "panelName": "H1367 ST40 Roble Casella natural claro",
+      "panelCode": "H1367 ST40",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1367 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1367-st40",
+      "panelName": "H1367 ST40 Roble Casella natural claro",
+      "panelCode": "H1367 ST40",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "poro_madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST profundas en H indican poro madera",
+      "evidence": [
+        "Code: H1367 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1367-st40",
+      "panelName": "H1367 ST40 Roble Casella natural claro",
+      "panelCode": "H1367 ST40",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1367 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1367-st40",
+      "panelName": "H1367 ST40 Roble Casella natural claro",
+      "panelCode": "H1367 ST40",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1367 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1369-st40",
+      "panelName": "H1369 ST40 Roble Casella marrón oscuro",
+      "panelCode": "H1369 ST40",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1369 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1369-st40",
+      "panelName": "H1369 ST40 Roble Casella marrón oscuro",
+      "panelCode": "H1369 ST40",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "poro_madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST profundas en H indican poro madera",
+      "evidence": [
+        "Code: H1369 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1369-st40",
+      "panelName": "H1369 ST40 Roble Casella marrón oscuro",
+      "panelCode": "H1369 ST40",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1369 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1369-st40",
+      "panelName": "H1369 ST40 Roble Casella marrón oscuro",
+      "panelCode": "H1369 ST40",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1369 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1386-st40",
+      "panelName": "H1386 ST40 Roble Casella marrón",
+      "panelCode": "H1386 ST40",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1386 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1386-st40",
+      "panelName": "H1386 ST40 Roble Casella marrón",
+      "panelCode": "H1386 ST40",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "poro_madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST profundas en H indican poro madera",
+      "evidence": [
+        "Code: H1386 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1386-st40",
+      "panelName": "H1386 ST40 Roble Casella marrón",
+      "panelCode": "H1386 ST40",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1386 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1386-st40",
+      "panelName": "H1386 ST40 Roble Casella marrón",
+      "panelCode": "H1386 ST40",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1386 ST40",
+        "Prefix: H",
+        "ST: ST40"
+      ]
+    },
+    {
+      "panelId": "egger-h1399-st10",
+      "panelName": "H1399 ST10 Roble Denver marrón trufa",
+      "panelCode": "H1399 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1399 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1399-st10",
+      "panelName": "H1399 ST10 Roble Denver marrón trufa",
+      "panelCode": "H1399 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1399 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1399-st10",
+      "panelName": "H1399 ST10 Roble Denver marrón trufa",
+      "panelCode": "H1399 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1399 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1399-st10",
+      "panelName": "H1399 ST10 Roble Denver marrón trufa",
+      "panelCode": "H1399 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1399 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1401-st22",
+      "panelName": "H1401 ST22 Pino Cascina",
+      "panelCode": "H1401 ST22",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1401 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h1401-st22",
+      "panelName": "H1401 ST22 Pino Cascina",
+      "panelCode": "H1401 ST22",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1401 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h1401-st22",
+      "panelName": "H1401 ST22 Pino Cascina",
+      "panelCode": "H1401 ST22",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1401 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h1401-st22",
+      "panelName": "H1401 ST22 Pino Cascina",
+      "panelCode": "H1401 ST22",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1401 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h1636-st12",
+      "panelName": "H1636 ST12 Cerezo Locarno",
+      "panelCode": "H1636 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1636 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1636-st12",
+      "panelName": "H1636 ST12 Cerezo Locarno",
+      "panelCode": "H1636 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1636 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1636-st12",
+      "panelName": "H1636 ST12 Cerezo Locarno",
+      "panelCode": "H1636 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1636 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1636-st12",
+      "panelName": "H1636 ST12 Cerezo Locarno",
+      "panelCode": "H1636 ST12",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1636 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1710 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1710 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1710 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1710 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h1714-st19",
+      "panelName": "H1714 ST19 Nogal Lincoln",
+      "panelCode": "H1714 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H1714 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1714-st19",
+      "panelName": "H1714 ST19 Nogal Lincoln",
+      "panelCode": "H1714 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H1714 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1714-st19",
+      "panelName": "H1714 ST19 Nogal Lincoln",
+      "panelCode": "H1714 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1714 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h1714-st19",
+      "panelName": "H1714 ST19 Nogal Lincoln",
+      "panelCode": "H1714 ST19",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H1714 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3003-st19",
+      "panelName": "H3003 ST19 Roble Norwich",
+      "panelCode": "H3003 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3003 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3003-st19",
+      "panelName": "H3003 ST19 Roble Norwich",
+      "panelCode": "H3003 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3003 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3003-st19",
+      "panelName": "H3003 ST19 Roble Norwich",
+      "panelCode": "H3003 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3003 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3003-st19",
+      "panelName": "H3003 ST19 Roble Norwich",
+      "panelCode": "H3003 ST19",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3003 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3012-st22",
+      "panelName": "H3012 ST22 Coco bolo",
+      "panelCode": "H3012 ST22",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3012 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3012-st22",
+      "panelName": "H3012 ST22 Coco bolo",
+      "panelCode": "H3012 ST22",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3012 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3012-st22",
+      "panelName": "H3012 ST22 Coco bolo",
+      "panelCode": "H3012 ST22",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3012 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3012-st22",
+      "panelName": "H3012 ST22 Coco bolo",
+      "panelCode": "H3012 ST22",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3012 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3131-st12",
+      "panelName": "H3131 ST12 Roble Davos natural",
+      "panelCode": "H3131 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3131 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3131-st12",
+      "panelName": "H3131 ST12 Roble Davos natural",
+      "panelCode": "H3131 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3131 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3131-st12",
+      "panelName": "H3131 ST12 Roble Davos natural",
+      "panelCode": "H3131 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3131 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3131-st12",
+      "panelName": "H3131 ST12 Roble Davos natural",
+      "panelCode": "H3131 ST12",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3131 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3133-st12",
+      "panelName": "H3133 ST12 Roble Davos trufa marrón",
+      "panelCode": "H3133 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3133 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3133-st12",
+      "panelName": "H3133 ST12 Roble Davos trufa marrón",
+      "panelCode": "H3133 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3133 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3133-st12",
+      "panelName": "H3133 ST12 Roble Davos trufa marrón",
+      "panelCode": "H3133 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3133 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3133-st12",
+      "panelName": "H3133 ST12 Roble Davos trufa marrón",
+      "panelCode": "H3133 ST12",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3133 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3146-st19",
+      "panelName": "H3146 ST19 Roble Lorenzo arena",
+      "panelCode": "H3146 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3146 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3146-st19",
+      "panelName": "H3146 ST19 Roble Lorenzo arena",
+      "panelCode": "H3146 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3146 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3146-st19",
+      "panelName": "H3146 ST19 Roble Lorenzo arena",
+      "panelCode": "H3146 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3146 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3146-st19",
+      "panelName": "H3146 ST19 Roble Lorenzo arena",
+      "panelCode": "H3146 ST19",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3146 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3158-st19",
+      "panelName": "H3158 ST19 Roble Vicenza gris",
+      "panelCode": "H3158 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3158 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3158-st19",
+      "panelName": "H3158 ST19 Roble Vicenza gris",
+      "panelCode": "H3158 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3158 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3158-st19",
+      "panelName": "H3158 ST19 Roble Vicenza gris",
+      "panelCode": "H3158 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3158 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3158-st19",
+      "panelName": "H3158 ST19 Roble Vicenza gris",
+      "panelCode": "H3158 ST19",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3158 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3170-st12",
+      "panelName": "H3170 ST12 Roble Kendal natural",
+      "panelCode": "H3170 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3170 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3170-st12",
+      "panelName": "H3170 ST12 Roble Kendal natural",
+      "panelCode": "H3170 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3170 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3170-st12",
+      "panelName": "H3170 ST12 Roble Kendal natural",
+      "panelCode": "H3170 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3170 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3170-st12",
+      "panelName": "H3170 ST12 Roble Kendal natural",
+      "panelCode": "H3170 ST12",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3170 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3171-st12",
+      "panelName": "H3171 ST12 Roble Kendal encerado",
+      "panelCode": "H3171 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3171 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3171-st12",
+      "panelName": "H3171 ST12 Roble Kendal encerado",
+      "panelCode": "H3171 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3171 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3171-st12",
+      "panelName": "H3171 ST12 Roble Kendal encerado",
+      "panelCode": "H3171 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3171 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3171-st12",
+      "panelName": "H3171 ST12 Roble Kendal encerado",
+      "panelCode": "H3171 ST12",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3171 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3190-st19",
+      "panelName": "H3190 ST19 Fineline Metallic antracita",
+      "panelCode": "H3190 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3190 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3190-st19",
+      "panelName": "H3190 ST19 Fineline Metallic antracita",
+      "panelCode": "H3190 ST19",
+      "field": "finish",
+      "currentValue": "satinado",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3190 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3190-st19",
+      "panelName": "H3190 ST19 Fineline Metallic antracita",
+      "panelCode": "H3190 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3190 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3190-st19",
+      "panelName": "H3190 ST19 Fineline Metallic antracita",
+      "panelCode": "H3190 ST19",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3190 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3331-st10",
+      "panelName": "H3331 ST10 Roble de Nebraska natural",
+      "panelCode": "H3331 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3331 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3331-st10",
+      "panelName": "H3331 ST10 Roble de Nebraska natural",
+      "panelCode": "H3331 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3331 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3331-st10",
+      "panelName": "H3331 ST10 Roble de Nebraska natural",
+      "panelCode": "H3331 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3331 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3331-st10",
+      "panelName": "H3331 ST10 Roble de Nebraska natural",
+      "panelCode": "H3331 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3331 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3332-st10",
+      "panelName": "H3332 ST10 Roble de Nebraska gris",
+      "panelCode": "H3332 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3332 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3332-st10",
+      "panelName": "H3332 ST10 Roble de Nebraska gris",
+      "panelCode": "H3332 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3332 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3332-st10",
+      "panelName": "H3332 ST10 Roble de Nebraska gris",
+      "panelCode": "H3332 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3332 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3332-st10",
+      "panelName": "H3332 ST10 Roble de Nebraska gris",
+      "panelCode": "H3332 ST10",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3332 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3349-st19",
+      "panelName": "H3349 ST19 Roble Kaisersberg",
+      "panelCode": "H3349 ST19",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3349 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3349-st19",
+      "panelName": "H3349 ST19 Roble Kaisersberg",
+      "panelCode": "H3349 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3349 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3349-st19",
+      "panelName": "H3349 ST19 Roble Kaisersberg",
+      "panelCode": "H3349 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3349 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3349-st19",
+      "panelName": "H3349 ST19 Roble Kaisersberg",
+      "panelCode": "H3349 ST19",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3349 ST19",
+        "Prefix: H",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-h3398-st12",
+      "panelName": "H3398 ST12 Roble Kendal coñac",
+      "panelCode": "H3398 ST12",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3398 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3398-st12",
+      "panelName": "H3398 ST12 Roble Kendal coñac",
+      "panelCode": "H3398 ST12",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3398 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3398-st12",
+      "panelName": "H3398 ST12 Roble Kendal coñac",
+      "panelCode": "H3398 ST12",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3398 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3398-st12",
+      "panelName": "H3398 ST12 Roble Kendal coñac",
+      "panelCode": "H3398 ST12",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3398 ST12",
+        "Prefix: H",
+        "ST: ST12"
+      ]
+    },
+    {
+      "panelId": "egger-h3430-st22",
+      "panelName": "H3430 ST22 Pino Aland blanco",
+      "panelCode": "H3430 ST22",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3430 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3430-st22",
+      "panelName": "H3430 ST22 Pino Aland blanco",
+      "panelCode": "H3430 ST22",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3430 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3430-st22",
+      "panelName": "H3430 ST22 Pino Aland blanco",
+      "panelCode": "H3430 ST22",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3430 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3430-st22",
+      "panelName": "H3430 ST22 Pino Aland blanco",
+      "panelCode": "H3430 ST22",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3430 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3433-st22",
+      "panelName": "H3433 ST22 Pino Aland polar",
+      "panelCode": "H3433 ST22",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3433 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3433-st22",
+      "panelName": "H3433 ST22 Pino Aland polar",
+      "panelCode": "H3433 ST22",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3433 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3433-st22",
+      "panelName": "H3433 ST22 Pino Aland polar",
+      "panelCode": "H3433 ST22",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3433 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3433-st22",
+      "panelName": "H3433 ST22 Pino Aland polar",
+      "panelCode": "H3433 ST22",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3433 ST22",
+        "Prefix: H",
+        "ST: ST22"
+      ]
+    },
+    {
+      "panelId": "egger-h3700-st10",
+      "panelName": "H3700 ST10 Nogal del Pacífico natural",
+      "panelCode": "H3700 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3700 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3700-st10",
+      "panelName": "H3700 ST10 Nogal del Pacífico natural",
+      "panelCode": "H3700 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3700 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3700-st10",
+      "panelName": "H3700 ST10 Nogal del Pacífico natural",
+      "panelCode": "H3700 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3700 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3700-st10",
+      "panelName": "H3700 ST10 Nogal del Pacífico natural",
+      "panelCode": "H3700 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3700 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo H indica veta",
+      "evidence": [
+        "Code: H3730 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: H3730 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3730 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: H3730 ST10",
+        "Prefix: H",
+        "ST: ST10"
+      ]
+    },
+    {
+      "panelId": "egger-u114-st9",
+      "panelName": "U114 ST9 Amarillo girasol",
+      "panelCode": "U114 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U114 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u114-st9",
+      "panelName": "U114 ST9 Amarillo girasol",
+      "panelCode": "U114 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U114 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u114-st9",
+      "panelName": "U114 ST9 Amarillo girasol",
+      "panelCode": "U114 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U114 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u250-pm",
+      "panelName": "U250 PM Beige Caramelo",
+      "panelCode": "U250 PM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U250 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u250-pm",
+      "panelName": "U250 PM Beige Caramelo",
+      "panelCode": "U250 PM",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U250 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u250-pm",
+      "panelName": "U250 PM Beige Caramelo",
+      "panelCode": "U250 PM",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U250 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u323-st9",
+      "panelName": "U323 ST9 Rojo cereza",
+      "panelCode": "U323 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U323 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u323-st9",
+      "panelName": "U323 ST9 Rojo cereza",
+      "panelCode": "U323 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U323 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u323-st9",
+      "panelName": "U323 ST9 Rojo cereza",
+      "panelCode": "U323 ST9",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U323 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u325-st9",
+      "panelName": "U325 ST9 Rosa antiguo",
+      "panelCode": "U325 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U325 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u325-st9",
+      "panelName": "U325 ST9 Rosa antiguo",
+      "panelCode": "U325 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U325 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u325-st9",
+      "panelName": "U325 ST9 Rosa antiguo",
+      "panelCode": "U325 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U325 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u350-st9",
+      "panelName": "U350 ST9 Naranja de Siena",
+      "panelCode": "U350 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U350 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u350-st9",
+      "panelName": "U350 ST9 Naranja de Siena",
+      "panelCode": "U350 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U350 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u350-st9",
+      "panelName": "U350 ST9 Naranja de Siena",
+      "panelCode": "U350 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U350 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u398-pm",
+      "panelName": "U398 PM Castaño cassis",
+      "panelCode": "U398 PM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U398 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u398-pm",
+      "panelName": "U398 PM Castaño cassis",
+      "panelCode": "U398 PM",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U398 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u398-pm",
+      "panelName": "U398 PM Castaño cassis",
+      "panelCode": "U398 PM",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U398 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u504-st9",
+      "panelName": "U504 ST9 Azul cósmico",
+      "panelCode": "U504 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U504 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u504-st9",
+      "panelName": "U504 ST9 Azul cósmico",
+      "panelCode": "U504 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U504 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u504-st9",
+      "panelName": "U504 ST9 Azul cósmico",
+      "panelCode": "U504 ST9",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U504 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u599-pm",
+      "panelName": "U599 PM Azul Indigo",
+      "panelCode": "U599 PM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U599 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u599-pm",
+      "panelName": "U599 PM Azul Indigo",
+      "panelCode": "U599 PM",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U599 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u599-pm",
+      "panelName": "U599 PM Azul Indigo",
+      "panelCode": "U599 PM",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U599 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u626-st9",
+      "panelName": "U626 ST9 Verde kiwi",
+      "panelCode": "U626 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U626 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u626-st9",
+      "panelName": "U626 ST9 Verde kiwi",
+      "panelCode": "U626 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U626 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u626-st9",
+      "panelName": "U626 ST9 Verde kiwi",
+      "panelCode": "U626 ST9",
+      "field": "tone",
+      "proposedValue": "medio",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U626 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u665-pm",
+      "panelName": "U665 PM Verde Mineral",
+      "panelCode": "U665 PM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U665 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u665-pm",
+      "panelName": "U665 PM Verde Mineral",
+      "panelCode": "U665 PM",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U665 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u665-pm",
+      "panelName": "U665 PM Verde Mineral",
+      "panelCode": "U665 PM",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U665 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u702-pg",
+      "panelName": "U702 PG Gris Cachemira",
+      "panelCode": "U702 PG",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U702 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u702-pg",
+      "panelName": "U702 PG Gris Cachemira",
+      "panelCode": "U702 PG",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U702 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u702-pg",
+      "panelName": "U702 PG Gris Cachemira",
+      "panelCode": "U702 PG",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U702 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u702-st9",
+      "panelName": "U702 ST9 Gris Cachemira",
+      "panelCode": "U702 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U702 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u702-st9",
+      "panelName": "U702 ST9 Gris Cachemira",
+      "panelCode": "U702 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U702 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u702-st9",
+      "panelName": "U702 ST9 Gris Cachemira",
+      "panelCode": "U702 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U702 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u727",
+      "panelName": "U727 - Gris arcilla",
+      "panelCode": "U727 -",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U727 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u727",
+      "panelName": "U727 - Gris arcilla",
+      "panelCode": "U727 -",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U727 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u727",
+      "panelName": "U727 - Gris arcilla",
+      "panelCode": "U727 -",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U727 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u727-st9",
+      "panelName": "U727 ST9 Gris arcilla",
+      "panelCode": "U727 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U727 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u727-st9",
+      "panelName": "U727 ST9 Gris arcilla",
+      "panelCode": "U727 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U727 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u727-st9",
+      "panelName": "U727 ST9 Gris arcilla",
+      "panelCode": "U727 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U727 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u732",
+      "panelName": "U732 - Gris macadán",
+      "panelCode": "U732 -",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U732 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u732",
+      "panelName": "U732 - Gris macadán",
+      "panelCode": "U732 -",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U732 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u732",
+      "panelName": "U732 - Gris macadán",
+      "panelCode": "U732 -",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U732 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u732-pg",
+      "panelName": "U732 PG Gris macadán",
+      "panelCode": "U732 PG",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U732 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u732-pg",
+      "panelName": "U732 PG Gris macadán",
+      "panelCode": "U732 PG",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U732 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u732-pg",
+      "panelName": "U732 PG Gris macadán",
+      "panelCode": "U732 PG",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U732 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u732-st9",
+      "panelName": "U732 ST9 Gris macadán",
+      "panelCode": "U732 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U732 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u732-st9",
+      "panelName": "U732 ST9 Gris macadán",
+      "panelCode": "U732 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U732 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u732-st9",
+      "panelName": "U732 ST9 Gris macadán",
+      "panelCode": "U732 ST9",
+      "field": "tone",
+      "proposedValue": "oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U732 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u763",
+      "panelName": "U763 - Gris perla",
+      "panelCode": "U763 -",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U763 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u763",
+      "panelName": "U763 - Gris perla",
+      "panelCode": "U763 -",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U763 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u763",
+      "panelName": "U763 - Gris perla",
+      "panelCode": "U763 -",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U763 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u763-st9",
+      "panelName": "U763 ST9 Gris perla",
+      "panelCode": "U763 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U763 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u763-st9",
+      "panelName": "U763 ST9 Gris perla",
+      "panelCode": "U763 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U763 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u763-st9",
+      "panelName": "U763 ST9 Gris perla",
+      "panelCode": "U763 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U763 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u767-st9",
+      "panelName": "U767 ST9 Gris cubanita",
+      "panelCode": "U767 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U767 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u767-st9",
+      "panelName": "U767 ST9 Gris cubanita",
+      "panelCode": "U767 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U767 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u767-st9",
+      "panelName": "U767 ST9 Gris cubanita",
+      "panelCode": "U767 ST9",
+      "field": "tone",
+      "proposedValue": "claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U767 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u963",
+      "panelName": "U963 - Gris sombra",
+      "panelCode": "U963 -",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U963 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u963",
+      "panelName": "U963 - Gris sombra",
+      "panelCode": "U963 -",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U963 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u963",
+      "panelName": "U963 - Gris sombra",
+      "panelCode": "U963 -",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U963 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u963-st9",
+      "panelName": "U963 ST9 Gris sombra",
+      "panelCode": "U963 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U963 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u963-st9",
+      "panelName": "U963 ST9 Gris sombra",
+      "panelCode": "U963 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U963 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u963-st9",
+      "panelName": "U963 ST9 Gris sombra",
+      "panelCode": "U963 ST9",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U963 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u9631-st9",
+      "panelName": "U9631 ST9 Gris Sombra Sólida",
+      "panelCode": "U9631 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U9631 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u9631-st9",
+      "panelName": "U9631 ST9 Gris Sombra Sólida",
+      "panelCode": "U9631 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U9631 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u9631-st9",
+      "panelName": "U9631 ST9 Gris Sombra Sólida",
+      "panelCode": "U9631 ST9",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U9631 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u999",
+      "panelName": "U999 - Negro",
+      "panelCode": "U999 -",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U999 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999",
+      "panelName": "U999 - Negro",
+      "panelCode": "U999 -",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999",
+      "panelName": "U999 - Negro",
+      "panelCode": "U999 -",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 -",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pg",
+      "panelName": "U999 PG Negro",
+      "panelCode": "U999 PG",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U999 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pg",
+      "panelName": "U999 PG Negro",
+      "panelCode": "U999 PG",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pg",
+      "panelName": "U999 PG Negro",
+      "panelCode": "U999 PG",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 PG",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pm",
+      "panelName": "U999 PM Negro",
+      "panelCode": "U999 PM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U999 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pm",
+      "panelName": "U999 PM Negro",
+      "panelCode": "U999 PM",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pm",
+      "panelName": "U999 PM Negro",
+      "panelCode": "U999 PM",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 PM",
+        "Prefix: U",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st19",
+      "panelName": "U999 ST19 Negro",
+      "panelCode": "U999 ST19",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U999 ST19",
+        "Prefix: U",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st19",
+      "panelName": "U999 ST19 Negro",
+      "panelCode": "U999 ST19",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: U999 ST19",
+        "Prefix: U",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st19",
+      "panelName": "U999 ST19 Negro",
+      "panelCode": "U999 ST19",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 ST19",
+        "Prefix: U",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st19",
+      "panelName": "U999 ST19 Negro",
+      "panelCode": "U999 ST19",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 ST19",
+        "Prefix: U",
+        "ST: ST19"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st20",
+      "panelName": "U999 ST20 Negro",
+      "panelCode": "U999 ST20",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U999 ST20",
+        "Prefix: U",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st20",
+      "panelName": "U999 ST20 Negro",
+      "panelCode": "U999 ST20",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: U999 ST20",
+        "Prefix: U",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st20",
+      "panelName": "U999 ST20 Negro",
+      "panelCode": "U999 ST20",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 ST20",
+        "Prefix: U",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st20",
+      "panelName": "U999 ST20 Negro",
+      "panelCode": "U999 ST20",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 ST20",
+        "Prefix: U",
+        "ST: ST20"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st9",
+      "panelName": "U999 ST9 Negro",
+      "panelCode": "U999 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo U es liso",
+      "evidence": [
+        "Code: U999 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st9",
+      "panelName": "U999 ST9 Negro",
+      "panelCode": "U999 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "baja",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st9",
+      "panelName": "U999 ST9 Negro",
+      "panelCode": "U999 ST9",
+      "field": "tone",
+      "proposedValue": "muy_oscuro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: U999 ST9",
+        "Prefix: U",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W1100 PG",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "surfaceTexture",
+      "currentValue": "madera",
+      "proposedValue": "liso",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica liso",
+      "evidence": [
+        "Code: W1100 PG",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "hasGrain",
+      "currentValue": true,
+      "proposedValue": false,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W no tiene veta",
+      "evidence": [
+        "Code: W1100 PG",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W1100 PG",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1100 PG",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1100 PG",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W1100 PM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "surfaceTexture",
+      "currentValue": "madera",
+      "proposedValue": "liso",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica liso",
+      "evidence": [
+        "Code: W1100 PM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "hasGrain",
+      "currentValue": true,
+      "proposedValue": false,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W no tiene veta",
+      "evidence": [
+        "Code: W1100 PM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W1100 PM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1100 PM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1100 PM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-st9",
+      "panelName": "W1100 ST9 Blanco alpino",
+      "panelCode": "W1100 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W1100 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-st9",
+      "panelName": "W1100 ST9 Blanco alpino",
+      "panelCode": "W1100 ST9",
+      "field": "surfaceTexture",
+      "currentValue": "madera",
+      "proposedValue": "liso",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica liso",
+      "evidence": [
+        "Code: W1100 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-st9",
+      "panelName": "W1100 ST9 Blanco alpino",
+      "panelCode": "W1100 ST9",
+      "field": "hasGrain",
+      "currentValue": true,
+      "proposedValue": false,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W no tiene veta",
+      "evidence": [
+        "Code: W1100 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-st9",
+      "panelName": "W1100 ST9 Blanco alpino",
+      "panelCode": "W1100 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W1100 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-st9",
+      "panelName": "W1100 ST9 Blanco alpino",
+      "panelCode": "W1100 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1100 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-st9",
+      "panelName": "W1100 ST9 Blanco alpino",
+      "panelCode": "W1100 ST9",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1100 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1101-st9",
+      "panelName": "W1101 ST9 Blanco alpino sólido",
+      "panelCode": "W1101 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W1101 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1101-st9",
+      "panelName": "W1101 ST9 Blanco alpino sólido",
+      "panelCode": "W1101 ST9",
+      "field": "surfaceTexture",
+      "currentValue": "madera",
+      "proposedValue": "liso",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica liso",
+      "evidence": [
+        "Code: W1101 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1101-st9",
+      "panelName": "W1101 ST9 Blanco alpino sólido",
+      "panelCode": "W1101 ST9",
+      "field": "hasGrain",
+      "currentValue": true,
+      "proposedValue": false,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W no tiene veta",
+      "evidence": [
+        "Code: W1101 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1101-st9",
+      "panelName": "W1101 ST9 Blanco alpino sólido",
+      "panelCode": "W1101 ST9",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W1101 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1101-st9",
+      "panelName": "W1101 ST9 Blanco alpino sólido",
+      "panelCode": "W1101 ST9",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1101 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w1101-st9",
+      "panelName": "W1101 ST9 Blanco alpino sólido",
+      "panelCode": "W1101 ST9",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W1101 ST9",
+        "Prefix: W",
+        "ST: ST9"
+      ]
+    },
+    {
+      "panelId": "egger-w954",
+      "panelName": "W954 - Blanco",
+      "panelCode": "W954 -",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W954 -",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954",
+      "panelName": "W954 - Blanco",
+      "panelCode": "W954 -",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W954 -",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954",
+      "panelName": "W954 - Blanco",
+      "panelCode": "W954 -",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W954 -",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954",
+      "panelName": "W954 - Blanco",
+      "panelCode": "W954 -",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W954 -",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954-sm",
+      "panelName": "W954 SM Blanco",
+      "panelCode": "W954 SM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W954 SM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954-sm",
+      "panelName": "W954 SM Blanco",
+      "panelCode": "W954 SM",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W954 SM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954-sm",
+      "panelName": "W954 SM Blanco",
+      "panelCode": "W954 SM",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W954 SM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954-sm",
+      "panelName": "W954 SM Blanco",
+      "panelCode": "W954 SM",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W954 SM",
+        "Prefix: W",
+        "ST: undefined"
+      ]
+    },
+    {
+      "panelId": "egger-w954-st14",
+      "panelName": "W954 ST14 Blanco",
+      "panelCode": "W954 ST14",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W indica unicolor (blancos)",
+      "evidence": [
+        "Code: W954 ST14",
+        "Prefix: W",
+        "ST: ST14"
+      ]
+    },
+    {
+      "panelId": "egger-w954-st14",
+      "panelName": "W954 ST14 Blanco",
+      "panelCode": "W954 ST14",
+      "field": "directionality",
+      "proposedValue": "none",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Prefijo W es liso",
+      "evidence": [
+        "Code: W954 ST14",
+        "Prefix: W",
+        "ST: ST14"
+      ]
+    },
+    {
+      "panelId": "egger-w954-st14",
+      "panelName": "W954 ST14 Blanco",
+      "panelCode": "W954 ST14",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "texturado",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "ST indica texturado genérico",
+      "evidence": [
+        "Code: W954 ST14",
+        "Prefix: W",
+        "ST: ST14"
+      ]
+    },
+    {
+      "panelId": "egger-w954-st14",
+      "panelName": "W954 ST14 Blanco",
+      "panelCode": "W954 ST14",
+      "field": "lightnessGroup",
+      "proposedValue": "media_alta",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W954 ST14",
+        "Prefix: W",
+        "ST: ST14"
+      ]
+    },
+    {
+      "panelId": "egger-w954-st14",
+      "panelName": "W954 ST14 Blanco",
+      "panelCode": "W954 ST14",
+      "field": "tone",
+      "proposedValue": "muy_claro",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Calculado por LAB L",
+      "evidence": [
+        "Code: W954 ST14",
+        "Prefix: W",
+        "ST: ST14"
+      ]
+    }
+  ]
+}

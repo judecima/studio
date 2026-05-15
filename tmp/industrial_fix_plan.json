@@ -1,0 +1,2135 @@
+{
+  "summary": {
+    "totalPanels": 144,
+    "autoFixActions": 144,
+    "reviewRequired": 1,
+    "manualReviewRequired": 0
+  },
+  "actions": [
+    {
+      "panelId": "amaranto",
+      "panelName": "Amaranto",
+      "panelCode": "amaranto-143BARMDP18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "amaranto 143barmdp18"
+      ]
+    },
+    {
+      "panelId": "amaranto",
+      "panelName": "Amaranto",
+      "panelCode": "amaranto-143BARMDP18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial debe tener veta",
+      "evidence": [
+        "unknown",
+        "amaranto 143barmdp18"
+      ]
+    },
+    {
+      "panelId": "amaranto",
+      "panelName": "Amaranto",
+      "panelCode": "amaranto-143BARMDP18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "unknown",
+        "amaranto 143barmdp18"
+      ]
+    },
+    {
+      "panelId": "amaranto",
+      "panelName": "Amaranto",
+      "panelCode": "amaranto-143BARMDP18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "baltico",
+      "panelName": "Báltico",
+      "panelCode": "baltico-097NORMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "blanco-nature",
+      "panelName": "Blanco Nature",
+      "panelCode": "blanco-nature-135NATMDP18",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "REVIEW_REQUIRED",
+      "severity": "MEDIUM",
+      "confidence": 0.6,
+      "reason": "Nature unicolor detectado",
+      "evidence": [
+        "blanco nature"
+      ]
+    },
+    {
+      "panelId": "blanco-nature",
+      "panelName": "Blanco Nature",
+      "panelCode": "blanco-nature-135NATMDP18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "camellia",
+      "panelName": "Camellia",
+      "panelCode": "camellia-140BARMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "camellia 140barmdf18"
+      ]
+    },
+    {
+      "panelId": "camellia",
+      "panelName": "Camellia",
+      "panelCode": "camellia-140BARMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "camellia 140barmdf18"
+      ]
+    },
+    {
+      "panelId": "camellia",
+      "panelName": "Camellia",
+      "panelCode": "camellia-140BARMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial debe tener veta",
+      "evidence": [
+        "unknown",
+        "camellia 140barmdf18"
+      ]
+    },
+    {
+      "panelId": "camellia",
+      "panelName": "Camellia",
+      "panelCode": "camellia-140BARMDF18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "unknown",
+        "camellia 140barmdf18"
+      ]
+    },
+    {
+      "panelId": "carvalho-mezzo",
+      "panelName": "Carvalho Mezzo",
+      "panelCode": "carvalho-mezzo-042NATMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Nature con especie detectada",
+      "evidence": [
+        "carvalho mezzo"
+      ]
+    },
+    {
+      "panelId": "carvalho-mezzo",
+      "panelName": "Carvalho Mezzo",
+      "panelCode": "carvalho-mezzo-042NATMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Nature con especie detectada",
+      "evidence": [
+        "carvalho mezzo"
+      ]
+    },
+    {
+      "panelId": "carvalho-mezzo",
+      "panelName": "Carvalho Mezzo",
+      "panelCode": "carvalho-mezzo-042NATMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera Nature tiene veta",
+      "evidence": [
+        "carvalho mezzo"
+      ]
+    },
+    {
+      "panelId": "cedro-woodtext",
+      "panelName": "Cedro Woodtext",
+      "panelCode": "cedro-woodtext-064WTXMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "woodtext",
+        "cedro woodtext 064wtxmdf18"
+      ]
+    },
+    {
+      "panelId": "cedro-woodtext",
+      "panelName": "Cedro Woodtext",
+      "panelCode": "cedro-woodtext-064WTXMDF18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "woodtext",
+        "cedro woodtext 064wtxmdf18"
+      ]
+    },
+    {
+      "panelId": "coliseo",
+      "panelName": "Coliseo",
+      "panelCode": "coliseo-119STUMDF18",
+      "field": "materialType",
+      "proposedValue": "cemento",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cemento/piedra",
+      "evidence": [
+        "unknown",
+        "coliseo 119stumdf18"
+      ]
+    },
+    {
+      "panelId": "coliseo",
+      "panelName": "Coliseo",
+      "panelCode": "coliseo-119STUMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "cementicio",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cementicio",
+      "evidence": [
+        "unknown",
+        "coliseo 119stumdf18"
+      ]
+    },
+    {
+      "panelId": "ebano-negro",
+      "panelName": "Ebano Negro",
+      "panelCode": "ebano-negro-016WTXMDP18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "ebano negro 016wtxmdp18"
+      ]
+    },
+    {
+      "panelId": "ebano-negro",
+      "panelName": "Ebano Negro",
+      "panelCode": "ebano-negro-016WTXMDP18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "ebano negro 016wtxmdp18"
+      ]
+    },
+    {
+      "panelId": "ebano-negro",
+      "panelName": "Ebano Negro",
+      "panelCode": "ebano-negro-016WTXMDP18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "unknown",
+        "ebano negro 016wtxmdp18"
+      ]
+    },
+    {
+      "panelId": "egger-h1145-st10",
+      "panelName": "H1145 ST10 Roble Bardolino natural",
+      "panelCode": "H1145 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1145 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1180-st37",
+      "panelName": "H1180 ST37 Roble Halifax natural",
+      "panelCode": "H1180 ST37",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1180 st37"
+      ]
+    },
+    {
+      "panelId": "egger-h1181-st37",
+      "panelName": "H1181 ST37 Roble Halifax tabaco",
+      "panelCode": "H1181 ST37",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1181 st37"
+      ]
+    },
+    {
+      "panelId": "egger-h1199-st12",
+      "panelName": "H1199 ST12 Roble termo negro",
+      "panelCode": "H1199 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1199 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h1307-st19",
+      "panelName": "H1307 ST19 Nogal Warmia marrón",
+      "panelCode": "H1307 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1307 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h1312-st10",
+      "panelName": "H1312 ST10 Roble Whiteriver beige arena",
+      "panelCode": "H1312 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1312 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1313-st10",
+      "panelName": "H1313 ST10 Roble Whiteriver gris marrón",
+      "panelCode": "H1313 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1313 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1367-st40",
+      "panelName": "H1367 ST40 Roble Casella natural claro",
+      "panelCode": "H1367 ST40",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1367 st40"
+      ]
+    },
+    {
+      "panelId": "egger-h1369-st40",
+      "panelName": "H1369 ST40 Roble Casella marrón oscuro",
+      "panelCode": "H1369 ST40",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1369 st40"
+      ]
+    },
+    {
+      "panelId": "egger-h1386-st40",
+      "panelName": "H1386 ST40 Roble Casella marrón",
+      "panelCode": "H1386 ST40",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1386 st40"
+      ]
+    },
+    {
+      "panelId": "egger-h1399-st10",
+      "panelName": "H1399 ST10 Roble Denver marrón trufa",
+      "panelCode": "H1399 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1399 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1401-st22",
+      "panelName": "H1401 ST22 Pino Cascina",
+      "panelCode": "H1401 ST22",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1401 st22"
+      ]
+    },
+    {
+      "panelId": "egger-h1636-st12",
+      "panelName": "H1636 ST12 Cerezo Locarno",
+      "panelCode": "H1636 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1636 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1710 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1710 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1710-st10",
+      "panelName": "H1710 ST10 Castaño Kentucky arena",
+      "panelCode": "H1710 ST10",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera Egger H tiene veta",
+      "evidence": [
+        "h1710 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h1714-st19",
+      "panelName": "H1714 ST19 Nogal Lincoln",
+      "panelCode": "H1714 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h1714 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3003-st19",
+      "panelName": "H3003 ST19 Roble Norwich",
+      "panelCode": "H3003 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3003 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3012-st22",
+      "panelName": "H3012 ST22 Coco bolo",
+      "panelCode": "H3012 ST22",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3012 st22"
+      ]
+    },
+    {
+      "panelId": "egger-h3131-st12",
+      "panelName": "H3131 ST12 Roble Davos natural",
+      "panelCode": "H3131 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3131 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h3133-st12",
+      "panelName": "H3133 ST12 Roble Davos trufa marrón",
+      "panelCode": "H3133 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3133 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h3146-st19",
+      "panelName": "H3146 ST19 Roble Lorenzo arena",
+      "panelCode": "H3146 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3146 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3158-st19",
+      "panelName": "H3158 ST19 Roble Vicenza gris",
+      "panelCode": "H3158 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3158 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3170-st12",
+      "panelName": "H3170 ST12 Roble Kendal natural",
+      "panelCode": "H3170 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3170 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h3171-st12",
+      "panelName": "H3171 ST12 Roble Kendal encerado",
+      "panelCode": "H3171 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3171 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h3190-st19",
+      "panelName": "H3190 ST19 Fineline Metallic antracita",
+      "panelCode": "H3190 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3190 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3190-st19",
+      "panelName": "H3190 ST19 Fineline Metallic antracita",
+      "panelCode": "H3190 ST19",
+      "field": "surfaceTexture",
+      "currentValue": "metal",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3190 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3331-st10",
+      "panelName": "H3331 ST10 Roble de Nebraska natural",
+      "panelCode": "H3331 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3331 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h3332-st10",
+      "panelName": "H3332 ST10 Roble de Nebraska gris",
+      "panelCode": "H3332 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3332 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h3349-st19",
+      "panelName": "H3349 ST19 Roble Kaisersberg",
+      "panelCode": "H3349 ST19",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3349 st19"
+      ]
+    },
+    {
+      "panelId": "egger-h3398-st12",
+      "panelName": "H3398 ST12 Roble Kendal coñac",
+      "panelCode": "H3398 ST12",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3398 st12"
+      ]
+    },
+    {
+      "panelId": "egger-h3430-st22",
+      "panelName": "H3430 ST22 Pino Aland blanco",
+      "panelCode": "H3430 ST22",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3430 st22"
+      ]
+    },
+    {
+      "panelId": "egger-h3433-st22",
+      "panelName": "H3433 ST22 Pino Aland polar",
+      "panelCode": "H3433 ST22",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3433 st22"
+      ]
+    },
+    {
+      "panelId": "egger-h3700-st10",
+      "panelName": "H3700 ST10 Nogal del Pacífico natural",
+      "panelCode": "H3700 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3700 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger H indica madera",
+      "evidence": [
+        "h3730 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera Egger H tiene veta",
+      "evidence": [
+        "h3730 st10"
+      ]
+    },
+    {
+      "panelId": "egger-h3730-st10",
+      "panelName": "H3730 ST10 Hickory natural",
+      "panelCode": "H3730 ST10",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "egger-u114-st9",
+      "panelName": "U114 ST9 Amarillo girasol",
+      "panelCode": "U114 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u114 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u250-pm",
+      "panelName": "U250 PM Beige Caramelo",
+      "panelCode": "U250 PM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u250 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u250-pm",
+      "panelName": "U250 PM Beige Caramelo",
+      "panelCode": "U250 PM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "u250 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u323-st9",
+      "panelName": "U323 ST9 Rojo cereza",
+      "panelCode": "U323 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u323 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u325-st9",
+      "panelName": "U325 ST9 Rosa antiguo",
+      "panelCode": "U325 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u325 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u350-st9",
+      "panelName": "U350 ST9 Naranja de Siena",
+      "panelCode": "U350 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u350 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u398-pm",
+      "panelName": "U398 PM Castaño cassis",
+      "panelCode": "U398 PM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u398 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u398-pm",
+      "panelName": "U398 PM Castaño cassis",
+      "panelCode": "U398 PM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "u398 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u504-st9",
+      "panelName": "U504 ST9 Azul cósmico",
+      "panelCode": "U504 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u504 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u599-pm",
+      "panelName": "U599 PM Azul Indigo",
+      "panelCode": "U599 PM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u599 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u599-pm",
+      "panelName": "U599 PM Azul Indigo",
+      "panelCode": "U599 PM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "u599 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u626-st9",
+      "panelName": "U626 ST9 Verde kiwi",
+      "panelCode": "U626 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u626 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u665-pm",
+      "panelName": "U665 PM Verde Mineral",
+      "panelCode": "U665 PM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u665 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u665-pm",
+      "panelName": "U665 PM Verde Mineral",
+      "panelCode": "U665 PM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "u665 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u702-pg",
+      "panelName": "U702 PG Gris Cachemira",
+      "panelCode": "U702 PG",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u702 pg"
+      ]
+    },
+    {
+      "panelId": "egger-u702-pg",
+      "panelName": "U702 PG Gris Cachemira",
+      "panelCode": "U702 PG",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "brillo",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PG indica brillo",
+      "evidence": [
+        "u702 pg"
+      ]
+    },
+    {
+      "panelId": "egger-u702-st9",
+      "panelName": "U702 ST9 Gris Cachemira",
+      "panelCode": "U702 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u702 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u727",
+      "panelName": "U727 - Gris arcilla",
+      "panelCode": "U727 -",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u727"
+      ]
+    },
+    {
+      "panelId": "egger-u727-st9",
+      "panelName": "U727 ST9 Gris arcilla",
+      "panelCode": "U727 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u727 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u732",
+      "panelName": "U732 - Gris macadán",
+      "panelCode": "U732 -",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u732"
+      ]
+    },
+    {
+      "panelId": "egger-u732-pg",
+      "panelName": "U732 PG Gris macadán",
+      "panelCode": "U732 PG",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u732 pg"
+      ]
+    },
+    {
+      "panelId": "egger-u732-pg",
+      "panelName": "U732 PG Gris macadán",
+      "panelCode": "U732 PG",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "brillo",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PG indica brillo",
+      "evidence": [
+        "u732 pg"
+      ]
+    },
+    {
+      "panelId": "egger-u732-st9",
+      "panelName": "U732 ST9 Gris macadán",
+      "panelCode": "U732 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u732 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u763",
+      "panelName": "U763 - Gris perla",
+      "panelCode": "U763 -",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u763"
+      ]
+    },
+    {
+      "panelId": "egger-u763-st9",
+      "panelName": "U763 ST9 Gris perla",
+      "panelCode": "U763 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u763 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u767-st9",
+      "panelName": "U767 ST9 Gris cubanita",
+      "panelCode": "U767 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u767 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u963",
+      "panelName": "U963 - Gris sombra",
+      "panelCode": "U963 -",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u963"
+      ]
+    },
+    {
+      "panelId": "egger-u963-st9",
+      "panelName": "U963 ST9 Gris sombra",
+      "panelCode": "U963 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u963 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u9631-st9",
+      "panelName": "U9631 ST9 Gris Sombra Sólida",
+      "panelCode": "U9631 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u9631 st9"
+      ]
+    },
+    {
+      "panelId": "egger-u999",
+      "panelName": "U999 - Negro",
+      "panelCode": "U999 -",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u999"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pg",
+      "panelName": "U999 PG Negro",
+      "panelCode": "U999 PG",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u999 pg"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pg",
+      "panelName": "U999 PG Negro",
+      "panelCode": "U999 PG",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "brillo",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PG indica brillo",
+      "evidence": [
+        "u999 pg"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pm",
+      "panelName": "U999 PM Negro",
+      "panelCode": "U999 PM",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u999 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u999-pm",
+      "panelName": "U999 PM Negro",
+      "panelCode": "U999 PM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "u999 pm"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st19",
+      "panelName": "U999 ST19 Negro",
+      "panelCode": "U999 ST19",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u999 st19"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st19",
+      "panelName": "U999 ST19 Negro",
+      "panelCode": "U999 ST19",
+      "field": "hasGrain",
+      "currentValue": true,
+      "proposedValue": false,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Unicolor Egger no tiene veta",
+      "evidence": [
+        "u999 st19"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st20",
+      "panelName": "U999 ST20 Negro",
+      "panelCode": "U999 ST20",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u999 st20"
+      ]
+    },
+    {
+      "panelId": "egger-u999-st9",
+      "panelName": "U999 ST9 Negro",
+      "panelCode": "U999 ST9",
+      "field": "materialType",
+      "proposedValue": "unicolor",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código Egger U indica unicolor",
+      "evidence": [
+        "u999 st9"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pg",
+      "panelName": "W1100 PG Blanco alpino",
+      "panelCode": "W1100 PG",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "brillo",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PG indica brillo",
+      "evidence": [
+        "w1100 pg"
+      ]
+    },
+    {
+      "panelId": "egger-w1100-pm",
+      "panelName": "W1100 PM Blanco alpino",
+      "panelCode": "W1100 PM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "w1100 pm"
+      ]
+    },
+    {
+      "panelId": "egger-w954-sm",
+      "panelName": "W954 SM Blanco",
+      "panelCode": "W954 SM",
+      "field": "finish",
+      "currentValue": "mate",
+      "proposedValue": "supermate",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Código PM/SM indica supermate",
+      "evidence": [
+        "w954 sm"
+      ]
+    },
+    {
+      "panelId": "helsinki",
+      "panelName": "Helsinki",
+      "panelCode": "helsinki-089NORMDP18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "home",
+      "panelName": "Home",
+      "panelCode": "home-025STUMDF18",
+      "field": "materialType",
+      "proposedValue": "cemento",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cemento/piedra",
+      "evidence": [
+        "unknown",
+        "home 025stumdf18"
+      ]
+    },
+    {
+      "panelId": "home",
+      "panelName": "Home",
+      "panelCode": "home-025STUMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "cementicio",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cementicio",
+      "evidence": [
+        "unknown",
+        "home 025stumdf18"
+      ]
+    },
+    {
+      "panelId": "kiri",
+      "panelName": "Kiri",
+      "panelCode": "kiri-219MESMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "lino-blanco",
+      "panelName": "Lino Blanco",
+      "panelCode": "lino-blanco-135HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "lino blanco 135hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-blanco",
+      "panelName": "Lino Blanco",
+      "panelCode": "lino-blanco-135HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "lino blanco 135hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-chiaro",
+      "panelName": "Lino Chiaro",
+      "panelCode": "lino-chiaro-153HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "lino chiaro 153hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-chiaro",
+      "panelName": "Lino Chiaro",
+      "panelCode": "lino-chiaro-153HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "lino chiaro 153hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-negro",
+      "panelName": "Lino Negro",
+      "panelCode": "lino-negro-303HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "lino negro 303hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-negro",
+      "panelName": "Lino Negro",
+      "panelCode": "lino-negro-303HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "lino negro 303hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-terra-diseno-discontinuo",
+      "panelName": "Lino Terra - Diseño discontinuo",
+      "panelCode": "lino-terra-diseno-discontinuo-152HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "lino terra diseno discontinuo 152hilmdf18"
+      ]
+    },
+    {
+      "panelId": "lino-terra-diseno-discontinuo",
+      "panelName": "Lino Terra - Diseño discontinuo",
+      "panelCode": "lino-terra-diseno-discontinuo-152HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "lino terra diseno discontinuo 152hilmdf18"
+      ]
+    },
+    {
+      "panelId": "merlot",
+      "panelName": "Merlot",
+      "panelCode": "merlot-141BARMDP18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "merlot 141barmdp18"
+      ]
+    },
+    {
+      "panelId": "merlot",
+      "panelName": "Merlot",
+      "panelCode": "merlot-141BARMDP18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "merlot 141barmdp18"
+      ]
+    },
+    {
+      "panelId": "merlot",
+      "panelName": "Merlot",
+      "panelCode": "merlot-141BARMDP18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial debe tener veta",
+      "evidence": [
+        "unknown",
+        "merlot 141barmdp18"
+      ]
+    },
+    {
+      "panelId": "merlot",
+      "panelName": "Merlot",
+      "panelCode": "merlot-141BARMDP18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "unknown",
+        "merlot 141barmdp18"
+      ]
+    },
+    {
+      "panelId": "mont-blanc",
+      "panelName": "Mont Blanc",
+      "panelCode": "mont-blanc-072NATMDP18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "nogal-terracota",
+      "panelName": "Nogal Terracota",
+      "panelCode": "nogal-terracota-046NATMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Nature con especie detectada",
+      "evidence": [
+        "nogal terracota"
+      ]
+    },
+    {
+      "panelId": "olmo-finlandes",
+      "panelName": "Olmo Finlandés",
+      "panelCode": "olmo-finlandes-096NORMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Consistencia: textura madera exige hasGrain true",
+      "evidence": [
+        "stored: madera"
+      ]
+    },
+    {
+      "panelId": "pinot-gris",
+      "panelName": "Pinot Gris",
+      "panelCode": "pinot-gris-120BARMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "pinot gris 120barmdf18"
+      ]
+    },
+    {
+      "panelId": "pinot-gris",
+      "panelName": "Pinot Gris",
+      "panelCode": "pinot-gris-120BARMDF18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "unknown",
+        "pinot gris 120barmdf18"
+      ]
+    },
+    {
+      "panelId": "roble-americano-nature",
+      "panelName": "Roble Americano Nature",
+      "panelCode": "roble-americano-nature-030NATMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Nature con especie detectada",
+      "evidence": [
+        "roble americano nature"
+      ]
+    },
+    {
+      "panelId": "roble-dakar-woodtext",
+      "panelName": "Roble Dakar Woodtext",
+      "panelCode": "roble-dakar-woodtext-031WTXMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "woodtext",
+        "roble dakar woodtext 031wtxmdf18"
+      ]
+    },
+    {
+      "panelId": "roble-dakar-woodtext",
+      "panelName": "Roble Dakar Woodtext",
+      "panelCode": "roble-dakar-woodtext-031WTXMDF18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "woodtext",
+        "roble dakar woodtext 031wtxmdf18"
+      ]
+    },
+    {
+      "panelId": "sauco",
+      "panelName": "Sauco",
+      "panelCode": "sauco-212BARMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "textura",
+        "sauco 212barmdf18"
+      ]
+    },
+    {
+      "panelId": "sauco",
+      "panelName": "Sauco",
+      "panelCode": "sauco-212BARMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "textura",
+        "sauco 212barmdf18"
+      ]
+    },
+    {
+      "panelId": "sauco",
+      "panelName": "Sauco",
+      "panelCode": "sauco-212BARMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial debe tener veta",
+      "evidence": [
+        "textura",
+        "sauco 212barmdf18"
+      ]
+    },
+    {
+      "panelId": "sauco",
+      "panelName": "Sauco",
+      "panelCode": "sauco-212BARMDF18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "textura",
+        "sauco 212barmdf18"
+      ]
+    },
+    {
+      "panelId": "scotch",
+      "panelName": "Scotch",
+      "panelCode": "scotch-142BARMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "scotch 142barmdf18"
+      ]
+    },
+    {
+      "panelId": "scotch",
+      "panelName": "Scotch",
+      "panelCode": "scotch-142BARMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Woodtext/Bark indica madera",
+      "evidence": [
+        "unknown",
+        "scotch 142barmdf18"
+      ]
+    },
+    {
+      "panelId": "scotch",
+      "panelName": "Scotch",
+      "panelCode": "scotch-142BARMDF18",
+      "field": "hasGrain",
+      "currentValue": false,
+      "proposedValue": true,
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial debe tener veta",
+      "evidence": [
+        "unknown",
+        "scotch 142barmdf18"
+      ]
+    },
+    {
+      "panelId": "scotch",
+      "panelName": "Scotch",
+      "panelCode": "scotch-142BARMDF18",
+      "field": "directionality",
+      "proposedValue": "veta",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Madera industrial tiene veta",
+      "evidence": [
+        "unknown",
+        "scotch 142barmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-azzurra-diseno-discontinuo",
+      "panelName": "Seda Azzurra - Diseño discontinuo",
+      "panelCode": "seda-azzurra-diseno-discontinuo-118HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "seda azzurra diseno discontinuo 118hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-azzurra-diseno-discontinuo",
+      "panelName": "Seda Azzurra - Diseño discontinuo",
+      "panelCode": "seda-azzurra-diseno-discontinuo-118HILMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "seda azzurra diseno discontinuo 118hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-azzurra-diseno-discontinuo",
+      "panelName": "Seda Azzurra - Diseño discontinuo",
+      "panelCode": "seda-azzurra-diseno-discontinuo-118HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "seda azzurra diseno discontinuo 118hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-giorno",
+      "panelName": "Seda Giorno",
+      "panelCode": "seda-giorno-150HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "seda giorno 150hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-giorno",
+      "panelName": "Seda Giorno",
+      "panelCode": "seda-giorno-150HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "seda giorno 150hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-notte",
+      "panelName": "Seda Notte",
+      "panelCode": "seda-notte-151HILMDF18",
+      "field": "materialType",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "seda notte 151hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-notte",
+      "panelName": "Seda Notte",
+      "panelCode": "seda-notte-151HILMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "textil",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Hilado indica textil",
+      "evidence": [
+        "hilado",
+        "seda notte 151hilmdf18"
+      ]
+    },
+    {
+      "panelId": "seda-notte",
+      "panelName": "Seda Notte",
+      "panelCode": "seda-notte-151HILMDF18",
+      "field": "directionality",
+      "proposedValue": "trama",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Textil tiene trama",
+      "evidence": [
+        "hilado",
+        "seda notte 151hilmdf18"
+      ]
+    },
+    {
+      "panelId": "street",
+      "panelName": "Street",
+      "panelCode": "street-024STUMDF18",
+      "field": "materialType",
+      "proposedValue": "cemento",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cemento/piedra",
+      "evidence": [
+        "unknown",
+        "street 024stumdf18"
+      ]
+    },
+    {
+      "panelId": "street",
+      "panelName": "Street",
+      "panelCode": "street-024STUMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "cementicio",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cementicio",
+      "evidence": [
+        "unknown",
+        "street 024stumdf18"
+      ]
+    },
+    {
+      "panelId": "teka-artico",
+      "panelName": "Teka Artico",
+      "panelCode": "teka-artico-047NATMDF18",
+      "field": "materialType",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Nature con especie detectada",
+      "evidence": [
+        "teka artico"
+      ]
+    },
+    {
+      "panelId": "teka-artico",
+      "panelName": "Teka Artico",
+      "panelCode": "teka-artico-047NATMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "madera",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Nature con especie detectada",
+      "evidence": [
+        "teka artico"
+      ]
+    },
+    {
+      "panelId": "viena",
+      "panelName": "Viena",
+      "panelCode": "viena-026STUMDF18",
+      "field": "materialType",
+      "proposedValue": "cemento",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cemento/piedra",
+      "evidence": [
+        "unknown",
+        "viena 026stumdf18"
+      ]
+    },
+    {
+      "panelId": "viena",
+      "panelName": "Viena",
+      "panelCode": "viena-026STUMDF18",
+      "field": "surfaceTexture",
+      "currentValue": "liso",
+      "proposedValue": "cementicio",
+      "actionType": "AUTO_FIX",
+      "severity": "HIGH",
+      "confidence": 0.95,
+      "reason": "Línea Stucco indica cementicio",
+      "evidence": [
+        "unknown",
+        "viena 026stumdf18"
+      ]
+    }
+  ]
+}

@@ -41,7 +41,7 @@ export async function logActivity(username: string, type: 'login' | 'view_panel'
     }, { merge: true });
 
     // Actualizar estadísticas globales del panel si es una visita nueva hoy
-    if (isNewDayVisit) {
+    if (isNewDayVisit && panelId) {
       const globalPanelRef = doc(db, 'panel_stats', panelId);
       await setDoc(globalPanelRef, {
         name: panelName,

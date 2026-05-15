@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-15T20:07:46.082Z",
+  "projectId": "studio-5733239027-4f570",
+  "env": "development",
+  "files": {
+    "panels": {
+      "filename": "firestore_panels_backup_2026-05-15T20-07-43-277Z.json",
+      "count": 144,
+      "sha256": "5a82d99e5ffa02189464599c2572c8cf10a01afa8ae3f60bb1f75538abfcdc56"
+    },
+    "equivalences": {
+      "filename": "firestore_equivalences_backup_2026-05-15T20-07-43-277Z.json",
+      "count": 144,
+      "sha256": "3116dc9d6e6072ec85af59df98c9672db836f88cbb39d368a021280b6b666dff"
+    }
+  }
+}

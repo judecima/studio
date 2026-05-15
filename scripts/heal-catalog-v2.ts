@@ -64,7 +64,7 @@ async function heal() {
         let best = COLOR_PARENTS[0];
         let minDE = Infinity;
         for (const p of COLOR_PARENTS) {
-          const dE = de2000(lab, p.lab);
+          const dE = de2000({ mode: 'lab', ...lab }, { mode: 'lab', ...p.lab });
           if (dE < minDE) {
             minDE = dE;
             best = p;

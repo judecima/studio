@@ -11,11 +11,10 @@ export const COLOR_PARENTS_LAB: { name: ColorParent, lab: { l: number, a: number
   { name: 'negro', lab: { l: 10, a: 0, b: 0 } },
   { name: 'marron', lab: { l: 35, a: 15, b: 15 } },
   { name: 'rojo', lab: { l: 45, a: 60, b: 45 } },
+  { name: 'naranja', lab: { l: 60, a: 40, b: 55 } },
   { name: 'verde', lab: { l: 45, a: -50, b: 30 } },
   { name: 'azul', lab: { l: 30, a: 50, b: -70 } },
   { name: 'amarillo', lab: { l: 85, a: -10, b: 80 } },
-  { name: 'naranja', lab: { l: 60, a: 40, b: 55 } },
-  { name: 'violeta', lab: { l: 40, a: 45, b: -45 } },
   { name: 'rosa', lab: { l: 70, a: 35, b: -10 } }
 ];
 
@@ -34,6 +33,26 @@ const TEXTILE_TERMS = ['lino', 'linen', 'textil', 'fabric', 'hilado', 'weave', '
 const STONE_TERMS = ['cemento', 'cement', 'concreto', 'concrete', 'piedra', 'stone', 'marmol', 'marble', 'granito', 'granite', 'hormigon', 'pizarra'];
 const METAL_TERMS = ['metal', 'inox', 'aluminio', 'bronze', 'bronce', 'cepillado', 'steel', 'acero', 'cromo', 'litio'];
 
+const CUSTOM_TO_BASE_MAP: Record<string, ColorParent> = {
+  'vison': 'beige',
+  'topo': 'gris',
+  'taupe': 'gris',
+  'greige': 'beige',
+  'arena': 'beige',
+  'champagne': 'beige',
+  'natural': 'beige',
+  'lino': 'beige',
+  'grafito': 'gris',
+  'antracita': 'gris',
+  'plomo': 'gris',
+  'terracota': 'rojo',
+  'cobre': 'rojo',
+  'ladrillo': 'rojo',
+  'oliva': 'verde',
+  'sage': 'verde',
+  'salvia': 'verde'
+};
+
 export function normalizeText(text: string): string {
   return (text || '')
     .toLowerCase()
@@ -41,6 +60,15 @@ export function normalizeText(text: string): string {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s]/g, ' ')
     .trim();
+}
+
+export function mapCustomToBase(customNormalized: string): ColorParent | null {
+  if (!customNormalized) return null;
+  // Búsqueda por palabra exacta o que contenga el término clave
+  for (const [key, value] of Object.entries(CUSTOM_TO_BASE_MAP)) {
+    if (customNormalized.includes(key)) return value;
+  }
+  return null;
 }
 
 /**
@@ -62,7 +90,7 @@ export function detectColorParentDetailed(name: string, lab?: { l: number, a: nu
     let best = COLOR_PARENTS_LAB[0];
     let minDE = Infinity;
     for (const p of COLOR_PARENTS_LAB) {
-      const dE = de2000(lab as any, p.lab as any);
+      const dE = de2000({ mode: 'lab', ...lab } as any, { mode: 'lab', ...p.lab } as any);
       if (dE < minDE) {
         minDE = dE;
         best = p;
@@ -132,3 +160,8 @@ export function detectSurfaceTexture(name: string, manufacturerCode?: string): S
 export function detectFinish(name: string, manufacturerCode?: string): Finish {
   return detectFinishDetailed(name, manufacturerCode).value;
 }
+
+// Aliases for import-stock route and others
+export const detectColor = detectColorParent;
+export const detectTexture = detectSurfaceTexture;
+export const getColorSub = detectColorSub;

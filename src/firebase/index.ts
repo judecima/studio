@@ -12,24 +12,10 @@ if (typeof process !== 'undefined' && typeof process.setMaxListeners === 'functi
   process.setMaxListeners(20);
 }
 
-let cachedApp: FirebaseApp | null = null;
-
 export function initializeFirebase() {
-  if (cachedApp) return getSdks(cachedApp);
-
   const apps = getApps();
-  if (apps.length > 0) {
-    cachedApp = apps[0];
-    return getSdks(cachedApp);
-  }
-
-  try {
-    cachedApp = initializeApp(firebaseConfig);
-    return getSdks(cachedApp);
-  } catch (e) {
-    console.error('Firebase initialization error', e);
-    throw e;
-  }
+  const app = apps.length > 0 ? apps[0] : initializeApp(firebaseConfig);
+  return getSdks(app);
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {

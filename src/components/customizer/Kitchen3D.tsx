@@ -45,7 +45,7 @@ export default function Kitchen3D({ upperPanelUrl, lowerPanelUrl }: Kitchen3DPro
     <div className="w-full h-[500px] bg-slate-900/10 rounded-xl overflow-hidden border border-border/50 shadow-inner">
       <Canvas shadows camera={{ position: [2, 1.5, 3], fov: 45 }}>
         <Suspense fallback={null}>
-          <Stage environment="city" intensity={0.6} contactShadow={{ opacity: 0.4, blur: 2 }}>
+          <Stage environment="city" intensity={0.6} shadows={{ type: 'contact', opacity: 0.4, blur: 2 }}>
             {/* Suelo */}
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.6, 0]} receiveShadow>
               <planeGeometry args={[10, 10]} />
@@ -79,12 +79,12 @@ export default function Kitchen3D({ upperPanelUrl, lowerPanelUrl }: Kitchen3DPro
             />
 
             {/* Tiradores (Handles) - Inferiores */}
-            <mesh position={[0.4, 0.15, -0.48]} castShadow>
-              <cylinderGeometry args={[0.01, 0.01, 0.15, 8]} rotation={[0, 0, Math.PI / 2]} />
+            <mesh position={[0.4, 0.15, -0.48]} rotation={[0, 0, Math.PI / 2]} castShadow>
+              <cylinderGeometry args={[0.01, 0.01, 0.15, 8]} />
               <meshStandardMaterial color="#666" metalness={1} roughness={0} />
             </mesh>
-            <mesh position={[-0.4, 0.15, -0.48]} castShadow>
-              <cylinderGeometry args={[0.01, 0.01, 0.15, 8]} rotation={[0, 0, Math.PI / 2]} />
+            <mesh position={[-0.4, 0.15, -0.48]} rotation={[0, 0, Math.PI / 2]} castShadow>
+              <cylinderGeometry args={[0.01, 0.01, 0.15, 8]} />
               <meshStandardMaterial color="#666" metalness={1} roughness={0} />
             </mesh>
           </Stage>

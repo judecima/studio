@@ -1,0 +1,15 @@
+{
+  "summary": {
+    "totalEquivalences": 144,
+    "totalMatches": 1088,
+    "violations": {
+      "madera_vs_liso": 0,
+      "madera_vs_textil": 0,
+      "madera_vs_metal": 0,
+      "madera_vs_cementicio": 0,
+      "hasGrain_mismatch": 0,
+      "brillo_vs_supermate": 62
+    }
+  },
+  "criticalIssues": []
+}

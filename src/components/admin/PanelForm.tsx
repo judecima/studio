@@ -46,13 +46,14 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
-import { COLOR_PARENTS_LAB, SUB_LEVELS } from "@/lib/equivalences/classifier";
+import { COLOR_PARENTS_LAB, SUB_LEVELS, normalizeText } from "@/lib/equivalences/classifier";
 
-// ENUMS ACTUALIZADOS (v6.6)
-const COLOR_PARENTS = ['blanco', 'beige', 'gris', 'negro', 'marron', 'rojo', 'verde', 'azul', 'amarillo', 'naranja', 'rosa', 'violeta', 'otro'] as const;
+// ENUMS ACTUALIZADOS (v6.9 - Flexible)
+const COLOR_PARENTS = ['blanco', 'negro', 'gris', 'beige', 'marron', 'rojo', 'naranja', 'amarillo', 'verde', 'azul', 'rosa', 'custom', 'otro'] as const;
 const COLOR_SUBS = ['muy claro', 'claro', 'medio claro', 'medio oscuro', 'oscuro', 'muy oscuro'] as const;
 const TEXTURES = ['liso', 'madera', 'textil', 'cementicio', 'piedra', 'metal', 'otro'] as const;
-const FINISHES = ['mate', 'brillo', 'satinado', 'texturado', 'supermate'] as const;
+const FINISHES = ['mate', 'brillo', 'satinado', 'texturado', 'supermate', 'poro_madera', 'sincronizado'] as const;
+const SOURCES = ['manual', 'imported', 'inferred', 'image', 'image_dominant', 'image_clustered', 'ncs', 'analytical_v6.1', 'fallback', 'legacy', 'lab'] as const;
 
 // MAPEO DE LEGACY A NORMALIZADO
 const LEGACY_MAP: Record<string, string> = {
@@ -79,7 +80,10 @@ const panelSchema = z.object({
   stock: z.coerce.number().min(0),
   visible: z.boolean(),
   mainImage: z.string().min(1, "La imagen principal es requerida"),
-  colorParent: z.enum(COLOR_PARENTS as any).default("otro"),
+  colorParent: z.enum(COLOR_PARENTS as any).default("blanco"),
+  customColorFamily: z.string().optional().nullable(),
+  customColorFamilyNormalized: z.string().optional().nullable(),
+  colorFamilySource: z.enum(SOURCES).default('manual'),
   colorSub: z.enum(COLOR_SUBS as any).default("medio claro"),
   surfaceTexture: z.enum(TEXTURES as any).default("liso"),
   finish: z.enum(FINISHES as any).default("mate"),
@@ -93,7 +97,7 @@ const panelSchema = z.object({
     a: z.number(),
     b: z.number(),
   }).optional().nullable(),
-  colorSource: z.enum(['ncs', 'analytical_v6.1', 'image', 'fallback']).default('fallback')
+  colorSource: z.enum(SOURCES).default('fallback')
 });
 
 type FormValues = z.infer<typeof panelSchema>;
@@ -134,7 +138,10 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
       stock: normalizedInitial?.stock || 0,
       visible: normalizedInitial?.visible ?? true,
       mainImage: normalizedInitial?.mainImage || "https://placehold.co/800x600?text=Subir+Imagen",
-      colorParent: normalizedInitial?.colorParent || "otro",
+      colorParent: (normalizedInitial?.colorParent === 'otro' ? 'custom' : normalizedInitial?.colorParent) || "blanco",
+      customColorFamily: normalizedInitial?.customColorFamily || "",
+      customColorFamilyNormalized: normalizedInitial?.customColorFamilyNormalized || "",
+      colorFamilySource: normalizedInitial?.colorFamilySource || 'manual',
       colorSub: normalizedInitial?.colorSub || "medio claro",
       surfaceTexture: normalizedInitial?.surfaceTexture || "liso",
       finish: normalizedInitial?.finish || "mate",
@@ -210,6 +217,9 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
     const panelData = {
       ...values,
       id: docId,
+      customColorFamilyNormalized: values.colorParent === 'custom' ? normalizeText(values.customColorFamily || "") : null,
+      customColorFamily: values.colorParent === 'custom' ? values.customColorFamily : null,
+      colorFamilySource: values.colorParent === 'custom' ? 'manual' : values.colorFamilySource,
       updatedAt: serverTimestamp(),
       createdAt: initialData?.createdAt || serverTimestamp(),
     };
@@ -331,24 +341,45 @@ export function PanelForm({ mode, initialData, collectionName = 'panels' }: Prop
               </CardHeader>
               <CardContent className="space-y-6 pt-6">
                 <div className="grid grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="colorParent"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Familia Cromática</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
-                          <SelectContent>
-                            {COLOR_PARENTS.map(p => (
-                              <SelectItem key={p} value={p}>{p.toUpperCase()}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="colorParent"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Familia Cromática</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                            <SelectContent>
+                              {COLOR_PARENTS.filter(p => p !== 'otro').map(p => (
+                                <SelectItem key={p} value={p}>
+                                  {p === 'custom' ? 'AGREGAR OTRO COLOR...' : p.toUpperCase()}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {form.watch("colorParent") === 'custom' && (
+                      <FormField
+                        control={form.control}
+                        name="customColorFamily"
+                        render={({ field }) => (
+                          <FormItem className="animate-in slide-in-from-top-2 duration-300">
+                            <FormLabel className="text-xs text-indigo-600 font-bold">NOMBRE DEL COLOR PERSONALIZADO</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Ej: Visón, Arena, Grafito..." {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormDescription>Se normalizará automáticamente para equivalencias.</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     )}
-                  />
+                  </div>
                   <FormField
                     control={form.control}
                     name="colorSub"

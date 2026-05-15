@@ -59,7 +59,7 @@ export default function AdminImportPage() {
   const [isGeneratingEquivalences, setIsGeneratingEquivalences] = useState(false);
 
   // Regex para el formato "MDF FAPLAC (1830X2750) NATURE TEKA ARTICO 18MM"
-  const ARTICULO_REGEX = /^(?<material>.*?)\s*(?<brand>FAPLAC|EGGER)?\s*\((?<width>\d+)X(?<height>\d+)\)\s*(?<name>.*?)\s*(?<thickness>\d+(?:\.\d+)?)MM(?:\s*\(DISC\.\))?$/i;
+  const ARTICULO_REGEX = /^(.*?)\s*(FAPLAC|EGGER)?\s*\((\d+)X(\d+)\)\s*(.*?)\s*(\d+(?:\.\d+)?)MM(?:\s*\(DISC\.\))?$/i;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -86,14 +86,14 @@ export default function AdminImportPage() {
         const match = row.Articulo.match(ARTICULO_REGEX);
         const stock = Number(row["Exist. Total Empresa"]) || 0;
 
-        if (match && match.groups) {
+        if (match) {
           updates.push({
             articulo: row.Articulo,
-            name: match.groups.name.trim(),
-            brand: match.groups.brand || "Desconocida",
-            width: Number(match.groups.width),
-            height: Number(match.groups.height),
-            thickness: Number(match.groups.thickness),
+            name: match[5].trim(),
+            brand: match[2] || "Desconocida",
+            width: Number(match[3]),
+            height: Number(match[4]),
+            thickness: Number(match[6]),
             stock: stock,
             isNew: false 
           });

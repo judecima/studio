@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { firestore } from '@/firebase';
-
+import { initializeFirebase } from '@/firebase';
 import { pipeline } from '@xenova/transformers';
 import { converter } from 'culori';
 
@@ -54,7 +53,7 @@ function kmeans(points: any[], k = 3, iterations = 5) {
       if (!clusters[i].length) continue;
 
       const avg = clusters[i].reduce(
-        (acc, p) => {
+        (acc: { r: number; g: number; b: number }, p: { r: number; g: number; b: number }) => {
           acc.r += p.r;
           acc.g += p.g;
           acc.b += p.b;
@@ -83,7 +82,8 @@ function kmeans(points: any[], k = 3, iterations = 5) {
 }
 
 export async function extractAndStoreFeatures(panel: any) {
-  const ref = doc(firestore, 'panel_features', panel.id);
+  const { firestore } = initializeFirebase();
+  const ref = doc(firestore as any, 'panel_features', panel.id as string);
   const snap = await getDoc(ref);
 
   if (snap.exists()) return snap.data();

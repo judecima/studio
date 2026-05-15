@@ -1,0 +1,945 @@
+{
+  "summary": {
+    "totalPanels": 144,
+    "issues": 55,
+    "highSeverity": 13,
+    "equivalenceViolations": 19
+  },
+  "panelAudit": [
+    {
+      "id": "amaranto",
+      "name": "Amaranto",
+      "code": "amaranto-143BARMDP18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture madera but hasGrain false"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "baltico",
+      "name": "Báltico",
+      "code": "baltico-097NORMDF18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture madera but hasGrain false"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "blanco-nature",
+      "name": "Blanco Nature",
+      "code": "blanco-nature-135NATMDP18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "liso",
+      "issues": [
+        "surfaceTexture madera but hasGrain false",
+        "surfaceTexture mismatch: stored=madera, expected=liso"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "caju",
+      "name": "Cajú",
+      "code": "caju-065NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "camellia",
+      "name": "Camellia",
+      "code": "camellia-140BARMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "carvalho-mezzo",
+      "name": "Carvalho Mezzo",
+      "code": "carvalho-mezzo-042NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "coliseo",
+      "name": "Coliseo",
+      "code": "coliseo-119STUMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "cementicio",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=cementicio"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "ebano-negro",
+      "name": "Ebano Negro",
+      "code": "ebano-negro-016WTXMDP18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture liso but hasGrain true",
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "egger-f187-st9",
+      "name": "F187 ST9 Hormigón Chicago gris oscuro",
+      "code": "F187 ST9",
+      "brand": "Egger",
+      "storedTexture": "otro",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-f416-st10",
+      "name": "F416 ST10 Textil beige",
+      "code": "F416 ST10",
+      "brand": "Egger",
+      "storedTexture": "textil",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=textil, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-f417-st10",
+      "name": "F417 ST10 Textil gris",
+      "code": "F417 ST10",
+      "brand": "Egger",
+      "storedTexture": "textil",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=textil, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-f424-st10",
+      "name": "F424 ST10 Lino topo",
+      "code": "F424 ST10",
+      "brand": "Egger",
+      "storedTexture": "textil",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=textil, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-f433-st10",
+      "name": "F433 ST10 Lino antracita",
+      "code": "F433 ST10",
+      "brand": "Egger",
+      "storedTexture": "textil",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=textil, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-f527-st20",
+      "name": "F527 ST20 Metal cepillado oro",
+      "code": "F527 ST20",
+      "brand": "Egger",
+      "storedTexture": "metal",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-f528-st20",
+      "name": "F528 ST20 Metal cepillado bronce",
+      "code": "F528 ST20",
+      "brand": "Egger",
+      "storedTexture": "metal",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-h1636-st12",
+      "name": "H1636 ST12 Cerezo Locarno",
+      "code": "H1636 ST12",
+      "brand": "Egger",
+      "storedTexture": "madera",
+      "expectedTexture": "madera",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-h1710-st10",
+      "name": "H1710 ST10 Castaño Kentucky arena",
+      "code": "H1710 ST10",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera",
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-h3012-st22",
+      "name": "H3012 ST22 Coco bolo",
+      "code": "H3012 ST22",
+      "brand": "Egger",
+      "storedTexture": "madera",
+      "expectedTexture": "madera",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-h3190-st19",
+      "name": "H3190 ST19 Fineline Metallic antracita",
+      "code": "H3190 ST19",
+      "brand": "Egger",
+      "storedTexture": "metal",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=metal, expected=madera",
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-h3730-st10",
+      "name": "H3730 ST10 Hickory natural",
+      "code": "H3730 ST10",
+      "brand": "Egger",
+      "storedTexture": "madera",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture madera but hasGrain false"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "egger-u626-st9",
+      "name": "U626 ST9 Verde kiwi",
+      "code": "U626 ST9",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u665-pm",
+      "name": "U665 PM Verde Mineral",
+      "code": "U665 PM",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u727-st9",
+      "name": "U727 ST9 Gris arcilla",
+      "code": "U727 ST9",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u763-st9",
+      "name": "U763 ST9 Gris perla",
+      "code": "U763 ST9",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u767-st9",
+      "name": "U767 ST9 Gris cubanita",
+      "code": "U767 ST9",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u999",
+      "name": "U999 - Negro",
+      "code": "U999 -",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u999-pg",
+      "name": "U999 PG Negro",
+      "code": "U999 PG",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u999-pm",
+      "name": "U999 PM Negro",
+      "code": "U999 PM",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u999-st19",
+      "name": "U999 ST19 Negro",
+      "code": "U999 ST19",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "surfaceTexture liso but hasGrain true",
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "egger-u999-st20",
+      "name": "U999 ST20 Negro",
+      "code": "U999 ST20",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "egger-u999-st9",
+      "name": "U999 ST9 Negro",
+      "code": "U999 ST9",
+      "brand": "Egger",
+      "storedTexture": "liso",
+      "expectedTexture": "liso",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "gaudi",
+      "name": "Gaudí",
+      "code": "gaudi-027NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "helsinki",
+      "name": "Helsinki",
+      "code": "helsinki-089NORMDP18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "otro",
+      "issues": [
+        "surfaceTexture madera but hasGrain false",
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "home",
+      "name": "Home",
+      "code": "home-025STUMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "cementicio",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=cementicio"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "jade",
+      "name": "Jade",
+      "code": "jade-217MESMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "kiri",
+      "name": "Kiri",
+      "code": "kiri-219MESMDF18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "otro",
+      "issues": [
+        "surfaceTexture madera but hasGrain false",
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "merlot",
+      "name": "Merlot",
+      "code": "merlot-141BARMDP18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "mont-blanc",
+      "name": "Mont Blanc",
+      "code": "mont-blanc-072NATMDP18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "otro",
+      "issues": [
+        "surfaceTexture madera but hasGrain false",
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "nocce-milano",
+      "name": "Nocce Milano",
+      "code": "nocce-milano-041NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "olmo-finlandes",
+      "name": "Olmo Finlandés",
+      "code": "olmo-finlandes-096NORMDF18",
+      "brand": "Faplac",
+      "storedTexture": "madera",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture madera but hasGrain false"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "paraiso",
+      "name": "Paraíso",
+      "code": "paraiso-218MESMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture liso but hasGrain true"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "praga",
+      "name": "Praga",
+      "code": "praga-028NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "safari",
+      "name": "Safari",
+      "code": "safari-115DMTMDP18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "sauco",
+      "name": "Sauco",
+      "code": "sauco-212BARMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "scotch",
+      "name": "Scotch",
+      "code": "scotch-142BARMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "seda-azzurra-diseno-discontinuo",
+      "name": "Seda Azzurra - Diseño discontinuo",
+      "code": "seda-azzurra-diseno-discontinuo-118HILMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "textil",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=textil"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "seda-notte",
+      "name": "Seda Notte",
+      "code": "seda-notte-151HILMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "textil",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=textil"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "street",
+      "name": "Street",
+      "code": "street-024STUMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "cementicio",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=cementicio"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "teka-artico",
+      "name": "Teka Artico",
+      "code": "teka-artico-047NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture liso but hasGrain true",
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "teka-oslo-diseno-discontinuo",
+      "name": "Teka Oslo - Diseño discontinuo",
+      "code": "teka-oslo-diseno-discontinuo-099NORMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture liso but hasGrain true"
+      ],
+      "severity": "HIGH",
+      "manualData": false
+    },
+    {
+      "id": "terracota",
+      "name": "Terracota",
+      "code": "terracota-223MESMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "tribal",
+      "name": "Tribal",
+      "code": "tribal-111DMTMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "madera",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=madera"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "venezia",
+      "name": "Venezia",
+      "code": "venezia-160NATMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "otro",
+      "issues": [
+        "REVIEW_REQUIRED: Nature line ambiguous"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "viena",
+      "name": "Viena",
+      "code": "viena-026STUMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "textil",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=textil"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    },
+    {
+      "id": "yute",
+      "name": "Yute",
+      "code": "yute-224MESMDF18",
+      "brand": "Faplac",
+      "storedTexture": "liso",
+      "expectedTexture": "textil",
+      "issues": [
+        "surfaceTexture mismatch: stored=liso, expected=textil"
+      ],
+      "severity": "MEDIUM",
+      "manualData": false
+    }
+  ],
+  "equivalenceAudit": [
+    {
+      "targetName": "Báltico",
+      "matchName": "Seda Notte",
+      "score": 78,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Báltico",
+      "matchName": "F424 ST10 Lino topo",
+      "score": 76,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Báltico",
+      "matchName": "Tribal",
+      "score": 74,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "Blanco Tundra",
+      "score": 87,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "Everest",
+      "score": 82,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "Lino Blanco",
+      "score": 81,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "W954 - Blanco",
+      "score": 80,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "W954 SM Blanco",
+      "score": 80,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "W954 ST14 Blanco",
+      "score": 80,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "Venezia",
+      "score": 76,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "Teka Artico",
+      "score": 76,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "Ceniza",
+      "score": 75,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Blanco Nature",
+      "matchName": "F422 ST10 Lino blanco",
+      "score": 75,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Helsinki",
+      "matchName": "Litio",
+      "score": 84,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Helsinki",
+      "matchName": "Viena",
+      "score": 82,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Helsinki",
+      "matchName": "Seda Giorno",
+      "score": 80,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Helsinki",
+      "matchName": "F416 ST10 Textil beige",
+      "score": 78,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Helsinki",
+      "matchName": "Home",
+      "score": 76,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "targetName": "Helsinki",
+      "matchName": "Sahara",
+      "score": 73,
+      "violations": [
+        {
+          "type": "materialType incompatible (Madera vs Otros)",
+          "severity": "HIGH"
+        }
+      ]
+    }
+  ]
+}

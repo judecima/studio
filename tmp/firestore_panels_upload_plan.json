@@ -1,0 +1,2864 @@
+{
+  "docsToCreate": 0,
+  "docsToUpdate": 144,
+  "docsSkipped": 0,
+  "fieldsChanged": 794,
+  "panelsWithManualFields": 0,
+  "warnings": [],
+  "actions": [
+    {
+      "id": "almendra",
+      "name": "Almendra",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": -0.57,
+          "b": 16.12,
+          "l": 97
+        }
+      }
+    },
+    {
+      "id": "aluminio",
+      "name": "Aluminio",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "colorParent": "beige",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "amaranto",
+      "name": "Amaranto",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "colorParent": "rojo",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 83.01,
+          "a": -0.98,
+          "b": 6.74
+        }
+      }
+    },
+    {
+      "id": "amatista",
+      "name": "Amatista",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "amberes",
+      "name": "Amberes",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 24.21,
+          "b": -2.95,
+          "a": 1.32
+        }
+      }
+    },
+    {
+      "id": "baltico",
+      "name": "Báltico",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 3.92,
+          "b": 10.2,
+          "l": 59.28
+        }
+      }
+    },
+    {
+      "id": "blanco-nature",
+      "name": "Blanco Nature",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "blanco-tundra",
+      "name": "Blanco Tundra",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 99.34,
+          "a": 0.08,
+          "b": 1.08
+        }
+      }
+    },
+    {
+      "id": "caju",
+      "name": "Cajú",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 71.99,
+          "b": 17.88,
+          "a": 4.5
+        }
+      }
+    },
+    {
+      "id": "camellia",
+      "name": "Camellia",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "carvalho-mezzo",
+      "name": "Carvalho Mezzo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 18.55,
+          "a": 7.4,
+          "l": 47.2
+        }
+      }
+    },
+    {
+      "id": "cedro-woodtext",
+      "name": "Cedro Woodtext",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 44.66,
+          "a": 22.56,
+          "b": 34.11
+        }
+      }
+    },
+    {
+      "id": "ceniza",
+      "name": "Ceniza",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 91.09,
+          "a": -1.14,
+          "b": 2.81
+        }
+      }
+    },
+    {
+      "id": "coliseo",
+      "name": "Coliseo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "cemento",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "cementicio",
+        "surfaceTextureSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 47.31,
+          "a": 3.49,
+          "b": 5.56
+        }
+      }
+    },
+    {
+      "id": "ebano-negro",
+      "name": "Ebano Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 12.25,
+          "a": 0,
+          "b": 0
+        }
+      }
+    },
+    {
+      "id": "egger-almendra",
+      "name": "Almendra",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 92.85,
+          "b": 15.29,
+          "a": -0.33
+        }
+      }
+    },
+    {
+      "id": "egger-f187-st9",
+      "name": "F187 ST9 Hormigón Chicago gris oscuro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "cemento",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-f206-st9",
+      "name": "F206 ST9 Pietra Grigia negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "piedra",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "piedra",
+        "surfaceTextureSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 20.29,
+          "b": 0.68,
+          "a": 1.85
+        }
+      }
+    },
+    {
+      "id": "egger-f416-st10",
+      "name": "F416 ST10 Textil beige",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 2.2,
+          "b": 14.01,
+          "l": 78.76
+        }
+      }
+    },
+    {
+      "id": "egger-f417-st10",
+      "name": "F417 ST10 Textil gris",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 1.62,
+          "b": 7.79,
+          "l": 76.72
+        }
+      }
+    },
+    {
+      "id": "egger-f422-st10",
+      "name": "F422 ST10 Lino blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": -1.38,
+          "b": 3.75,
+          "l": 95.6
+        }
+      }
+    },
+    {
+      "id": "egger-f424-st10",
+      "name": "F424 ST10 Lino topo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 57.57,
+          "b": 9.35,
+          "a": 1.52
+        }
+      }
+    },
+    {
+      "id": "egger-f433-st10",
+      "name": "F433 ST10 Lino antracita",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 3.6,
+          "a": 1.66,
+          "l": 52.04
+        }
+      }
+    },
+    {
+      "id": "egger-f500-st20",
+      "name": "F500 ST20 Metallic inox",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "vertical",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 2.7,
+          "b": 2.76,
+          "l": 55.79
+        }
+      }
+    },
+    {
+      "id": "egger-f527-st20",
+      "name": "F527 ST20 Metal cepillado oro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "vertical",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 8.91,
+          "b": 31.35,
+          "l": 67.96
+        }
+      }
+    },
+    {
+      "id": "egger-f528-st20",
+      "name": "F528 ST20 Metal cepillado bronce",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "vertical",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 36.96,
+          "a": 9.53,
+          "b": 16.38
+        }
+      }
+    },
+    {
+      "id": "egger-f637-st10",
+      "name": "F637 ST10 Chromix blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "vertical",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 87.06,
+          "a": 0.96,
+          "b": 10.06
+        }
+      }
+    },
+    {
+      "id": "egger-f638-st10",
+      "name": "F638 ST10 Chromix plata",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "vertical",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h1145-st10",
+      "name": "H1145 ST10 Roble Bardolino natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h1180-st37",
+      "name": "H1180 ST37 Roble Halifax natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "poro_madera",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h1181-st37",
+      "name": "H1181 ST37 Roble Halifax tabaco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "poro_madera",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 49.18,
+          "b": 20.76,
+          "a": 8.79
+        }
+      }
+    },
+    {
+      "id": "egger-h1199-st12",
+      "name": "H1199 ST12 Roble termo negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 4.92,
+          "b": 7.76,
+          "l": 14.02
+        }
+      }
+    },
+    {
+      "id": "egger-h1307-st19",
+      "name": "H1307 ST19 Nogal Warmia marrón",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 31.44,
+          "b": 18.82,
+          "a": 12.8
+        }
+      }
+    },
+    {
+      "id": "egger-h1312-st10",
+      "name": "H1312 ST10 Roble Whiteriver beige arena",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 75.72,
+          "a": 3.34,
+          "b": 12.88
+        }
+      }
+    },
+    {
+      "id": "egger-h1313-st10",
+      "name": "H1313 ST10 Roble Whiteriver gris marrón",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h1367-st40",
+      "name": "H1367 ST40 Roble Casella natural claro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "poro_madera",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h1369-st40",
+      "name": "H1369 ST40 Roble Casella marrón oscuro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "poro_madera",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 9.13,
+          "a": 6.41,
+          "l": 27.85
+        }
+      }
+    },
+    {
+      "id": "egger-h1386-st40",
+      "name": "H1386 ST40 Roble Casella marrón",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "poro_madera",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 48.77,
+          "a": 11.78,
+          "b": 23.19
+        }
+      }
+    },
+    {
+      "id": "egger-h1399-st10",
+      "name": "H1399 ST10 Roble Denver marrón trufa",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 14.47,
+          "a": 5.77,
+          "l": 57.06
+        }
+      }
+    },
+    {
+      "id": "egger-h1401-st22",
+      "name": "H1401 ST22 Pino Cascina",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 83.99,
+          "a": 0.24,
+          "b": 6.62
+        }
+      }
+    },
+    {
+      "id": "egger-h1636-st12",
+      "name": "H1636 ST12 Cerezo Locarno",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h1710-st10",
+      "name": "H1710 ST10 Castaño Kentucky arena",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 74.34,
+          "b": 16.37,
+          "a": 5.16
+        }
+      }
+    },
+    {
+      "id": "egger-h1714-st19",
+      "name": "H1714 ST19 Nogal Lincoln",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 22.58,
+          "a": 12.6,
+          "l": 37.43
+        }
+      }
+    },
+    {
+      "id": "egger-h3003-st19",
+      "name": "H3003 ST19 Roble Norwich",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 39.11,
+          "a": 3.39,
+          "b": 6.93
+        }
+      }
+    },
+    {
+      "id": "egger-h3012-st22",
+      "name": "H3012 ST22 Coco bolo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3131-st12",
+      "name": "H3131 ST12 Roble Davos natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 21.78,
+          "a": 4.6,
+          "l": 72.07
+        }
+      }
+    },
+    {
+      "id": "egger-h3133-st12",
+      "name": "H3133 ST12 Roble Davos trufa marrón",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 47.7,
+          "b": 15.16,
+          "a": 7.97
+        }
+      }
+    },
+    {
+      "id": "egger-h3146-st19",
+      "name": "H3146 ST19 Roble Lorenzo arena",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3158-st19",
+      "name": "H3158 ST19 Roble Vicenza gris",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3170-st12",
+      "name": "H3170 ST12 Roble Kendal natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 67.78,
+          "b": 21.29,
+          "a": 7.06
+        }
+      }
+    },
+    {
+      "id": "egger-h3171-st12",
+      "name": "H3171 ST12 Roble Kendal encerado",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3190-st19",
+      "name": "H3190 ST19 Fineline Metallic antracita",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "madera",
+        "surfaceTextureSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 25.08,
+          "b": 3.04,
+          "a": 2.7
+        }
+      }
+    },
+    {
+      "id": "egger-h3331-st10",
+      "name": "H3331 ST10 Roble de Nebraska natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3332-st10",
+      "name": "H3332 ST10 Roble de Nebraska gris",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 12.55,
+          "a": 4.96,
+          "l": 53.32
+        }
+      }
+    },
+    {
+      "id": "egger-h3349-st19",
+      "name": "H3349 ST19 Roble Kaisersberg",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 74.99,
+          "b": 22.71,
+          "a": 6.01
+        }
+      }
+    },
+    {
+      "id": "egger-h3398-st12",
+      "name": "H3398 ST12 Roble Kendal coñac",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3430-st22",
+      "name": "H3430 ST22 Pino Aland blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-h3433-st22",
+      "name": "H3433 ST22 Pino Aland polar",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 88.31,
+          "b": 9.8,
+          "a": 1.8
+        }
+      }
+    },
+    {
+      "id": "egger-h3700-st10",
+      "name": "H3700 ST10 Nogal del Pacífico natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 8.66,
+          "b": 23.85,
+          "l": 63.27
+        }
+      }
+    },
+    {
+      "id": "egger-h3730-st10",
+      "name": "H3730 ST10 Hickory natural",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 68.09,
+          "a": 9.48,
+          "b": 30.48
+        }
+      }
+    },
+    {
+      "id": "egger-u114-st9",
+      "name": "U114 ST9 Amarillo girasol",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "colorParent": "beige",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.43,
+          "b": 34.13,
+          "a": 9.54
+        }
+      }
+    },
+    {
+      "id": "egger-u250-pm",
+      "name": "U250 PM Beige Caramelo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.43,
+          "a": 9.54,
+          "b": 34.13
+        }
+      }
+    },
+    {
+      "id": "egger-u323-st9",
+      "name": "U323 ST9 Rojo cereza",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 33.61,
+          "b": 33.78,
+          "a": 55.19
+        }
+      }
+    },
+    {
+      "id": "egger-u325-st9",
+      "name": "U325 ST9 Rosa antiguo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.43,
+          "b": 34.13,
+          "a": 9.54
+        }
+      }
+    },
+    {
+      "id": "egger-u350-st9",
+      "name": "U350 ST9 Naranja de Siena",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "colorParent": "beige",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.43,
+          "b": 34.13,
+          "a": 9.54
+        }
+      }
+    },
+    {
+      "id": "egger-u398-pm",
+      "name": "U398 PM Castaño cassis",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 34.45,
+          "b": 5.32,
+          "a": 10.24
+        }
+      }
+    },
+    {
+      "id": "egger-u504-st9",
+      "name": "U504 ST9 Azul cósmico",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": -3.73,
+          "b": -19.45,
+          "l": 34.14
+        }
+      }
+    },
+    {
+      "id": "egger-u599-pm",
+      "name": "U599 PM Azul Indigo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 18.74,
+          "b": -8.6,
+          "a": -0.16
+        }
+      }
+    },
+    {
+      "id": "egger-u626-st9",
+      "name": "U626 ST9 Verde kiwi",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u665-pm",
+      "name": "U665 PM Verde Mineral",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u702-pg",
+      "name": "U702 PG Gris Cachemira",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 9.54,
+          "b": 34.13,
+          "l": 77.43
+        }
+      }
+    },
+    {
+      "id": "egger-u702-st9",
+      "name": "U702 ST9 Gris Cachemira",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u727",
+      "name": "U727 - Gris arcilla",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u727-st9",
+      "name": "U727 ST9 Gris arcilla",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.43,
+          "a": 9.54,
+          "b": 34.13
+        }
+      }
+    },
+    {
+      "id": "egger-u732",
+      "name": "U732 - Gris macadán",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u732-pg",
+      "name": "U732 PG Gris macadán",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 53.59
+        }
+      }
+    },
+    {
+      "id": "egger-u732-st9",
+      "name": "U732 ST9 Gris macadán",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 53.59,
+          "b": 0,
+          "a": 0
+        }
+      }
+    },
+    {
+      "id": "egger-u763",
+      "name": "U763 - Gris perla",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 82.05,
+          "a": 0,
+          "b": 0
+        }
+      }
+    },
+    {
+      "id": "egger-u763-st9",
+      "name": "U763 ST9 Gris perla",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u767-st9",
+      "name": "U767 ST9 Gris cubanita",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.43,
+          "a": 9.54,
+          "b": 34.13
+        }
+      }
+    },
+    {
+      "id": "egger-u963",
+      "name": "U963 - Gris sombra",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 32.75
+        }
+      }
+    },
+    {
+      "id": "egger-u963-st9",
+      "name": "U963 ST9 Gris sombra",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 32.75
+        }
+      }
+    },
+    {
+      "id": "egger-u9631-st9",
+      "name": "U9631 ST9 Gris Sombra Sólida",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 32.75,
+          "b": 0,
+          "a": 0
+        }
+      }
+    },
+    {
+      "id": "egger-u999",
+      "name": "U999 - Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u999-pg",
+      "name": "U999 PG Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 0,
+          "b": 0,
+          "l": 9.26
+        }
+      }
+    },
+    {
+      "id": "egger-u999-pm",
+      "name": "U999 PM Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-u999-st19",
+      "name": "U999 ST19 Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 9.26,
+          "b": 0,
+          "a": 0
+        }
+      }
+    },
+    {
+      "id": "egger-u999-st20",
+      "name": "U999 ST20 Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 9.26,
+          "a": 0,
+          "b": 0
+        }
+      }
+    },
+    {
+      "id": "egger-u999-st9",
+      "name": "U999 ST9 Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 0,
+          "b": 0,
+          "l": 9.26
+        }
+      }
+    },
+    {
+      "id": "egger-verde-oliva",
+      "name": "Verde Oliva",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 38.95,
+          "a": -9.92,
+          "b": 18.98
+        }
+      }
+    },
+    {
+      "id": "egger-w1100-pg",
+      "name": "W1100 PG Blanco alpino",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "surfaceTextureSource": "inferred",
+        "finish": "brillo",
+        "finishSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "hasGrainSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 99.8,
+          "b": 2.75,
+          "a": -1.12
+        }
+      }
+    },
+    {
+      "id": "egger-w1100-pm",
+      "name": "W1100 PM Blanco alpino",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "surfaceTextureSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "hasGrainSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 99.8,
+          "b": 2.75,
+          "a": -1.12
+        }
+      }
+    },
+    {
+      "id": "egger-w1100-st9",
+      "name": "W1100 ST9 Blanco alpino",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "surfaceTextureSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "hasGrainSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 99.8,
+          "a": -1.12,
+          "b": 2.75
+        }
+      }
+    },
+    {
+      "id": "egger-w1101-st9",
+      "name": "W1101 ST9 Blanco alpino sólido",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "surfaceTextureSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "hasGrainSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "egger-w954",
+      "name": "W954 - Blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 94.8,
+          "b": 0,
+          "a": 0
+        }
+      }
+    },
+    {
+      "id": "egger-w954-sm",
+      "name": "W954 SM Blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "supermate",
+        "finishSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 94.8
+        }
+      }
+    },
+    {
+      "id": "egger-w954-st14",
+      "name": "W954 ST14 Blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "finish": "texturado",
+        "finishSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 94.8
+        }
+      }
+    },
+    {
+      "id": "everest",
+      "name": "Everest",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 99.34,
+          "a": 0.08,
+          "b": 1.08
+        }
+      }
+    },
+    {
+      "id": "gaudi",
+      "name": "Gaudí",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 12.64,
+          "a": 7.63,
+          "l": 63.64
+        }
+      }
+    },
+    {
+      "id": "grafito",
+      "name": "Grafito",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "gris-basalto",
+      "name": "Gris Basalto",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 1.32,
+          "a": -1.19,
+          "l": 61.46
+        }
+      }
+    },
+    {
+      "id": "gris-caliza",
+      "name": "Gris Caliza",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 76.71,
+          "a": 0.15,
+          "b": 3.94
+        }
+      }
+    },
+    {
+      "id": "gris-humo",
+      "name": "Gris Humo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 80.97
+        }
+      }
+    },
+    {
+      "id": "gris-tapir",
+      "name": "Gris Tapir",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 69.13,
+          "a": 2.43,
+          "b": 6.55
+        }
+      }
+    },
+    {
+      "id": "helsinki",
+      "name": "Helsinki",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.8,
+          "b": 10.44,
+          "a": 1.38
+        }
+      }
+    },
+    {
+      "id": "himalaya",
+      "name": "Himalaya",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "home",
+      "name": "Home",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "cemento",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "cementicio",
+        "surfaceTextureSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 6.92,
+          "a": 3.84,
+          "l": 79.03
+        }
+      }
+    },
+    {
+      "id": "jade",
+      "name": "Jade",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "colorParent": "beige",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 69.92,
+          "b": 10.12,
+          "a": -9.9
+        }
+      }
+    },
+    {
+      "id": "kiri",
+      "name": "Kiri",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 87.52,
+          "a": 4.18,
+          "b": 17.13
+        }
+      }
+    },
+    {
+      "id": "lino-blanco",
+      "name": "Lino Blanco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "lino-chiaro",
+      "name": "Lino Chiaro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 87.36,
+          "a": 1.09,
+          "b": 4.71
+        }
+      }
+    },
+    {
+      "id": "lino-negro",
+      "name": "Lino Negro",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 13.35,
+          "b": -2.69,
+          "a": 0.77
+        }
+      }
+    },
+    {
+      "id": "lino-terra-diseno-discontinuo",
+      "name": "Lino Terra - Diseño discontinuo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 42.16,
+          "a": 3.94,
+          "b": 8.31
+        }
+      }
+    },
+    {
+      "id": "litio",
+      "name": "Litio",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "metal",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 77.74,
+          "b": 9.85,
+          "a": 2.75
+        }
+      }
+    },
+    {
+      "id": "merlot",
+      "name": "Merlot",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 7.18,
+          "a": 6.38,
+          "l": 26.03
+        }
+      }
+    },
+    {
+      "id": "mont-blanc",
+      "name": "Mont Blanc",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 9.3,
+          "a": 1.59,
+          "l": 82.9
+        }
+      }
+    },
+    {
+      "id": "moscu-diseno-discontinuo",
+      "name": "Moscú - Diseño discontinuo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 32.88,
+          "a": 5.74,
+          "b": 6.08
+        }
+      }
+    },
+    {
+      "id": "negro-profundo",
+      "name": "Negro Profundo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 0.99,
+          "b": -0.95,
+          "a": 0.85
+        }
+      }
+    },
+    {
+      "id": "nocce-milano",
+      "name": "Nocce Milano",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "nogal-terracota",
+      "name": "Nogal Terracota",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 30.28,
+          "a": 13.65,
+          "l": 41.57
+        }
+      }
+    },
+    {
+      "id": "olmo-finlandes",
+      "name": "Olmo Finlandés",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 17.05,
+          "b": 30.34,
+          "l": 60.12
+        }
+      }
+    },
+    {
+      "id": "paraiso",
+      "name": "Paraíso",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "petiribi",
+      "name": "Petiribí",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 29.63,
+          "a": 7.66,
+          "l": 47.38
+        }
+      }
+    },
+    {
+      "id": "pinot-gris",
+      "name": "Pinot Gris",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "praga",
+      "name": "Praga",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 64.44,
+          "b": 10.4,
+          "a": 6.34
+        }
+      }
+    },
+    {
+      "id": "roble-americano-nature",
+      "name": "Roble Americano Nature",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 68.37,
+          "a": 5.95,
+          "b": 30.18
+        }
+      }
+    },
+    {
+      "id": "roble-dakar-woodtext",
+      "name": "Roble Dakar Woodtext",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 28.64,
+          "b": 11.53,
+          "a": 5.92
+        }
+      }
+    },
+    {
+      "id": "roble-escandinavo",
+      "name": "Roble Escandinavo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "safari",
+      "name": "Safari",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 42.64,
+          "b": 14.78,
+          "a": -3.52
+        }
+      }
+    },
+    {
+      "id": "sahara",
+      "name": "Sahara",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "sauco",
+      "name": "Sauco",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "madera",
+        "surfaceTextureSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": true,
+        "hasGrainSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 0,
+          "a": 0,
+          "l": 25.32
+        }
+      }
+    },
+    {
+      "id": "scotch",
+      "name": "Scotch",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "b": 19.14,
+          "a": 7.84,
+          "l": 60.71
+        }
+      }
+    },
+    {
+      "id": "seda-azzurra-diseno-discontinuo",
+      "name": "Seda Azzurra - Diseño discontinuo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "colorParent": "negro",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "seda-giorno",
+      "name": "Seda Giorno",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 73.86,
+          "a": 1.89,
+          "b": 8.51
+        }
+      }
+    },
+    {
+      "id": "seda-notte",
+      "name": "Seda Notte",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "textil",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "colorParent": "negro",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "trama",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "street",
+      "name": "Street",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "cemento",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "cementicio",
+        "surfaceTextureSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "teka-artico",
+      "name": "Teka Artico",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "madera",
+        "materialTypeSource": "inferred",
+        "finish": "brillo",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "veta",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 91.13,
+          "a": 0.62,
+          "b": 3.44
+        }
+      }
+    },
+    {
+      "id": "teka-oslo-diseno-discontinuo",
+      "name": "Teka Oslo - Diseño discontinuo",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "l": 26.35,
+          "b": 17.51,
+          "a": 10.47
+        }
+      }
+    },
+    {
+      "id": "terracota",
+      "name": "Terracota",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 15.44,
+          "b": 21.59,
+          "l": 43.64
+        }
+      }
+    },
+    {
+      "id": "tribal",
+      "name": "Tribal",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 4.31,
+          "b": 6.9,
+          "l": 56.23
+        }
+      }
+    },
+    {
+      "id": "tuareg",
+      "name": "Tuareg",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "colorParent": "negro",
+        "tone": "muy_oscuro",
+        "toneSource": "inferred",
+        "lightnessGroup": "baja",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "venezia",
+      "name": "Venezia",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "liso",
+        "finish": "brillo",
+        "tone": "muy_claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "hasGrain": false,
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    },
+    {
+      "id": "viena",
+      "name": "Viena",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "cemento",
+        "materialTypeSource": "inferred",
+        "surfaceTexture": "cementicio",
+        "surfaceTextureSource": "inferred",
+        "tone": "claro",
+        "toneSource": "inferred",
+        "lightnessGroup": "media_alta",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred",
+        "labColor": {
+          "a": 0.13,
+          "b": 8.95,
+          "l": 75.31
+        }
+      }
+    },
+    {
+      "id": "yute",
+      "name": "Yute",
+      "action": "UPDATE",
+      "changes": {
+        "materialType": "unicolor",
+        "materialTypeSource": "inferred",
+        "tone": "medio",
+        "toneSource": "inferred",
+        "lightnessGroup": "media",
+        "lightnessGroupSource": "inferred",
+        "directionality": "none",
+        "directionalitySource": "inferred"
+      }
+    }
+  ]
+}

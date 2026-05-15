@@ -1,0 +1,11 @@
+{
+  "valid": true,
+  "total": 144,
+  "egger": 82,
+  "faplac": 62,
+  "errors": [],
+  "warnings": [
+    "[paraiso] Liso con hasGrain=true",
+    "[teka-oslo-diseno-discontinuo] Liso con hasGrain=true"
+  ]
+}

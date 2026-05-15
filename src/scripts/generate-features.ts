@@ -1,6 +1,6 @@
 import { extractAndStoreFeatures } from '@/lib/color-engine/feature-extractor';
 
-const panels = [
+const panels: any[] = [
   // 👉 PONÉ ACÁ TUS PANELES REALES
 ];
 

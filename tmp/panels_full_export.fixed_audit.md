@@ -1,0 +1,47 @@
+# Industrial Audit Report
+
+- Total Panels: 144
+- Issues: 39
+- High Severity: 2
+- Equivalence Violations: 53
+
+## Top Issues
+- **Blanco Nature** (blanco-nature-135NATMDP18): surfaceTexture mismatch: stored=madera, expected=liso [MEDIUM]
+- **Cajú** (caju-065NATMDF18): surfaceTexture mismatch: stored=liso, expected=madera [MEDIUM]
+- **F187 ST9 Hormigón Chicago gris oscuro** (F187 ST9): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **F416 ST10 Textil beige** (F416 ST10): surfaceTexture mismatch: stored=textil, expected=madera [MEDIUM]
+- **F417 ST10 Textil gris** (F417 ST10): surfaceTexture mismatch: stored=textil, expected=madera [MEDIUM]
+- **F424 ST10 Lino topo** (F424 ST10): surfaceTexture mismatch: stored=textil, expected=madera [MEDIUM]
+- **F433 ST10 Lino antracita** (F433 ST10): surfaceTexture mismatch: stored=textil, expected=madera [MEDIUM]
+- **F527 ST20 Metal cepillado oro** (F527 ST20): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **F528 ST20 Metal cepillado bronce** (F528 ST20): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **H1636 ST12 Cerezo Locarno** (H1636 ST12): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **H1710 ST10 Castaño Kentucky arena** (H1710 ST10): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **H3012 ST22 Coco bolo** (H3012 ST22): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **H3190 ST19 Fineline Metallic antracita** (H3190 ST19): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U626 ST9 Verde kiwi** (U626 ST9): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U665 PM Verde Mineral** (U665 PM): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U727 ST9 Gris arcilla** (U727 ST9): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U763 ST9 Gris perla** (U763 ST9): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U767 ST9 Gris cubanita** (U767 ST9): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U999 - Negro** (U999 -): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U999 PG Negro** (U999 PG): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U999 PM Negro** (U999 PM): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U999 ST19 Negro** (U999 ST19): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U999 ST20 Negro** (U999 ST20): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **U999 ST9 Negro** (U999 ST9): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Gaudí** (gaudi-027NATMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Helsinki** (helsinki-089NORMDP18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Jade** (jade-217MESMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Kiri** (kiri-219MESMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Mont Blanc** (mont-blanc-072NATMDP18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Nocce Milano** (nocce-milano-041NATMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Paraíso** (paraiso-218MESMDF18): surfaceTexture liso but hasGrain true [HIGH]
+- **Praga** (praga-028NATMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Safari** (safari-115DMTMDP18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Teka Oslo - Diseño discontinuo** (teka-oslo-diseno-discontinuo-099NORMDF18): surfaceTexture liso but hasGrain true [HIGH]
+- **Terracota** (terracota-223MESMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Tribal** (tribal-111DMTMDF18): surfaceTexture mismatch: stored=liso, expected=madera [MEDIUM]
+- **Venezia** (venezia-160NATMDF18): REVIEW_REQUIRED: Nature line ambiguous [MEDIUM]
+- **Viena** (viena-026STUMDF18): surfaceTexture mismatch: stored=cementicio, expected=textil [MEDIUM]
+- **Yute** (yute-224MESMDF18): surfaceTexture mismatch: stored=liso, expected=textil [MEDIUM]

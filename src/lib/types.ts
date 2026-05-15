@@ -1,9 +1,19 @@
-export type ColorParent = 'blanco' | 'beige' | 'gris' | 'negro' | 'marron' | 'rojo' | 'verde' | 'azul' | 'amarillo' | 'naranja' | 'violeta' | 'rosa' | 'otro';
+export type ColorParent = 'blanco' | 'negro' | 'gris' | 'beige' | 'marron' | 'rojo' | 'naranja' | 'amarillo' | 'verde' | 'azul' | 'rosa' | 'violeta' | 'custom' | 'otro';
+
+export interface SimilarProduct {
+  id: string;
+  name: string;
+  brand: string;
+  mainImage: string;
+  score: number;
+  reason: string;
+  price?: number;
+}
 export type ColorSub = 'muy claro' | 'claro' | 'medio claro' | 'medio oscuro' | 'oscuro' | 'muy oscuro';
 export type SurfaceTexture = 'liso' | 'madera' | 'textil' | 'cementicio' | 'piedra' | 'metal' | 'otro';
-export type Finish = 'mate' | 'brillo' | 'satinado' | 'texturado' | 'supermate' | 'otro';
+export type Finish = 'mate' | 'brillo' | 'satinado' | 'texturado' | 'supermate' | 'poro_madera' | 'sincronizado' | 'otro';
 
-export type ColorSource = 'ncs' | 'image_dominant' | 'image_clustered' | 'manual' | 'inferred';
+export type ColorSource = 'ncs' | 'image_dominant' | 'image_clustered' | 'manual' | 'inferred' | 'imported' | 'legacy' | 'analytical_v6.1' | 'fallback' | 'lab';
 
 export type ClassifiedValue<T> = {
   value: T;
@@ -20,6 +30,7 @@ export type ScoreBreakdown = {
   lightnessScore: number;
   confidenceScore: number;
   manualBoost: number;
+  identityBoost?: number;
 };
 
 export type PanelFilters = {
@@ -39,7 +50,7 @@ export type Panel = {
   id: string;
   name: string;
   brand: string;
-  material: string; // MDF, MDP, etc.
+  material: string; // MDF, MDP, etc. (Industrial Material)
   width: number;
   height: number;
   thickness: number;
@@ -54,12 +65,34 @@ export type Panel = {
   
   // Jerarquía Cromática Unificada
   colorParent: ColorParent; 
+  colorParentSource?: ColorSource;
   colorSub: ColorSub;
+  colorSubSource?: ColorSource;
   
-  // Estética y Acabado
+  // Soporte para colores personalizados (Fase Flexible)
+  customColorFamily?: string | null;
+  customColorFamilyNormalized?: string | null;
+  colorFamilySource?: ColorSource;
+
+  // Estética y Acabado (Industrial)
   surfaceTexture: SurfaceTexture;
+  surfaceTextureSource?: ColorSource;
   finish: Finish;
+  finishSource?: ColorSource;
   antiFingerprint: boolean;
+
+  // Clasificación Industrial Extendida
+  materialType?: 'unicolor' | 'madera' | 'textil' | 'cemento' | 'piedra' | 'metal' | 'fantasia' | 'otro';
+  materialTypeSource?: ColorSource;
+  tone?: string;
+  toneSource?: ColorSource;
+  lightnessGroup?: string;
+  lightnessGroupSource?: ColorSource;
+  directionality?: 'none' | 'vertical' | 'horizontal' | 'trama' | 'veta' | 'otro';
+  directionalitySource?: ColorSource;
+  commercialLine?: string;
+  commercialLineSource?: ColorSource;
+  hasGrainSource?: ColorSource;
   
   // Technical
   code?: string;
@@ -72,7 +105,7 @@ export type Panel = {
   labColor?: { l: number; a: number; b: number };
   secondaryLabColor?: { l: number; a: number; b: number };
   paletteVariance?: number;
-
+  
   // Metadata de calidad y origen
   colorSource?: ColorSource;
   dataConfidence?: number;
@@ -115,3 +148,19 @@ export type ClassifiedPanel = Panel & {
   textureConfidence?: number;
   colorConfidence?: number;
 };
+
+export type CombinationType = 'armonia' | 'contraste' | 'acento' | 'funcional';
+export type UseCase = 'cocina' | 'placard' | 'oficina' | 'comedor' | 'baño' | 'comercial' | 'otro';
+
+export interface Combination {
+  id: string;
+  name: string;
+  description: string;
+  panelIds: string[];
+  type: CombinationType;
+  useCase: UseCase;
+  createdAt: string;
+  updatedAt: string;
+  isApproved: boolean;
+  isGeneratedAutomatically: boolean;
+}

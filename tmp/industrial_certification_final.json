@@ -1,0 +1,558 @@
+{
+  "stats": {
+    "totalPanels": 144,
+    "eggerCount": 82,
+    "faplacCount": 62,
+    "legacyEq": 144,
+    "legacyMatches": 1186,
+    "resyncEq": 144,
+    "resyncMatches": 1088
+  },
+  "violationsTable": [
+    {
+      "violationType": "madera_vs_liso",
+      "legacyCount": 75,
+      "resyncCount": 0,
+      "delta": -75,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "madera_vs_textil",
+      "legacyCount": 22,
+      "resyncCount": 0,
+      "delta": -22,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "madera_vs_metal",
+      "legacyCount": 7,
+      "resyncCount": 0,
+      "delta": -7,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "madera_vs_cementicio",
+      "legacyCount": 8,
+      "resyncCount": 0,
+      "delta": -8,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "madera_vs_piedra",
+      "legacyCount": 2,
+      "resyncCount": 0,
+      "delta": -2,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "textil_vs_madera",
+      "legacyCount": 22,
+      "resyncCount": 0,
+      "delta": -22,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "brillo_vs_supermate",
+      "legacyCount": 224,
+      "resyncCount": 62,
+      "delta": -162,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "hasGrain_true_vs_false",
+      "legacyCount": 196,
+      "resyncCount": 0,
+      "delta": -196,
+      "status": "IMPROVED"
+    },
+    {
+      "violationType": "colorFamily_opuesta",
+      "legacyCount": 0,
+      "resyncCount": 0,
+      "delta": 0,
+      "status": "STABLE"
+    },
+    {
+      "violationType": "lightness_extrema",
+      "legacyCount": 0,
+      "resyncCount": 1,
+      "delta": 1,
+      "status": "REGRESSED"
+    }
+  ],
+  "comparisonSummary": {
+    "GOOD_REMOVAL": 364,
+    "GOOD_ADDITION": 490,
+    "RISKY_ADDITION": 25,
+    "RISKY_PERSISTENT": 38,
+    "SCORE_IMPROVED": 231,
+    "SCORE_REGRESSED": 325
+  },
+  "topRiskyPersistent": [
+    {
+      "target": "Almendra",
+      "match": "Almendra",
+      "score": 85,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Blanco Tundra",
+      "match": "Everest",
+      "score": 62,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Blanco Tundra",
+      "match": "W954 - Blanco",
+      "score": 61,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Cajú",
+      "match": "Sahara",
+      "score": 67,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Cajú",
+      "match": "Himalaya",
+      "score": 64,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Ceniza",
+      "match": "W954 - Blanco",
+      "score": 68,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Ceniza",
+      "match": "Everest",
+      "score": 65,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U702 ST9 Gris Cachemira",
+      "score": 76,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U727 - Gris arcilla",
+      "score": 76,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U727 ST9 Gris arcilla",
+      "score": 76,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U767 ST9 Gris cubanita",
+      "score": 76,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U732 PG Gris macadán",
+      "match": "U732 - Gris macadán",
+      "score": 78,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U732 PG Gris macadán",
+      "match": "U732 ST9 Gris macadán",
+      "score": 78,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U732 PG Gris macadán",
+      "match": "Gris Basalto",
+      "score": 69,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U732 PG Gris macadán",
+      "match": "Tribal",
+      "score": 64,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U999 PG Negro",
+      "match": "U999 ST9 Negro",
+      "score": 81,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "U999 PG Negro",
+      "match": "U999 - Negro",
+      "score": 79,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "W1100 PG Blanco alpino",
+      "match": "W1100 ST9 Blanco alpino",
+      "score": 79,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "W1100 PG Blanco alpino",
+      "match": "W1101 ST9 Blanco alpino sólido",
+      "score": 79,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    },
+    {
+      "target": "Gaudí",
+      "match": "Sahara",
+      "score": 62,
+      "violation": "brillo_vs_supermate",
+      "reason": "Legacy violation persistent",
+      "recommendation": "Revisar si la similitud visual justifica la excepción"
+    }
+  ],
+  "topRiskyAdditions": [
+    {
+      "target": "Aluminio",
+      "match": "Sahara",
+      "score": 61,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Blanco Tundra",
+      "match": "W1100 ST9 Blanco alpino",
+      "score": 62,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Blanco Tundra",
+      "match": "W1101 ST9 Blanco alpino sólido",
+      "score": 62,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Cajú",
+      "match": "U114 ST9 Amarillo girasol",
+      "score": 63,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Cajú",
+      "match": "U325 ST9 Rosa antiguo",
+      "score": 63,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Cajú",
+      "match": "U350 ST9 Naranja de Siena",
+      "score": 63,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Ceniza",
+      "match": "W1100 ST9 Blanco alpino",
+      "score": 66,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Ceniza",
+      "match": "W1101 ST9 Blanco alpino sólido",
+      "score": 66,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Coliseo",
+      "match": "F187 ST9 Hormigón Chicago gris oscuro",
+      "score": 61,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "H1369 ST40 Roble Casella marrón oscuro",
+      "match": "H1367 ST40 Roble Casella natural claro",
+      "score": 64,
+      "violation": "lightness_extrema",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U114 ST9 Amarillo girasol",
+      "score": 64,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U325 ST9 Rosa antiguo",
+      "score": 64,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "U702 PG Gris Cachemira",
+      "match": "U350 ST9 Naranja de Siena",
+      "score": 64,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "U999 PG Negro",
+      "match": "Amberes",
+      "score": 68,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "W1100 PG Blanco alpino",
+      "match": "W954 - Blanco",
+      "score": 75,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "W1100 PG Blanco alpino",
+      "match": "Everest",
+      "score": 69,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Gris Caliza",
+      "match": "U763 - Gris perla",
+      "score": 69,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Gris Caliza",
+      "match": "U763 ST9 Gris perla",
+      "score": 69,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Gris Tapir",
+      "match": "U763 - Gris perla",
+      "score": 63,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    },
+    {
+      "target": "Gris Tapir",
+      "match": "U763 ST9 Gris perla",
+      "score": 63,
+      "violation": "brillo_vs_supermate",
+      "reason": "New match with industrial violation",
+      "recommendation": "Bloquear en engine o verificar si es falso positivo"
+    }
+  ],
+  "topGoodRemovals": [
+    {
+      "target": "Amberes",
+      "removedMatch": "Sauco",
+      "oldScore": 76,
+      "violationRemoved": "liso_vs_madera, brillo_vs_supermate, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Amberes",
+      "removedMatch": "Lino Negro",
+      "oldScore": 64,
+      "violationRemoved": "brillo_vs_supermate",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Amberes",
+      "removedMatch": "Ebano Negro",
+      "oldScore": 61,
+      "violationRemoved": "liso_vs_madera, brillo_vs_supermate, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "Seda Notte",
+      "oldScore": 78,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "F424 ST10 Lino topo",
+      "oldScore": 76,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "Tribal",
+      "oldScore": 74,
+      "violationRemoved": "madera_vs_liso, brillo_vs_supermate, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "F638 ST10 Chromix plata",
+      "oldScore": 68,
+      "violationRemoved": "madera_vs_metal, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "F500 ST20 Metallic inox",
+      "oldScore": 66,
+      "violationRemoved": "madera_vs_metal, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "Gris Tapir",
+      "oldScore": 64,
+      "violationRemoved": "madera_vs_liso, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Báltico",
+      "removedMatch": "F433 ST10 Lino antracita",
+      "oldScore": 61,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "Blanco Tundra",
+      "oldScore": 87,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "Everest",
+      "oldScore": 82,
+      "violationRemoved": "madera_vs_liso, brillo_vs_supermate, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "Lino Blanco",
+      "oldScore": 81,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "W954 - Blanco",
+      "oldScore": 80,
+      "violationRemoved": "madera_vs_liso, brillo_vs_supermate, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "W954 SM Blanco",
+      "oldScore": 80,
+      "violationRemoved": "madera_vs_liso, brillo_vs_supermate, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "W954 ST14 Blanco",
+      "oldScore": 80,
+      "violationRemoved": "madera_vs_liso, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "Venezia",
+      "oldScore": 76,
+      "violationRemoved": "madera_vs_liso, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "Ceniza",
+      "oldScore": 75,
+      "violationRemoved": "madera_vs_liso, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "F422 ST10 Lino blanco",
+      "oldScore": 75,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    },
+    {
+      "target": "Blanco Nature",
+      "removedMatch": "Lino Chiaro",
+      "oldScore": 68,
+      "violationRemoved": "madera_vs_textil, hasGrain_true_vs_false",
+      "reason": "Strict filter correctly blocked legacy invalid match"
+    }
+  ],
+  "manualConflicts": []
+}

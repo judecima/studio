@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "totalPanels": 144,
+    "customPanels": 0,
+    "legacyPanels": 0,
+    "outsideEnum": 0,
+    "percentageCustom": "0.00%"
+  },
+  "outsideEnumDetails": [],
+  "topCustomColors": [],
+  "anomalies": {
+    "emptyCustoms": [],
+    "emptyNormalized": [],
+    "duplicateNormalized": [],
+    "legacyToMigrate": []
+  }
+}

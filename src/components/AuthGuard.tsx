@@ -34,7 +34,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     // If logged in and on login page, redirect to appropriate start page
     if (role && pathname === '/login') {
-      if (role === 'administrador') {
+      if ((role as any) === 'administrador') {
         router.replace('/admin');
       } else {
         router.replace('/');

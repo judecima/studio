@@ -239,8 +239,8 @@ export async function runEggerPipeline(filterCodes?: string[]) {
           try {
             const classified = await classify(panelDoc as any);
             if (classified) {
-              panelDoc.colorGroup = classified.colorGroup.toLowerCase();
-              panelDoc.colorHue = classified.tone.toLowerCase();
+              panelDoc.colorGroup = classified.colorParent.toLowerCase();
+              panelDoc.colorHue = classified.colorSub.toLowerCase();
             }
           } catch (e) {}
         }

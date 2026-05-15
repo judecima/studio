@@ -248,8 +248,8 @@ export async function runIndustrialPipeline() {
             try {
               const classified = await classify(panelDoc as any);
               if (classified) {
-                panelDoc.colorGroup = classified.colorGroup;
-                panelDoc.colorHue = classified.tone;
+                panelDoc.colorGroup = classified.colorParent;
+                panelDoc.colorHue = classified.colorSub;
               }
             } catch (e) {
               console.warn(`⚠️ Auto-classification failed for ${slug}`, e);
