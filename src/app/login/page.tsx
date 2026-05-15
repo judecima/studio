@@ -49,10 +49,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
           <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
-            <span className="text-primary-foreground font-headline font-bold text-2xl">T</span>
+            <span className="text-primary-foreground font-headline font-bold text-2xl">R</span>
           </div>
           <h1 className="text-2xl font-headline font-bold tracking-tight text-slate-900">
-            Tableros<span className="text-primary">Pro</span>
+            Red<span className="text-primary">Arquimax</span>
           </h1>
           <p className="text-muted-foreground text-sm mt-2">Sistema de Gestión Industrial</p>
         </div>

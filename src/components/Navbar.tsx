@@ -23,10 +23,10 @@ export function Navbar() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-headline font-bold">T</span>
+              <span className="text-primary-foreground font-headline font-bold">R</span>
             </div>
             <span className="font-headline font-bold text-xl tracking-tight hidden sm:block">
-              Tableros<span className="text-primary">Pro</span>
+              Red<span className="text-primary">Arquimax</span>
             </span>
           </Link>
 
