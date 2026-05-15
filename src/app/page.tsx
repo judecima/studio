@@ -118,10 +118,10 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-6 opacity-40 grayscale">
             <div className="w-8 h-8 bg-slate-400 rounded-lg" />
-            <span className="font-headline font-bold text-xl tracking-tight">TablerosPro</span>
+            <span className="font-headline font-bold text-xl tracking-tight">RedArquimax</span>
           </div>
           <p className="text-sm text-muted-foreground max-w-md mx-auto leading-loose">
-            © 2024 TablerosPro Argentina. <br className="md:hidden" />
+            © 2024 RedArquimax Argentina. <br className="md:hidden" />
             Expertos en distribución de melaminas y soluciones de carpintería.
           </p>
         </div>

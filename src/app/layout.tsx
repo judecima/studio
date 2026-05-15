@@ -12,7 +12,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: 'TablerosPro | Gestión de Paneles MDF y MDP',
+  title: 'RedArquimax | Gestión de Paneles MDF y MDF',
   description: 'Plataforma profesional para la comercialización de tableros de madera en Argentina.',
 };
 

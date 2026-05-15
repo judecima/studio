@@ -121,7 +121,7 @@ export default function LoginPage() {
         </Card>
         
         <p className="text-center text-xs text-slate-400 mt-8">
-          © 2024 TablerosPro Argentina. Acceso restringido.
+          © 2024 RedArquimax Argentina. Acceso restringido.
         </p>
       </div>
     </div>
