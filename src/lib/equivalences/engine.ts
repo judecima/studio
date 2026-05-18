@@ -186,10 +186,10 @@ export function calculateScoreBreakdown(a: ClassifiedPanel, b: ClassifiedPanel):
   }
 
   // 2. Semantic Score
-  const tokensA = normalizeText(a.name + ' ' + (a.description || '')).split(' ');
-  const tokensB = normalizeText(b.name + ' ' + (b.description || '')).split(' ');
-  const commonStrong = tokensA.filter(t => STRONG_TOKENS.includes(t) && tokensB.includes(t));
-  const commonGeneric = tokensA.filter(t => GENERIC_TOKENS.includes(t) && tokensB.includes(t));
+  const tokensA = Array.from(new Set(normalizeText(a.name + ' ' + (a.description || '')).split(' ')));
+  const tokensB = new Set(normalizeText(b.name + ' ' + (b.description || '')).split(' '));
+  const commonStrong = tokensA.filter(t => STRONG_TOKENS.includes(t) && tokensB.has(t));
+  const commonGeneric = tokensA.filter(t => GENERIC_TOKENS.includes(t) && tokensB.has(t));
   breakdown.semanticScore = Math.min(1.0, (commonStrong.length * 0.4) + (commonGeneric.length * 0.1));
 
   // 3. Texture Score (Aumentado)
