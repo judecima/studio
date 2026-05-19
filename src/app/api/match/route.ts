@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { rankMatchesForPanelId } from '@/lib/equivalences/engine';
+import { rankMatches } from '@/lib/equivalences/engine';
+import { getPanelsRepository } from '@/lib/data/get-panels-repository';
 
 export async function GET(request: Request) {
   try {
@@ -17,7 +18,15 @@ export async function GET(request: Request) {
     // 2. Filtros Duros (Capa A)
     // 3. Score Multicapa (Capa B)
     // 4. Threshold dinámico
-    const matches = await rankMatchesForPanelId(id);
+    const repo = getPanelsRepository();
+    const target = await repo.getPanelById(id);
+
+    if (!target) {
+      return NextResponse.json({ success: false, error: 'Panel no encontrado' }, { status: 404 });
+    }
+
+    const panels = await repo.getAllPanels();
+    const matches = await rankMatches(target, panels);
 
     return NextResponse.json({
       success: true,

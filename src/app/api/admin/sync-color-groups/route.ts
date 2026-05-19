@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initializeFirebase } from '@/firebase';
-import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-// @ts-ignore
-import { kmeans } from 'ml-kmeans';
 // @ts-ignore
 import { converter, differenceCiede2000 } from 'culori';
+import { getPanelDbDriver, getPanelsRepository } from '@/lib/data/get-panels-repository';
+import { replaceFirestoreColorGroups, type ColorGroupRecord } from '@/lib/data/firestore-color-groups';
 
 const toLab = converter('lab');
 const ciede2000 = differenceCiede2000();
@@ -72,13 +70,14 @@ function getDominantColorName(names: string[]): string | null {
 
 export async function POST(req: NextRequest) {
   try {
-    const { firestore: db } = initializeFirebase();
+    const repo = getPanelsRepository();
+    const driver = getPanelDbDriver();
     console.log("🎨 API: Iniciando asignación fija de grupos de color...");
 
     // 1. Obtener sólidos
-    const snap = await getDocs(collection(db, 'panels'));
-    const solids = snap.docs
-      .map(d => ({ id: d.id, ...d.data() } as any))
+    const panels = await repo.getAllPanels();
+    const solids = panels
+      .map(panel => panel as any)
       .filter(p => !p.hasGrain && p.labColor);
 
     if (solids.length === 0) {
@@ -117,13 +116,7 @@ export async function POST(req: NextRequest) {
       assignments.set(groupName, list);
     }
 
-    // 3. Limpiar y recrear grupos en Firestore
-    const groupsSnap = await getDocs(collection(db, 'color_groups'));
-    for (const d of groupsSnap.docs) {
-      await deleteDoc(doc(db, 'color_groups', d.id));
-    }
-
-    const colorGroups = [];
+    const colorGroups: ColorGroupRecord[] = [];
     for (const [name, members] of assignments.entries()) {
       const avgL = members.reduce((sum, p) => sum + p.labColor.l, 0) / members.length;
       const avgA = members.reduce((sum, p) => sum + p.labColor.a, 0) / members.length;
@@ -135,9 +128,11 @@ export async function POST(req: NextRequest) {
         lab: { l: avgL, a: avgA, b: avgB },
         sampleCount: members.length
       };
-      
-      await setDoc(doc(db, 'color_groups', groupData.id), groupData);
       colorGroups.push(groupData);
+    }
+
+    if (driver === 'firestore') {
+      await replaceFirestoreColorGroups(colorGroups);
     }
 
     // 4. Actualizar todos los paneles
@@ -145,7 +140,7 @@ export async function POST(req: NextRequest) {
     for (const [name, members] of assignments.entries()) {
       for (const panel of members) {
         if (panel.colorGroup !== name) {
-          await updateDoc(doc(db, 'panels', panel.id), {
+          await repo.updatePanel(panel.id, {
             colorGroup: name,
             colorHue: panel.labColor.l > 80 ? 'claro' : (panel.labColor.l > 40 ? 'medio' : 'oscuro')
           });
@@ -156,6 +151,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
+      driver,
       groupsCreated: colorGroups.length,
       panelsUpdated: updatedCount
     });

@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
+    "dev:json": "cross-env PANEL_DB_DRIVER=json next dev",
+    "db:export:prod-to-json": "tsx scripts/export-firestore-panels-to-json.ts",
+    "db:validate:json": "tsx scripts/validate-json-dev-db.ts",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
@@ -73,6 +76,7 @@
     "@types/node": "^20",
     "@types/react": "^19.2.1",
     "@types/react-dom": "^19.2.1",
+    "cross-env": "^10.1.0",
     "genkit-cli": "^1.28.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",

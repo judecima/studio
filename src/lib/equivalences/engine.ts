@@ -277,7 +277,7 @@ export function generateExplanation(breakdown: ScoreBreakdown, target: Classifie
   const isFinishMismatch = (target.finish === 'brillo' && (match.finish === 'mate' || match.finish === 'supermate')) ||
                            (match.finish === 'brillo' && (target.finish === 'mate' || target.finish === 'supermate'));
 
-  if (isFinishMismatch && (target.name.toLowerCase() === match.name.toLowerCase() || breakdown.identityBoost > 0.5)) {
+  if (isFinishMismatch && (target.name.toLowerCase() === match.name.toLowerCase() || (breakdown.identityBoost ?? 0) > 0.5)) {
     return "Alternativa cromática del mismo diseño o familia visual, pero con acabado distinto. Validar brillo/supermate antes de recomendar como reemplazo directo.";
   }
 
@@ -342,8 +342,7 @@ export async function rankMatchesForPanelId(id: string): Promise<EquivalenceMatc
   return rankMatches(target, allPanels);
 }
 
-export async function runEquivalenceSync(allPanels: Panel[]) {
-  const db = getDb();
+export async function computeEquivalenceResults(allPanels: Panel[]) {
   const results = [];
 
   for (const target of allPanels) {
@@ -360,12 +359,22 @@ export async function runEquivalenceSync(allPanels: Panel[]) {
         lastSync: new Date().toISOString()
       };
 
-      await setDoc(doc(db, 'equivalences', target.id), result);
       results.push(result);
     } catch (e) {
       console.error(`Error procesando ${target.id}:`, e);
     }
   }
+  return results;
+}
+
+export async function runEquivalenceSync(allPanels: Panel[]) {
+  const db = getDb();
+  const results = await computeEquivalenceResults(allPanels);
+
+  for (const result of results) {
+    await setDoc(doc(db, 'equivalences', result.targetId), result);
+  }
+
   return results;
 }
 

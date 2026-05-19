@@ -14,7 +14,7 @@ async function run() {
   const original = JSON.parse(fs.readFileSync(originalPath, 'utf8'));
   const resync = JSON.parse(fs.readFileSync(resyncPath, 'utf8'));
 
-  const resyncMap = new Map(resync.map((r: any) => [r.targetId, r]));
+  const resyncMap = new Map<string, any>(resync.map((r: any) => [r.targetId, r]));
   
   const report = {
     summary: {

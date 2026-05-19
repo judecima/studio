@@ -1,7 +1,7 @@
 import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, initializeFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage';
 
 /**
@@ -22,9 +22,28 @@ export function getSdks(firebaseApp: FirebaseApp) {
   return {
     firebaseApp,
     auth: getAuth(firebaseApp),
-    firestore: getFirestore(firebaseApp),
+    firestore: getConfiguredFirestore(firebaseApp),
     storage: getStorage(firebaseApp)
   };
+}
+
+function getConfiguredFirestore(firebaseApp: FirebaseApp) {
+  if (typeof window === 'undefined') {
+    return getFirestore(firebaseApp);
+  }
+
+  try {
+    return initializeFirestore(firebaseApp, {
+      experimentalForceLongPolling: true,
+      ignoreUndefinedProperties: true,
+    });
+  } catch (error: any) {
+    if (error?.code === 'failed-precondition') {
+      return getFirestore(firebaseApp);
+    }
+
+    throw error;
+  }
 }
 
 export * from './provider';

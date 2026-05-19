@@ -100,7 +100,7 @@ async function resync() {
   results.slice(0, 10).forEach(r => {
     md += `### ${r.targetName} (${r.targetBrand})\n`;
     r.matches.slice(0, 3).forEach(m => {
-      md += `- **${m.name}** (${m.brand}): ${m.score}% - ${m.explanation.substring(0, 80)}...\n`;
+      md += `- **${m.name}** (${m.brand}): ${m.score}% - ${(m.explanation ?? '').substring(0, 80)}...\n`;
     });
     md += `\n`;
   });
