@@ -1,0 +1,314 @@
+[
+  {
+    "id": "grupo-c",
+    "name": "home",
+    "panelIds": [
+      "egger-f638-st10",
+      "street",
+      "home"
+    ]
+  },
+  {
+    "id": "grupo-p",
+    "name": "perla",
+    "panelIds": [
+      "egger-u763",
+      "egger-u763-st9",
+      "gris-humo"
+    ]
+  },
+  {
+    "id": "grupo-s",
+    "name": "sombra",
+    "panelIds": [
+      "egger-u963",
+      "egger-u963-st9",
+      "egger-u9631-st9",
+      "grafito"
+    ]
+  },
+  {
+    "id": "lisoblanco",
+    "name": "blanco liso",
+    "panelIds": [
+      "egger-w954",
+      "egger-w954-sm",
+      "egger-w954-st14",
+      "egger-w1100-pg",
+      "egger-w1100-pm",
+      "egger-w1100-st9",
+      "everest"
+    ]
+  },
+  {
+    "id": "grupo-cachemira",
+    "name": "cachemira",
+    "panelIds": [
+      "egger-u702-st9",
+      "egger-u702-pg",
+      "litio",
+      "ceniza"
+    ]
+  },
+  {
+    "id": "grupomacaran",
+    "name": "macadan",
+    "panelIds": [
+      "egger-u732",
+      "egger-u732-pg",
+      "egger-u732-st9",
+      "gris-basalto",
+      "aluminio",
+      "egger-f500-st20"
+    ]
+  },
+  {
+    "id": "grupo-amberes",
+    "name": "amberes",
+    "panelIds": [
+      "amberes",
+      "egger-f206-st9"
+    ]
+  },
+  {
+    "id": "grupo-giordo",
+    "name": "giornn",
+    "panelIds": [
+      "seda-giorno",
+      "egger-f416-st10"
+    ]
+  },
+  {
+    "id": "grupo-notte",
+    "name": "notte",
+    "panelIds": [
+      "seda-notte",
+      "egger-f433-st10"
+    ]
+  },
+  {
+    "id": "grupo-sauco",
+    "name": "sauco",
+    "panelIds": [
+      "sauco",
+      "egger-u999-st19"
+    ]
+  },
+  {
+    "id": "grupo-u999",
+    "name": "u999",
+    "panelIds": [
+      "egger-u999-st20",
+      "egger-u999",
+      "egger-u999-pg",
+      "egger-u999-pm",
+      "egger-u999-st9",
+      "negro-profundo"
+    ]
+  },
+  {
+    "id": "grupo-coliseo",
+    "name": "coliseo",
+    "panelIds": [
+      "coliseo",
+      "tribal",
+      "egger-u767-st9"
+    ]
+  },
+  {
+    "id": "grupo-tapir",
+    "name": "tapir",
+    "panelIds": [
+      "gris-tapir",
+      "egger-u727",
+      "egger-u727-st9"
+    ]
+  },
+  {
+    "id": "grupo-truffamarron",
+    "name": "trufa marron",
+    "panelIds": [
+      "egger-h3133-st12",
+      "egger-h3158-st19",
+      "egger-h3332-st10"
+    ]
+  },
+  {
+    "id": "grupo-montblan",
+    "name": "montblanc",
+    "panelIds": [
+      "mont-blanc",
+      "venezia",
+      "teka-artico",
+      "blanco-nature"
+    ]
+  },
+  {
+    "id": "grupo-linochiare",
+    "name": "lino-chiare",
+    "panelIds": [
+      "lino-chiaro",
+      "yute",
+      "viena"
+    ]
+  },
+  {
+    "id": "grupotruffamarron",
+    "name": "marrontruffa",
+    "panelIds": [
+      "egger-h1399-st10",
+      "baltico",
+      "roble-escandinavo"
+    ]
+  },
+  {
+    "id": "gruporoble",
+    "name": "grupo Roble",
+    "panelIds": [
+      "egger-h3398-st12",
+      "egger-h3170-st12",
+      "egger-h3730-st10",
+      "egger-h1367-st40",
+      "egger-h3331-st10"
+    ]
+  },
+  {
+    "id": "grupo-scotch",
+    "name": "scotch",
+    "panelIds": [
+      "scotch",
+      "olmo-finlandes",
+      "egger-h3700-st10",
+      "petiribi"
+    ]
+  },
+  {
+    "id": "grupo-aland",
+    "name": "aland",
+    "panelIds": [
+      "egger-h3430-st22",
+      "egger-h1401-st22",
+      "pinot-gris",
+      "egger-h1312-st10"
+    ]
+  },
+  {
+    "id": "grupo-merlot",
+    "name": "merlot",
+    "panelIds": [
+      "merlot",
+      "roble-dakar-woodtext",
+      "egger-h1369-st40",
+      "egger-h1199-st12"
+    ]
+  },
+  {
+    "id": "grupo-amaranto",
+    "name": "amaranto",
+    "panelIds": [
+      "amaranto",
+      "helsinki",
+      "egger-h3433-st22"
+    ]
+  },
+  {
+    "id": "grupo-nocce",
+    "name": "nocce",
+    "panelIds": [
+      "nocce-milano",
+      "egger-h1714-st19"
+    ]
+  },
+  {
+    "id": "grupo-gaudi",
+    "name": "gaudi",
+    "panelIds": [
+      "gaudi",
+      "egger-h3146-st19"
+    ]
+  },
+  {
+    "id": "grupo-paraiso",
+    "name": "paraiso",
+    "panelIds": [
+      "paraiso",
+      "egger-h3171-st12"
+    ]
+  },
+  {
+    "id": "grupo-norwich",
+    "name": "norwich",
+    "panelIds": [
+      "egger-h3003-st19",
+      "egger-h3190-st19"
+    ]
+  },
+  {
+    "id": "grupo-kiri",
+    "name": "kiri",
+    "panelIds": [
+      "egger-h1710-st10",
+      "kiri"
+    ]
+  },
+  {
+    "id": "grupo-nogalterracota",
+    "name": "nogal terracota",
+    "panelIds": [
+      "nogal-terracota",
+      "egger-h1307-st19"
+    ]
+  },
+  {
+    "id": "grupo-linoblanco",
+    "name": "lino blanco",
+    "panelIds": [
+      "egger-f422-st10",
+      "lino-blanco"
+    ]
+  },
+  {
+    "id": "grupo-tureg",
+    "name": "tuareg",
+    "panelIds": [
+      "tuareg",
+      "egger-u599-pm"
+    ]
+  },
+  {
+    "id": "grupo-rosa",
+    "name": "rosa",
+    "panelIds": [
+      "egger-u325-st9",
+      "himalaya",
+      "sahara"
+    ]
+  },
+  {
+    "id": "grupo-caju",
+    "name": "caju",
+    "panelIds": [
+      "caju",
+      "camellia",
+      "praga",
+      "egger-h1145-st10",
+      "egger-h3131-st12"
+    ]
+  },
+  {
+    "id": "grupo-almendra",
+    "name": "almendra",
+    "panelIds": [
+      "almendra",
+      "egger-almendra"
+    ]
+  },
+  {
+    "id": "grupo-carvalho",
+    "name": "carvalho",
+    "panelIds": [
+      "carvalho-mezzo",
+      "egger-h1181-st37"
+    ]
+  }
+]

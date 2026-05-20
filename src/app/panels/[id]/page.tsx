@@ -6,14 +6,101 @@ import Image from "next/image";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, Loader2, Sparkles } from "lucide-react";
+import { ChevronLeft, Layers3, Loader2, Sparkles } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useDoc, useFirestore, useMemoFirebase } from "@/firebase";
 import { doc, query, collection, where, documentId, getDocs } from "firebase/firestore";
 import { Panel, Equivalence } from "@/lib/types";
+import type { EquivalenceGroup } from "@/lib/equivalence-groups";
 import { PanelCard } from "@/components/PanelCard";
 import { useUser } from "@/firebase";
 import { logActivity } from "@/lib/activity-actions";
+
+function GroupEquivalenceSection({
+  panelId,
+  onHasMatchesChange,
+}: {
+  panelId: string;
+  onHasMatchesChange: (hasMatches: boolean) => void;
+}) {
+  const db = useFirestore();
+  const [groupMatches, setGroupMatches] = useState<Panel[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchGroupMatches() {
+      if (!db || !panelId) return;
+
+      setIsLoading(true);
+      try {
+        const response = await fetch("/api/admin/equivalence-groups");
+        if (!response.ok) return;
+
+        const groups = (await response.json()) as EquivalenceGroup[];
+        const relatedIds = Array.from(
+          new Set(
+            groups
+              .filter((group) => group.panelIds.includes(panelId))
+              .flatMap((group) => group.panelIds)
+              .filter((id) => id !== panelId)
+          )
+        );
+
+        if (relatedIds.length === 0) {
+          setGroupMatches([]);
+          onHasMatchesChange(false);
+          return;
+        }
+
+        const hydrated: Panel[] = [];
+        for (let index = 0; index < relatedIds.length; index += 30) {
+          const batchIds = relatedIds.slice(index, index + 30);
+          const q = query(collection(db, "panels"), where(documentId(), "in", batchIds));
+          const snap = await getDocs(q);
+          hydrated.push(...snap.docs.map((item) => ({ id: item.id, ...item.data() } as Panel)));
+        }
+
+        const order = new Map(relatedIds.map((id, index) => [id, index]));
+        hydrated.sort((a, b) => (order.get(a.id) || 0) - (order.get(b.id) || 0));
+        setGroupMatches(hydrated);
+        onHasMatchesChange(hydrated.length > 0);
+      } catch (error) {
+        console.error("Error loading equivalence groups:", error);
+        onHasMatchesChange(false);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchGroupMatches();
+  }, [db, panelId, onHasMatchesChange]);
+
+  if (isLoading || groupMatches.length === 0) return null;
+
+  return (
+    <div className="mb-12 space-y-8">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="bg-emerald-600 p-2 rounded-xl text-white shadow-lg shadow-emerald-200">
+            <Layers3 className="h-4 w-4" />
+          </div>
+          <h3 className="text-xl font-headline font-bold text-slate-900 tracking-tight">
+            Equivalentes del grupo
+          </h3>
+        </div>
+        <Badge variant="outline" className="text-[10px] font-bold border-emerald-200 text-emerald-700 bg-emerald-50">
+          ESTIMACION MANUAL
+        </Badge>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        {groupMatches.map((matchPanel) => (
+          <PanelCard key={matchPanel.id} panel={matchPanel} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetPanel: any }) {
   const [allMatches, setAllMatches] = useState<any[]>([]);
@@ -101,7 +188,7 @@ function EquivalenceSection({ panelId, targetPanel }: { panelId: string, targetP
           </h3>
         </div>
         <Badge variant="outline" className="text-[10px] font-bold border-slate-200 text-slate-400">
-          MOSTRANDO TODO +60%
+          ESTIMACION SEGUN COLOR BASE Y TEXTURA
         </Badge>
       </div>
 
@@ -139,6 +226,7 @@ export default function PanelDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const db = useFirestore();
+  const [hasGroupEquivalents, setHasGroupEquivalents] = useState<boolean | null>(null);
 
   const panelRef = useMemoFirebase(() => {
     if (!db || !id) return null;
@@ -147,6 +235,10 @@ export default function PanelDetailPage() {
 
   const { data: panel, isLoading: isPanelLoading } = useDoc<Panel>(panelRef);
   const { user } = useUser();
+
+  useEffect(() => {
+    setHasGroupEquivalents(null);
+  }, [id]);
 
   useEffect(() => {
     if (panel && user?.username && id) {
@@ -240,7 +332,13 @@ export default function PanelDetailPage() {
           {/* LADO DERECHO: Recomendaciones */}
           <div className="lg:col-span-8">
             <div className="bg-white/50 backdrop-blur-sm p-6 sm:p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/30">
-              <EquivalenceSection panelId={id as string} targetPanel={panel} />
+              <GroupEquivalenceSection
+                panelId={id as string}
+                onHasMatchesChange={setHasGroupEquivalents}
+              />
+              {hasGroupEquivalents === false && (
+                <EquivalenceSection panelId={id as string} targetPanel={panel} />
+              )}
             </div>
           </div>
         </div>

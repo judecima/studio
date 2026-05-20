@@ -1,0 +1,27 @@
+
+> nextn@0.1.0 dev
+> next dev --turbopack -p 9002 --hostname 127.0.0.1
+
+   ▲ Next.js 15.5.9 (Turbopack)
+   - Local:        http://127.0.0.1:9002
+   - Network:      http://127.0.0.1:9002
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 20.1s
+ ○ Compiling /admin/equivalence-groups ...
+ ✓ Compiled /admin/equivalence-groups in 30.1s
+ GET / 200 in 17685ms
+ GET /admin/equivalence-groups 200 in 152ms
+ ○ Compiling /api/admin/equivalence-groups ...
+ ✓ Compiled /api/admin/equivalence-groups in 890ms
+ GET /api/admin/equivalence-groups 200 in 1462ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 7.8s
+ GET / 500 in 10763ms
+ GET / 500 in 221ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1033ms
+ GET /favicon.ico 200 in 1381ms
+ GET / 500 in 153ms
+ GET /favicon.ico 200 in 364ms

@@ -10,7 +10,8 @@ import {
   FileUp,
   Menu,
   Users,
-  LogOut
+  LogOut,
+  Layers3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navigation = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { label: "Tableros", icon: Package, href: "/admin/panels" },
+    { label: "Equivalencias", icon: Layers3, href: "/admin/equivalence-groups" },
     { label: "Importadores", icon: FileUp, href: "/admin/import" },
     { label: "Seguimiento", icon: Users, href: "/admin/users" },
   ];
