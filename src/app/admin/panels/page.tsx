@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { 
@@ -41,6 +41,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, doc, deleteDoc, updateDoc, orderBy, getDocs, writeBatch } from "firebase/firestore";
 import { Panel } from "@/lib/types";
+import type { EquivalenceGroup } from "@/lib/equivalence-groups";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { errorEmitter } from "@/firebase/error-emitter";
@@ -66,6 +67,7 @@ export default function AdminPanelsPage() {
   
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [category, setCategory] = useState<"panels" | "cantos">("panels");
+  const [equivalenceGroups, setEquivalenceGroups] = useState<EquivalenceGroup[]>([]);
 
   const q = useMemoFirebase(() => {
     if (!db) return null;
@@ -73,6 +75,33 @@ export default function AdminPanelsPage() {
   }, [db, category]);
 
   const { data: items, isLoading } = useCollection<Panel>(q);
+
+  useEffect(() => {
+    async function loadEquivalenceGroups() {
+      try {
+        const response = await fetch("/api/admin/equivalence-groups");
+        if (!response.ok) return;
+        const data = await response.json();
+        setEquivalenceGroups(Array.isArray(data) ? data : []);
+      } catch {
+        setEquivalenceGroups([]);
+      }
+    }
+
+    loadEquivalenceGroups();
+  }, []);
+
+  const groupsByPanelId = useMemo(() => {
+    const map = new Map<string, EquivalenceGroup[]>();
+    for (const group of equivalenceGroups) {
+      for (const panelId of group.panelIds) {
+        const panelGroups = map.get(panelId) || [];
+        panelGroups.push(group);
+        map.set(panelId, panelGroups);
+      }
+    }
+    return map;
+  }, [equivalenceGroups]);
 
   const filteredItems = useMemo(() => {
     if (!items) return [];
@@ -260,6 +289,7 @@ export default function AdminPanelsPage() {
                 <TableHead className="w-[70px] font-bold text-[10px] uppercase">Imagen</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase">Producto / Ref</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase">Marca</TableHead>
+                <TableHead className="font-bold text-[10px] uppercase">Grupo</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase">Clasificación</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase text-center">Estructura</TableHead>
                 <TableHead className="font-bold text-[10px] uppercase text-center">Stock</TableHead>
@@ -268,7 +298,10 @@ export default function AdminPanelsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredItems.map((item) => (
+              {filteredItems.map((item) => {
+                const itemGroups = groupsByPanelId.get(item.id) || [];
+
+                return (
                 <TableRow key={item.id} className="hover:bg-slate-50/30 transition-colors group">
                   <TableCell>
                     <div className="w-10 h-10 rounded-md bg-slate-100 relative overflow-hidden border shadow-inner">
@@ -282,7 +315,12 @@ export default function AdminPanelsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-bold text-xs text-slate-900 leading-tight">{item.name}</span>
+                      <Link
+                        href={`/admin/panels/${item.id}/edit?collection=${category}`}
+                        className="font-bold text-xs text-slate-900 leading-tight hover:text-primary hover:underline"
+                      >
+                        {item.name}
+                      </Link>
                       <span className="text-[9px] uppercase tracking-wider text-slate-400 font-mono mt-0.5">{item.id}</span>
                       {item.code && <span className="text-[9px] text-indigo-500 font-bold mt-0.5">{item.code}</span>}
                     </div>
@@ -292,6 +330,24 @@ export default function AdminPanelsPage() {
                       "text-[10px] font-bold px-1.5 h-5",
                       item.brand === 'Egger' ? 'border-primary/30 text-primary bg-primary/5' : 'text-slate-600 border-slate-200 bg-slate-50'
                     )}>{item.brand}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {itemGroups.length > 0 ? (
+                      <div className="flex max-w-[180px] flex-wrap gap-1">
+                        {itemGroups.map((group) => (
+                          <Link key={group.id} href={`/admin/equivalence-groups?edit=${group.id}`}>
+                            <Badge
+                              variant="outline"
+                              className="h-6 max-w-[170px] cursor-pointer truncate border-emerald-200 bg-emerald-50 px-2 text-[10px] font-bold text-emerald-700 hover:bg-emerald-100"
+                            >
+                              {group.name}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase text-slate-300">Sin grupo</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-1">
@@ -353,7 +409,8 @@ export default function AdminPanelsPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         )}

@@ -25,3 +25,7 @@
  GET /favicon.ico 200 in 1381ms
  GET / 500 in 153ms
  GET /favicon.ico 200 in 364ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 3.6s
+ GET /admin 500 in 243ms
+ GET /admin 500 in 67ms

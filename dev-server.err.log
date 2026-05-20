@@ -16,3 +16,127 @@
   syscall: 'open',
   path: 'D:\\ia\\studio\\.next\\server\\app\\page\\app-build-manifest.json'
 }
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\static\development\_buildManifest.js.tmp.lqx1owsf31l'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\static\\development\\_buildManifest.js.tmp.lqx1owsf31l'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\static\development\_buildManifest.js.tmp.lqx1owsf31l'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\static\\development\\_buildManifest.js.tmp.lqx1owsf31l'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\static\development\_buildManifest.js.tmp.qfzuzt0gk1'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\static\\development\\_buildManifest.js.tmp.qfzuzt0gk1'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\static\development\_buildManifest.js.tmp.qfzuzt0gk1'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\static\\development\\_buildManifest.js.tmp.qfzuzt0gk1'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\app\favicon.ico\[__metadata_id__]\route\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\app\\favicon.ico\\[__metadata_id__]\\route\\app-paths-manifest.json'
+}
+ ⨯ Error: Cannot find module '../../chunks/ssr/[turbopack]_runtime.js'
+Require stack:
+- D:\ia\studio\.next\server\app\admin\page.js
+- D:\ia\studio\node_modules\next\dist\server\require.js
+- D:\ia\studio\node_modules\next\dist\server\load-components.js
+- D:\ia\studio\node_modules\next\dist\build\utils.js
+- D:\ia\studio\node_modules\next\dist\build\swc\options.js
+- D:\ia\studio\node_modules\next\dist\build\swc\index.js
+- D:\ia\studio\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\ia\studio\node_modules\next\dist\server\config.js
+- D:\ia\studio\node_modules\next\dist\server\next.js
+- D:\ia\studio\node_modules\next\dist\server\lib\start-server.js
+    at Object.<anonymous> (D:\ia\studio\.next\server\app\admin\page.js:1:7) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+Error: Cannot find module '../../chunks/ssr/[turbopack]_runtime.js'
+Require stack:
+- D:\ia\studio\.next\server\app\admin\page.js
+- D:\ia\studio\node_modules\next\dist\server\require.js
+- D:\ia\studio\node_modules\next\dist\server\load-components.js
+- D:\ia\studio\node_modules\next\dist\build\utils.js
+- D:\ia\studio\node_modules\next\dist\build\swc\options.js
+- D:\ia\studio\node_modules\next\dist\build\swc\index.js
+- D:\ia\studio\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\ia\studio\node_modules\next\dist\server\config.js
+- D:\ia\studio\node_modules\next\dist\server\next.js
+- D:\ia\studio\node_modules\next\dist\server\lib\start-server.js
+    at Object.<anonymous> (D:\ia\studio\.next\server\app\admin\page.js:1:7) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\ia\studio\.next\server\app\favicon.ico\[__metadata_id__]\route\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\ia\\studio\\.next\\server\\app\\favicon.ico\\[__metadata_id__]\\route\\app-paths-manifest.json'
+}

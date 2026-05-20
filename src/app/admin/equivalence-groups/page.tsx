@@ -93,6 +93,7 @@ function TransferPanelList({
 export default function EquivalenceGroupsAdminPage() {
   const db = useFirestore();
   const { toast } = useToast();
+  const [editGroupId, setEditGroupId] = useState<string | null>(null);
   const [groups, setGroups] = useState<EquivalenceGroup[]>([]);
   const [isLoadingGroups, setIsLoadingGroups] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -124,8 +125,16 @@ export default function EquivalenceGroupsAdminPage() {
   }
 
   useEffect(() => {
+    setEditGroupId(new URLSearchParams(window.location.search).get("edit"));
     loadGroups();
   }, []);
+
+  useEffect(() => {
+    if (isLoadingGroups || !editGroupId) return;
+
+    const group = groups.find((item) => item.id === editGroupId);
+    if (group) startEdit(group);
+  }, [groups, isLoadingGroups, editGroupId]);
 
   const normalizedSearch = search.trim().toLowerCase();
   const panelMap = useMemo(() => new Map((panels || []).map((panel) => [panel.id, panel])), [panels]);
