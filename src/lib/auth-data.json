@@ -1,17 +1,17 @@
 [
   {
     "username": "ch_arquimax",
-    "password": "Onf2T0OUh9YO",
+    "password": "arquimax1",
     "role": "usuario"
   },
   {
     "username": "sp_arquimax",
-    "password": "OYXLeuT3XK_!",
+    "password": "arquimax236",
     "role": "usuario"
   },
   {
     "username": "lb_arquimax",
-    "password": "IG+0)1ddGHZO",
+    "password": "arquimax652",
     "role": "usuario"
   },
   {
@@ -26,12 +26,22 @@
   },
   {
     "username": "lucas_arquimax",
-    "password": "OZPXN5_nmO1h",
+    "password": "arquimax2396",
     "role": "administrador"
   },
   {
     "username": "ju_admin",
     "password": "S%@93ybXQ9zB",
     "role": "administrador"
-  }
+  },
+  {
+    "username": "vendedor1_arquimax",
+    "password": "arquimax396",
+    "role": "usuario"
+  },
+  {
+    "username": "vendedor2_arquimax",
+    "password": "arquimax36",
+    "role": "usuario"
+  } 
 ]
