@@ -1,9 +1,11 @@
 "use client"
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
 import { useState } from "react";
+import logo from "@/app/logo.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/firebase";
@@ -21,10 +23,15 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-headline font-bold">R</span>
-            </div>
+          <Link href="/" className="flex h-full items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center">
+              <Image
+                src={logo}
+                alt="RedArquimax"
+                className="h-12 w-12 translate-y-1 scale-[1.65] object-contain"
+                priority
+              />
+            </span>
             <span className="font-headline font-bold text-xl tracking-tight hidden sm:block">
               Red<span className="text-primary">Arquimax</span>
             </span>

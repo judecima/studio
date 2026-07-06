@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import logo from '@/app/logo.png';
 import { login } from '@/lib/auth-actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,9 +50,12 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50/50 px-4">
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
-            <span className="text-primary-foreground font-headline font-bold text-2xl">R</span>
-          </div>
+          <Image
+            src={logo}
+            alt="RedArquimax"
+            className="mb-4 h-12 w-12 scale-[1.65] object-contain"
+            priority
+          />
           <h1 className="text-2xl font-headline font-bold tracking-tight text-slate-900">
             Red<span className="text-primary">Arquimax</span>
           </h1>
