@@ -7,9 +7,9 @@ import {
   Package, 
   ChevronRight,
   Home,
-  FileUp,
   Menu,
   Users,
+  UserCog,
   LogOut,
   Layers3
 } from "lucide-react";
@@ -17,9 +17,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useUser } from "@/firebase";
+import { useState } from "react";
+import { KeyRound } from "lucide-react";
+import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 
 function SidebarContent({ pathname, navigation }: { pathname: string, navigation: any[] }) {
   const { logout } = useUser();
+  const [pwOpen, setPwOpen] = useState(false);
   return (
     <div className="border-r bg-white h-full p-6 flex flex-col">
       <div className="flex items-center gap-2 mb-10 px-2">
@@ -58,14 +62,23 @@ function SidebarContent({ pathname, navigation }: { pathname: string, navigation
             <Home className="h-4 w-4" /> Ver Web Pública
           </Button>
         </Link>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
+          onClick={() => setPwOpen(true)}
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-primary"
+        >
+          <KeyRound className="h-4 w-4" /> Cambiar Contraseña
+        </Button>
+        <Button
+          variant="ghost"
           onClick={() => logout()}
           className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/5"
         >
           <LogOut className="h-4 w-4" /> Cerrar Sesión
         </Button>
       </div>
+
+      <ChangePasswordDialog open={pwOpen} onOpenChange={setPwOpen} />
     </div>
   );
 }
@@ -77,8 +90,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { label: "Tableros", icon: Package, href: "/admin/panels" },
     { label: "Equivalencias", icon: Layers3, href: "/admin/equivalence-groups" },
-    { label: "Importadores", icon: FileUp, href: "/admin/import" },
     { label: "Seguimiento", icon: Users, href: "/admin/users" },
+    { label: "Usuarios", icon: UserCog, href: "/admin/accounts" },
   ];
 
   return (

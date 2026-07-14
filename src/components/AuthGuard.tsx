@@ -15,25 +15,27 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     
     if (isUserLoading) return;
 
-    // Administrators have full access to everything
-    if (role === 'administrador') {
+    const isAuthPage = pathname === '/login' || pathname === '/register';
+
+    // Administrators have full access to everything (except auth pages when logged in)
+    if (role === 'administrador' && !isAuthPage) {
       return;
     }
 
     // Global restrictions for non-admins (e.g. removed features)
-    if (pathname === '/customizer') {
+    if (role !== 'administrador' && pathname === '/customizer') {
       router.replace('/');
       return;
     }
 
-    // If not logged in and not on login page, redirect to login
-    if (!role && pathname !== '/login') {
+    // If not logged in and not on an auth page, redirect to login
+    if (!role && !isAuthPage) {
       router.replace('/login');
       return;
     }
 
-    // If logged in and on login page, redirect to appropriate start page
-    if (role && pathname === '/login') {
+    // If logged in and on an auth page, redirect to appropriate start page
+    if (role && isAuthPage) {
       if ((role as any) === 'administrador') {
         router.replace('/admin');
       } else {
@@ -76,7 +78,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   // If not logged in and on protected route, show nothing while redirecting
-  if (!role && pathname !== '/login') {
+  if (!role && pathname !== '/login' && pathname !== '/register') {
     console.log('AuthGuard: Blocking protected route (no role)');
     return null;
   }

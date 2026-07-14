@@ -2,9 +2,22 @@
 
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, getDoc, updateDoc, increment, serverTimestamp, Timestamp, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
-import authData from './auth-data.json';
+import type { UserRole } from './auth-config';
 
 const { firestore: db } = initializeFirebase();
+
+/** Construye un mapa username -> rol a partir de la colección `users` de Firestore. */
+async function getUserRoleMap(database: any): Promise<Map<string, UserRole>> {
+  const map = new Map<string, UserRole>();
+  const snap = await getDocs(collection(database, 'users'));
+  snap.docs.forEach((d) => {
+    const data = d.data();
+    if (data.username) {
+      map.set(data.username, (data.role as UserRole) || 'usuario');
+    }
+  });
+  return map;
+}
 
 export async function logActivity(username: string, type: 'login' | 'view_panel', details?: { panelId?: string, panelName?: string }) {
   if (!db) return;
@@ -96,16 +109,18 @@ export async function getUserStats(month?: number, year?: number) {
   const targetMonth = month !== undefined ? month : now.getMonth() + 1;
   const targetYear = year !== undefined ? year : now.getFullYear();
 
+  // Get role map from Firestore users collection
+  const roleMap = await getUserRoleMap(db);
+
   // Get all user stats
   const statsSnap = await getDocs(collection(db, 'user_stats'));
   const users = statsSnap.docs
     .map(doc => {
       const data = doc.data();
-      const userAuth = authData.find(u => u.username === data.username);
       return {
         id: doc.id,
         ...data,
-        role: userAuth?.role || 'usuario',
+        role: roleMap.get(data.username) || 'usuario',
         // Convert Timestamps to plain objects/numbers for Next.js serialization
         lastLogin: data.lastLogin ? {
           seconds: data.lastLogin.seconds,
@@ -130,11 +145,10 @@ export async function getUserStats(month?: number, year?: number) {
   const activities = activitySnap.docs
     .map(doc => {
       const data = doc.data();
-      const userAuth = authData.find(u => u.username === data.username);
       return {
         id: doc.id,
         ...data,
-        role: userAuth?.role || 'usuario',
+        role: roleMap.get(data.username) || 'usuario',
         timestamp: data.timestamp ? {
           seconds: data.timestamp.seconds,
           nanoseconds: data.timestamp.nanoseconds

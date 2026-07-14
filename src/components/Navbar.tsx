@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
+import { KeyRound, LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/app/logo.png";
 import { cn } from "@/lib/utils";
@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@/firebase";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 
 export function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [pwOpen, setPwOpen] = useState(false);
   const { user, role, logout } = useUser();
 
   const isAdmin = role === 'administrador';
@@ -101,6 +103,14 @@ export function Navbar() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => { e.preventDefault(); setPwOpen(true); }}
+                    className="cursor-pointer"
+                  >
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    <span>Cambiar contraseña</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Cerrar Sesión</span>
@@ -108,6 +118,8 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            <ChangePasswordDialog open={pwOpen} onOpenChange={setPwOpen} />
           </div>
         </div>
       </div>
