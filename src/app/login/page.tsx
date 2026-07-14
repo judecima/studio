@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Loader2, Lock, User } from 'lucide-react';
+import { Loader2, Lock, User, Layers3, Search, RefreshCw, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 import { useFirebase } from '@/firebase';
@@ -121,26 +121,90 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50/50 px-4">
-      <div className="w-full max-w-md">
-        <div className="flex flex-col items-center mb-8">
-          <Image
-            src={logo}
-            alt="RedArquimax"
-            className="mb-4 h-12 w-12 scale-[1.65] object-contain"
-            priority
-          />
-          <h1 className="text-2xl font-headline font-bold tracking-tight text-slate-900">
-            Red<span className="text-primary">Arquimax</span>
-          </h1>
-          <p className="text-muted-foreground text-sm mt-2">Sistema de Gestión Industrial</p>
+    <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50">
+      {/* ============ PANEL IZQUIERDO — MARKETING ============ */}
+      <aside className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-gradient-to-br from-primary via-primary to-secondary p-12 text-white">
+        {/* Blobs decorativos */}
+        <div className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 -left-20 h-80 w-80 rounded-full bg-secondary/40 blur-3xl" />
+
+        {/* Marca */}
+        <div className="relative flex items-center gap-3">
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 backdrop-blur">
+            <Image src={logo} alt="RedArquimax" className="h-8 w-8 scale-[1.6] object-contain" priority />
+          </span>
+          <span className="font-headline text-2xl font-bold tracking-tight">RedArquimax</span>
         </div>
+
+        {/* Propuesta de valor */}
+        <div className="relative max-w-md">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider backdrop-blur">
+            <Layers3 className="h-3.5 w-3.5" /> Equivalencias de tableros
+          </span>
+          <h2 className="mt-6 font-headline text-4xl font-bold leading-tight">
+            Encontrá el tablero equivalente en segundos.
+          </h2>
+          <p className="mt-4 text-lg text-white/80">
+            El sistema que compara placas y tapacantos entre <strong className="text-white">Egger, Faplac, Arauco</strong> y
+            más. Ingresá o registrate para acceder al catálogo completo.
+          </p>
+
+          {/* Swatches de tableros */}
+          <div className="mt-8 flex gap-2">
+            {['#c9a06b', '#8a5a34', '#e6dcc8', '#3f3b38', '#b7c2b0', '#d9c2a3'].map((c) => (
+              <span
+                key={c}
+                className="h-10 w-10 rounded-lg border border-white/20 shadow-lg"
+                style={{ backgroundColor: c }}
+              />
+            ))}
+          </div>
+
+          {/* Features */}
+          <ul className="mt-8 space-y-3">
+            {[
+              { icon: Layers3, text: 'Equivalencias reales entre marcas y materiales (MDF / MDP).' },
+              { icon: Search, text: 'Catálogo con colores, texturas y especificaciones técnicas.' },
+              { icon: RefreshCw, text: 'Stock y novedades siempre actualizados.' },
+            ].map(({ icon: Icon, text }) => (
+              <li key={text} className="flex items-start gap-3 text-white/90">
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/15">
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                <span className="text-sm">{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="relative text-xs text-white/60">© 2024 RedArquimax Argentina. Acceso exclusivo para clientes y equipo.</p>
+      </aside>
+
+      {/* ============ PANEL DERECHO — FORMULARIO ============ */}
+      <main className="flex items-center justify-center px-4 py-10 sm:px-8">
+        <div className="w-full max-w-md">
+          {/* Marca compacta (solo mobile) */}
+          <div className="mb-8 flex flex-col items-center lg:hidden">
+            <Image src={logo} alt="RedArquimax" className="mb-3 h-12 w-12 scale-[1.65] object-contain" priority />
+            <h1 className="font-headline text-2xl font-bold tracking-tight text-slate-900">
+              Red<span className="text-primary">Arquimax</span>
+            </h1>
+          </div>
+
+          {/* Aviso comercial de acceso */}
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-primary/15 bg-primary/5 p-4">
+            <Layers3 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+            <p className="text-sm text-slate-600">
+              Iniciá sesión o <Link href="/register" className="font-semibold text-primary hover:underline">registrate gratis</Link> para
+              acceder a nuestro <strong className="text-slate-800">sistema de equivalencias de tableros</strong>.
+            </p>
+          </div>
 
         <Card className="border-none shadow-2xl shadow-slate-200/50 bg-white/80 backdrop-blur-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xl font-headline">Iniciar Sesión</CardTitle>
+            <CardTitle className="text-2xl font-headline">Bienvenido de nuevo</CardTitle>
             <CardDescription>
-              Ingresa tus credenciales para acceder al sistema.
+              Ingresá tus credenciales para acceder al catálogo.
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -224,18 +288,19 @@ export default function LoginPage() {
             </CardFooter>
           </form>
         </Card>
-        
-        <p className="text-center text-sm text-slate-500 mt-6">
-          ¿No tenés cuenta?{' '}
-          <Link href="/register" className="font-semibold text-primary hover:underline">
-            Registrate
-          </Link>
-        </p>
 
-        <p className="text-center text-xs text-slate-400 mt-4">
-          © 2024 RedArquimax Argentina. Acceso restringido.
-        </p>
-      </div>
+          <p className="mt-6 text-center text-sm text-slate-500">
+            ¿No tenés cuenta?{' '}
+            <Link href="/register" className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+              Registrate gratis <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </p>
+
+          <p className="mt-4 text-center text-xs text-slate-400 lg:hidden">
+            © 2024 RedArquimax Argentina. Acceso restringido.
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
