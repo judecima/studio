@@ -315,6 +315,8 @@ export async function rankMatches(target: Panel, allPanels: Panel[]): Promise<Eq
         name: p.name,
         brand: p.brand,
         code: p.code,
+        mainImage: p.mainImage,
+        images: p.images,
         score: Math.round(breakdown.total * 100),
         explanation: generateExplanation(breakdown, targetClass, candidateClass),
         breakdown

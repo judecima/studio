@@ -128,6 +128,8 @@ export interface EquivalenceMatch {
   name: string;
   brand: string;
   code?: string;
+  mainImage?: string;
+  images?: string[];
   score: number;
   explanation?: string;
   breakdown?: ScoreBreakdown;
